@@ -2,7 +2,7 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/00_base_code.rs)
 
-In the `Development environment` chapter we created a Cargo project and added the necessary dependencies. In this chapter we will be replacing the code in the `src/main.rs` file with the following code:
+`Development environment`에서 Cargo project를 만들었고, 필수적인 dependencies를 추가했습니다. 이 챕터에서는 `src/main.rs`안의 코드를 다음 코드로 바꿉니다.
 
 ```rust
 #![allow(
@@ -77,28 +77,28 @@ impl App {
 struct AppData {}
 ```
 
-We first import `anyhow::Result` so we can use `anyhow`'s [`Result`](https://docs.rs/anyhow/latest/anyhow/type.Result.html) type for all of the fallible functions in our program. Next we import all of the `winit` types we need to create a window and start an event loop for that window.
+먼저 `anyhow::Result`를 임포트해서 `anyhow`의 [Result](https://docs.rs/anyhow/latest/anyhow/type.Result.html)타입을 실패가능한 함수에 쓸 수 있도록 합니다. 그리고 window를 생성하고 그 window를 위한 event loop를 시작시키기 위해 필요한 `winit`의 모든 타입을 임포트합니다.
 
-Next comes our `main` function (which returns an `anyhow::Result` type). This function starts by initializing `pretty_env_logger` which will print our logs to the console (as shown later).
+다음으로 `main`함수(`anyhow::Result`를 리턴합니다)로 갑니다. 이 함수는 로그를 콘솔에 출력하는 `pretty_env_logger`(이후에 설명될 것처럼)를 초기화하면서 시작합니다.
 
-Then we create an event loop and window to render to using `winit` using `LogicalSize` which will scale the window according to the DPI of your display. If you want to know more about UI scaling you can read the [relevant `winit` documentation](https://docs.rs/winit/latest/winit/dpi/index.html).
+그러면, `winit`를 이용해 event loop와 렌더링할 window를 생성하고, `LogicalSize`를 통해 디스플레이의 DPI에 맞춰 창 크기를 조정합니다. UI 스케일링에 대해 더 알고싶다면 [`winit` 문서](https://docs.rs/winit/latest/winit/dpi/index.html)를 참고합니다.
 
-Next we create an instance of our Vulkan app (`App`) and enter into our rendering loop. This loop will continually render our scene to the window until you request the window to be closed at which point the app will be destroyed and the program will exit. The `destroying` flag is necessary to not keep attempting to render the scene while the app is being destroyed which would most likely result in the program crashing after attempting to access Vulkan resources that have been destroyed.
+다음으로 Vulkan app의 인스턴스를 만들고 rendering loop로 들어갑니다. 이 루프는 app이 파괴되고 프로그램이 종료되는, window를 닫는 요청을 할 때 까지 window에 scene을 계속 렌더링합니다. `destroying`플래그는 파괴된 Vulkan 리소스에 접근하는 시도 이후에 프로그램 crash를 만들어내는 가능성이 높은, app이 종료되는 동안 scene에 렌더링하는것을 방지하기 위해 필수적입니다.
 
-Lastly comes `App` and `AppData`. `App` will be used to implement the setup, rendering, and destruction logic required for the Vulkan program we will be building over the course of the following chapters. `AppData` will serve simply as a container for the large number of Vulkan resources we will need to create and initialize which will allow for them to be easily passed to functions to be read and/or modified. `AppData` implements the [`Default` trait](https://doc.rust-lang.org/std/default/trait.Default.html) so we can easily construct an instance of this struct with empty/default values.
+마지막으로 `App`과 `AppData`로 옵니다. `App`은 따라오는 챕터의 코스를 빌드할 Vulkan프로그램을 위해 요구되는 setup, rendering 그리고 destruction 로직을 구현하는데 사용됩니다. `AppData`는 단순히 우리가 생성하고 초기화할 다수의 Vulkan 리소스 컨테이너 역할을 합니다. `AppData`는 Vulkan 리소스들이 쉽게 함수로 전달되어 읽거나 수정될 수 있도록 합니다. `AppData`는 [Default trait](https://doc.rust-lang.org/std/default/trait.Default.html)를 구현하므로, 쉽게 비어있거나 기본값으로 구조체의 인스턴스를 생성할 수 있습니다.
 
-This will come in handy because many of the following chapters consist of adding a function which takes a `&mut AppData` and creates and initializes Vulkan resources. These functions will then be called from our `App::create` constructor method to set up our Vulkan app. Then, before our program exits, these Vulkan resources will be released by our `App::destroy` method.
+`&mut AppData`를 갖거나 Vulkan 리소스를 생성하고 초기화하는 함수들을 추가하는것으로 구성된 챕터들이 많기때문에, `AppData`는 유용합니다. 이 함수들은 Vulkan app을 set up하기 위해 `App:create` 생성자에서 호출됩니다. 그러면 프로그램이 종료되기 전에, Vulkan 리소스들은 `App:destroy`메소드에 의해 해제됩니다.
 
 ## A Note on Safety
 
-All Vulkan commands, both the raw commands and their command wrappers, are marked `unsafe` in `vulkanalia`. This is because most Vulkan commands have restrictions on how they can be called that cannot be enforced by Rust (unless a higher-level interface that hides the Vulkan API is provided like in [`vulkano`](https://vulkano.rs)).
+모든 Vulkan command(raw command와 command wrapper)들은 `vulkanalia`에서 `unsafe`로 표시됩니다. 이것은 거의 Vulkan command들이 Rust에 의해 강제되는 방식으로 호출될 수 없기 때문입니다().(unless a higher-level interface that hides the Vulkan API is provided like in [`vulkano`](https://vulkano.rs/))
 
-This tutorial will be addressing this fact by simply marking every function and method in which a Vulkan command is called as `unsafe`. This helps keep syntactical noise to a minimum, but in a more realistic program you may want to expose your own safe interface that enforces the invariants required for the Vulkan commands you are calling.
+이 튜토리얼에서는 `unsafe`로 Vulkan command를 호출하는 모든 함수와 메소드를 마킹하는 방식으로 설명합니다. 이런 방식은 문법적 잡음을 최소화하지만, 실제 프로그램에서는 호출하는 Vulkan command에 불변 조건을 강제하는 인터페이스를 만들고, 자체적으로 만든 안전한 인터페이스를 노출시키는것이 좋습니다.
 
 ## Resource management
 
-Just like each chunk of memory allocated in C with `malloc` requires a corresponding call to `free`, every Vulkan object that we create needs to be explicitly destroyed when we no longer need it. In Rust it is possible to perform automatic resource management using [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) possibly combined with smart pointers like `Rc` or `Arc`. However, the author of <https://vulkan-tutorial.com> chose to be explicit about allocation and deallocation of Vulkan objects in this tutorial and I have decided to take the same approach. After all, Vulkan's niche is to be explicit about every operation to avoid mistakes, so it's good to be explicit about the lifetime of objects to learn how the API works.
+`malloc`를 이용해 C에서 할당된 메모리의 각 청크들이 대응하는 `free` 호출을 필요로하듯이, 우리가 만들 모든 Vulkan 오브젝트들은 더이상 필요가 없을 때 명시적으로 파괴되어야합니다. Rust에서는 아마 `Rc`또는 `Arc`같은 스마트 포인터와 결합된  [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization)를 사용하여 자동으로 자원 관리를 수행하는것이 가능합니다. 그러나, [https://vulkan-tutorial.com](https://vulkan-tutorial.com/)의 저자는 이 튜토리얼에서 Vulkan 오브젝트의 allocation과 deallocation에 대하여 명시적인것을 선택했고 저도 같은 접근법을 결정했습니다. 어쨌든, Vulkan의 niche는 실수를 피하는 모든 연산에 대해 명시적이게 되는것이므로 API가 어떻게 작동하는지 배우기위해 오브젝트들의 lifetime에대해 명시적이게되는것은 좋습니다.
 
-After following this tutorial, you could implement automatic resource management by writing Rust structs that wrap Vulkan objects and release them in their `Drop` implementation. RAII is the recommended model for larger Vulkan programs, but for learning purposes it's always good to know what's going on behind the scenes.
+이 튜토리얼을 따른 후에, Vulkan 오브젝트를 감싼 Rust 구조체를 작성함으로써 automatic resource management를 구현하거나 거기에 `Drop`를 구현하여 해제하는것이 가능합니다. RAII는 큰 Vulkan 프로그램을 위한 추천되는 모델이지만, 학습의 목적에서는, scenes의 뒤에서 무슨 일이 일어나는지 아는것이 항상 좋습니다.
 
-Vulkan objects are either created directly with commands like `create_xxx`, or allocated through another object with commands like `allocate_xxx`. After making sure that an object is no longer used anywhere, you need to destroy it with the counterparts `destroy_xxx` and `free_xxx`. The parameters for these commands generally vary for different types of objects, but there is one parameter that they all share: `allocator`. This is an optional parameter that allows you to specify callbacks for a custom memory allocator. We will ignore this parameter in the tutorial and always pass `None` as argument.
+Vulkan 오브젝트들은 `create_xxx`같은 commands로 직접 생성되거나 `allocate_xxx`같은 commands로 다른 오브젝트를 통해 할당됩니다. 한 오브젝트가 더이상 어디서도 쓰이지 않는다는것을 확신한 후에, 대응하는 `destroy_xxx` 그리고 `free_xxx`를 사용하여 오브젝트를 파괴해야합니다. 이 commands를 위한 파라미터들은 일반적으로 오브젝트의 타입마다 다양하지만, 모든것에 공통으로 공유하는 한가지 `allocator` 파라미터가 있습니다. 이것은 optional 파라미터이고 custom memory allocator를 위한 callbacks을 지정할 수 있도록 해줍니다. 우리는 튜토리얼에서 이 파라미터를 무시할거고, 항상 `None`를 매개변수로 넘겨줄것입니다.
