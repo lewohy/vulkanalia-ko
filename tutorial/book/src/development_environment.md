@@ -1,16 +1,14 @@
-# Development environment
+# Cargo project
 
-In this chapter we'll set up your environment for developing Vulkan applications by installing the Vulkan SDK for your operating system. This tutorial assumes you already have a working Rust (1.81+) development environment.
+먼저, 우리의 Cargo project를 만듭니다.
 
-## Cargo project
+```sh
+cargo new vulkan-tutorial
+```
 
-First let's create our Cargo project:
+명령이 실행되면 `vulkan-tutorial`이라는 폴더가 생성됩니다. 여기에는 Rust 실행파일을 생성하는 minimal Cargo project가 있습니다.
 
-`cargo new vulkan-tutorial`
-
-After this command has executed, you'll have a folder called `vulkan-tutorial` containing a minimal Cargo project which produces a Rust executable.
-
-Open the `Cargo.toml` file in the folder and add these dependencies in the pre-existing `[dependencies]` section:
+폴더 안의 `Cargo.toml`파일을 열어서 `[dependencies]`부분에 dependencies를 추가합니다
 
 ```toml
 anyhow = "1"
@@ -20,74 +18,46 @@ png = "0.17"
 pretty_env_logger = "0.5"
 thiserror = "1"
 tobj = { version = "3", features = ["log"] }
-vulkanalia = { version = "=0.28.0", features = ["libloading", "provisional", "window"] }
+vulkanalia = { version = "=0.26.0", features = ["libloading", "provisional", "window"] }
 winit = "0.29"
 ```
 
-* `anyhow` &ndash; used for simple error handling
-* `log` &ndash; used for logging statements
-* `cgmath` &ndash; used as a Rust replacement for [GLM](https://glm.g-truc.net/0.9.9/index.html) (graphics math library)
-* `png` &ndash; used to load PNGs to use as textures
-* `pretty_env_logger` &ndash; used to print our logs to the console
-* `thiserror` &ndash; used to define custom errors types without boilerplate
-* `tobj` &ndash; used to load 3D models in the [Wavefront .obj format](https://en.wikipedia.org/wiki/Wavefront_.obj_file)
-* `vulkanalia` &ndash; used to call the Vulkan API
-* `winit` &ndash; used to create a window to render to
+- `anyhow` – 간단한 error handling을 위해 사용됩니다.
+- `log` – logging statements를 위해 사용됩니다.
+- `cgmath` – [GLM](https://glm.g-truc.net/0.9.9/index.html)(graphics math library)를 위한 러스트 대체제로 사용됩니다.
+- `png` – 텍스쳐로 사용하기 위한 PNG를 로딩하기 위해 사용됩니다.
+- `pretty_env_logger` – 로그를 콘솔에 출력하기 위해 사용됩니다.
+- `thiserror` – boilerplate없이 custom error 타입을 정의하기 위해 사용됩니다.
+- `tobj` – 3D모델을 [Wavefront .obj 포맷](https://en.wikipedia.org/wiki/Wavefront_.obj_file)으로 로딩하기위해 사용됩니다.
+- `vulkanalia` – Vulkan API를 호출하기 위해 사용됩니다.
+- `winit` – used to create a window to render to
+
+
 
 ## Vulkan SDK
 
-The most important component you'll need for developing Vulkan applications is the SDK. It includes the headers, standard validation layers, debugging tools and a loader for the Vulkan functions. The loader looks up the functions in the driver at runtime, similarly to GLEW for OpenGL - if you're familiar with that.
-
 ### Windows
 
-The SDK can be downloaded from the [LunarG website](https://vulkan.lunarg.com/) using the buttons at the bottom of the page. You don't have to create an account, but it will give you access to some additional documentation that may be useful to you.
-
-![](./images/vulkan_sdk_download_buttons.png)
-
-Proceed through the installation and pay attention to the install location of the SDK. The first thing we'll do is verify that your graphics card and driver properly support Vulkan. Go to the directory where you installed the SDK, open the `Bin` directory and run the `vkcube.exe` demo. You should see the following:
-
-![](./images/cube_demo.png)
-
-If you receive an error message then ensure that your drivers are up-to-date, include the Vulkan runtime and that your graphics card is supported. See the [introduction chapter](introduction.html) for links to drivers from the major vendors.
-
-There is another program in this directory that will be useful for development. The `glslangValidator.exe` and `glslc.exe` programs will be used to compile shaders from the human-readable [GLSL](https://en.wikipedia.org/wiki/OpenGL_Shading_Language) to bytecode. We'll cover this in depth in the [shader modules chapter](pipeline/shader_modules.html). The `Bin` directory also contains the binaries of the Vulkan loader and the validation layers, while the `Lib` directory contains the libraries.
-
-Feel free to explore the other files, but we won't need them for this tutorial.
+TODO
 
 ### Linux
 
-These instructions will be aimed at Ubuntu users, but you may be able to follow along by changing the `apt` commands to the package manager commands that are appropriate for you.
+> <https://kylemayes.github.io/vulkanalia/development_environment.html#linux> 에는 Ubuntu유저를 위한 설명에 맞춰져 있습니다.
 
-The most important components you'll need for developing Vulkan applications on Linux are the Vulkan loader, validation layers, and a couple of command-line utilities to test whether your machine is Vulkan-capable:
+Linux에서 Vulkan 애플리케이션을 개발하기위해 필요한것중 가장 중요한 컴포넌트는 Vulkan loader, validation layer 그리고 자신의 기기가 Vulkan-capable한지 테스트하기 위한 몇가지 command-line 유틸리티입니디
 
-* `sudo apt install vulkan-tools` &ndash; Command-line utilities, most importantly `vulkaninfo` and `vkcube`. Run these to confirm your machine supports Vulkan.
-* `sudo apt install libvulkan-dev` &ndash; Installs Vulkan loader. The loader looks up the functions in the driver at runtime, similarly to GLEW for OpenGL - if you're familiar with that.
-* `sudo apt install vulkan-validationlayers-dev` &ndash; Installs the standard validation layers. These are crucial when debugging Vulkan applications, and we'll discuss them in an upcoming chapter.
+#### Arch
 
-If installation was successful, you should be all set with the Vulkan portion. Remember to run `vkcube` and ensure you see the following pop up in a window:
+> <https://wiki.archlinux.org/title/Vulkan> 를 참고합니다.
 
-![](./images/cube_demo_nowindow.png)
+- `vulkan-tools` - 가장 중요한 `vulkaninfo`와 `vkcube`가 있는Command-line 유틸리티들입니다. 이것들을 실행해서 자신의 기기가 Vulkan을 지원하는지 테스트합니다.
+- `libvulkan-dev` - Vulkan loader를 설치합니다. 이 loader는 런타입에 driver에서 함수들을 찾습니다. OpenGL의 GLEW와 비슷합니다.
+- `vulkan-validationlayers-dev` - standard validation layers를 설치합니다. 이것들은 Vulkan 애플리케이션을 디버깅하는데 중요합니다. 그리고 우리는 이후 챕터에서 다시 다룹니다.
 
-If you receive an error message then ensure that your drivers are up-to-date, include the Vulkan runtime and that your graphics card is supported. See the [introduction chapter](introduction.html) for links to drivers from the major vendors.
+설치가 성공적이라면, you should be all set with the Vulkan portion.
+`vkcube`를 실행해서 윈도우가 뜨는지 확인합니다.
 
-### macOS
+![vkcube](https://kylemayes.github.io/vulkanalia/images/cube_demo_nowindow.png)
 
-The SDK can be downloaded from the [LunarG website](https://vulkan.lunarg.com/) using the buttons at the bottom of the page. You don't have to create an account, but it will give you access to some additional documentation that may be useful to you.
+If you receive an error message then ensure that your drivers are up-to-date, include the Vulkan runtime and that your graphics card is supported. See the introduction chapter for links to drivers from the major vendors.
 
-![](./images/vulkan_sdk_download_buttons.png)
-
-The SDK version for MacOS internally uses [MoltenVK](https://moltengl.com/). There is no native support for Vulkan on MacOS, so what MoltenVK does is act as a layer that translates Vulkan API calls to Apple's Metal graphics framework. With this you can take advantage of debugging and performance benefits of Apple's Metal framework.
-
-After downloading it, simply extract the contents to a folder of your choice. Inside the extracted folder, in the `Applications` folder you should have some executable files that will run a few demos using the SDK. Run the `vkcube` executable and you will see the following:
-
-![](./images/cube_demo_mac.png)
-
-#### Setup Environment
-
-When running a Vulkan application outside of the Vulkan SDK directory, you will likely also need to run the `setup-env.sh` script from the Vulkan SDK to avoid errors about the inability to find Vulkan libraries (e.g., `libvulkan.dylib`). If you installed the Vulkan SDK in the default location, this script should be located in a path like this: `~/VulkanSDK/1.3.280.1/setup-env.sh` (replace the version number to match your Vulkan SDK installation).
-
-You can also add this script to be executed by default by adding it to your shell's setup script. For example you could add a statement like this to `~/.zshrc`:
-
-```
-source ~/VulkanSDK/1.3.280.1/setup-env.sh
-```
