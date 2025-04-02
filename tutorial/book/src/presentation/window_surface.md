@@ -2,36 +2,36 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/05_window_surface.rs)
 
-Since Vulkan is a platform agnostic API, it can't interface directly with the window system on its own. To establish the connection between Vulkan and the window system to present results to the screen, we need to use the WSI (Window System Integration) extensions. In this chapter we'll discuss the first one, which is `VK_KHR_surface`. It exposes a `vk::SurfaceKHR` object that represents an abstract type of surface to present rendered images to. The surface in our program will be backed by the window that we've already opened with `winit`.
+Vulkan은 platform agnostic API이기 때문에, 스스로 window system과 직접적으로 interface할 수 없습니다. Vulkan과 화면에 결과를 보여줄 window system사이의 연결을 생성하기 위해, WSI(Window System Integration) extension을 사용해야합니다. 이번 챕터에서 그 첫번째인 [`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html)에 대해 논의할겁니다. 이 extension은 [`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html) 오브젝트를 노출시킵니다. 이 오브젝트는 렌더링된 이미지를 surface로 표시하기 위해 surface의 추상 타입을 나타냅니다. 프로그램의 surface는 이미 열어뒀던 `winit`에 의한 window를 기반으로 동작합니다.
 
-The `VK_KHR_surface` extension is an instance level extension and we've actually already enabled it, because it's included in the list returned by `vk_window::get_required_instance_extensions`. The list also includes some other WSI extensions that we'll use in the next couple of chapters.
+[`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html) extension는 instance level의 extension입니다. 그리고 [`vk_window::get_required_instance_extensions`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.get_required_instance_extensions.html)에 의해 반환된 리스트에 포함되어있기 때문에, 실제로 이미 활성화했습니다. 그 리스트는 몇몇 다른 WSI extension을 포함하고 다음 몇 챕터 후에 사용할겁니다.
 
-The window surface needs to be created right after the instance creation, because it can actually influence the physical device selection. The reason we postponed this is because window surfaces are part of the larger topic of render targets and presentation for which the explanation would have cluttered the basic setup. It should also be noted that window surfaces are an entirely optional component in Vulkan, if you just need off-screen rendering. Vulkan allows you to do that without hacks like creating an invisible window (necessary for OpenGL).
+window surface는 physical device 선택에 실제로 영향을 줄 수 있기 때문에, instance의 생성 바로 직후에 생성되어야합니다. 이 과정을 미뤘던 이유는 window surface가 render target과 presentation의 큰 주제의 일부인데, 그것들에 대한 설명은 basic setup을 어렵게 했을겁니다. 만약 off-screen rendering이 필요하다면, Vulkan에서 window surface는 전반적으로 optional인 component이라는것에도 유의합니다. Vulkan은 보이지않는 window를 생성하는것 같은 hack(OpenGL에서는 필수적)없이 그런것을 가능하게 해줍니다.
 
-While we can freely import types for extensions like the struct `vk::SurfaceKHR`, we need to import the `vulkanalia` extension trait for `VK_KHR_surface` before we can call any of the Vulkan commands added by the extension. Add the following import for `vk::KhrSurfaceExtension`:
+구조체 [`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html)같은 extension을 위한 import는 자유롭게 하는 반면, extension에 의해 추가된 Vulkan command를 호출하기 전에 [`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html)를 위한 `vulkanalia` extension을 import해야 합니다. [`vk::KhrSurfaceExtension`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSurfaceExtension.html) import를 추가합니다.
 
-```rust,noplaypen
+```rust
 use vulkanalia::vk::KhrSurfaceExtension;
 ```
 
 ## Window surface creation
 
-Start by adding a `surface` field in `AppData` above the other fields.
+`AppData`의 다른 field위에 `surface`필드를 추가함으로써 시작합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     surface: vk::SurfaceKHR,
     // ...
 }
 ```
 
-Although the `vk::SurfaceKHR` object and its usage is platform agnostic, its creation isn't because it depends on window system details. For example, it needs the `HWND` and `HMODULE` handles on Windows. Therefore there is a platform-specific addition to the extension, which on Windows is called `VK_KHR_win32_surface` and is also automatically included in the list from `vk_window::get_required_instance_extensions`.
+[`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html) 오브젝트와 이 오브젝트의 사용이 플랫폼 불가지론적일지라도, 이 오브젝트의 생성은 window system detail에 의존하기때문에 불가지론적이지 않습니다. 예를들어, Windows에서 이 오브젝트의 생성은 `HWND`와 `HMODULE`를 필요로합니다. 그러므로 extension에 platform-specific addition이 있는데, Windows에서는 [`VK_KHR_win32_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_win32_surface.html)라고 불립니다. 그리고 이것은 [`vk_window::get_required_instance_extensions`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.get_required_instance_extensions.html)의 리스트에 자동으로 포함되어 있습니다.
 
-I will demonstrate how this platform specific extension can be used to create a surface on Windows, but we won't actually use it in this tutorial. `vulkanalia` has `vk_window::create_surface` that handles the platform differences for us. Still, it's good to see what it does behind the scenes before we start relying on it.
+어떻게 platform specific extension이 Windows에서 surface를 생성하기위해 사용되는지 보여드릴겁니다. 그러나 이 튜토리얼에서 실제로 사용하지는 않을겁니다. `vulkanalia`는 [`vk_window::create_surface`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.create_surface.html)를 갖고있는데, 이것은 우리를 위한 플랫폼과의 차이를 핸들링합니다. 여전히, 이것에 의존하기 전에, 이것이 scene의 뒤에서 뭘하는지 보는것이 좋습니다.
 
-Because a window surface is a Vulkan object, it comes with a `vk::Win32SurfaceCreateInfoKHR` struct that needs to be filled in. It has two important parameters: `hinstance` and `hwnd`. These are the handles to the process and the window.
+window surface는 Vulkan 오브젝트이므로, [`vk::Win32SurfaceCreateInfoKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Win32SurfaceCreateInfoKHR.html) 구조체가 딸려옵니다. 이 구조체도 채워줘야합니다. 두 가지 중요한 파라미터를 갖습니다: `hisntance`과 `hwnd`입니다. 이것들은 process와 window를 핸들링합니다.
 
-```rust,noplaypen
+```rust
 use winit::platform::windows::WindowExtWindows;
 
 let info = vk::Win32SurfaceCreateInfoKHR::builder()
@@ -39,21 +39,21 @@ let info = vk::Win32SurfaceCreateInfoKHR::builder()
     .hwnd(window.hwnd());
 ```
 
-The `WindowExtWindows` trait is imported from `winit` because it allows us to access platform-specific methods on the `winit` `Window` struct. In this case, it permits us to get the process and window handles for the window created by `winit`.
+`WindowExtWindows` 트레잇은 `winit` `Window`구조체에서 platform-specific 메소드에 접근하게 해주기 때문에 이 트레잇은 `winit`에서 import됩니다. 이번 케이스에서, 이 트레잇은 `winit`에 의해 생성된 window를 위한 process와 window핸들을 얻게 해 줍니다.
 
-After that the surface can be created with `create_win32_surface_khr`, which includes parameters for the surface creation details and custom allocators. Technically this is a WSI extension function, but it is so commonly used that the standard Vulkan loader includes it, so unlike other extensions you don't need to explicitly load it. However, we do need to import the `vulkanalia` extension trait for `VK_KHR_win32_surface` (`vk::KhrWin32SurfaceExtension`).
+이 작업 후에, surface생성 디테일과 custom allocator에 대한 파라미터를 포함하는 [`create_win32_surface_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrWin32SurfaceExtension.html#method.create_win32_surface_khr)로 생성된 surface를 생성할 수 있습니다. 기술적으로, 이것은 WSI extension 함수이지만, 이 함수는 너무 공통적으로 사용돼서 표준 Vulkan loader가 이 함수를 포함합니다. 그래서 다른 extension과 다르게 명시적으로 로드할 필요가 없습니다. 그러나 [`VK_KHR_win32_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_win32_surface.html) ([`vk::KhrWin32SurfaceExtension`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrWin32SurfaceExtension.html))를 위한 `vulkanalia` extension 트레잇을 import해야 합니다,
 
-```rust,noplaypen
+```rust
 use vk::KhrWin32SurfaceExtension;
 
 let surface = instance.create_win32_surface_khr(&info, None).unwrap();
 ```
 
-The process is similar for other platforms like Linux, where `create_xcb_surface_khr` takes an XCB connection and window as creation details with X11.
+이 과정은 Linux같은 [`create_xcb_surface_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrXcbSurfaceExtension.html#method.create_xcb_surface_khr)가 XCB connection과 window를 X11에서 creation detail로 취급하는 다른 플랫폼에서도 비슷합니다.
 
-The `vk_window::create_surface` function performs exactly this operation with a different implementation for each platform. We'll now integrate it into our program. Add a call to the function in `App::create` right before we pick a physical device.
+[`vk_window::create_surface`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.create_surface.html) 함수는 각 플랫폼을 위한 다른 구현을 통해 정확한 operation을 수행합니다. 이제 이것을 우리의 프로그램과 통합할겁니다. `App::create`에서 physical device를 선택하기 바로 직전에 함수 호출을 추가합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create(window: &Window) -> Result<Self> {
     // ...
     let instance = create_instance(window, &entry, &mut data)?;
@@ -63,9 +63,9 @@ unsafe fn create(window: &Window) -> Result<Self> {
 }
 ```
 
-The parameters are the Vulkan instance and the `winit` window. Once we have our surface, it can be destroyed in `App::destroy` using the Vulkan API:
+파라미터는 Vulkan instance와 `winit` window입니다. 일단 surface를 갖게되면, Vulkan API를 통해 `App::destroy`에서 파괴되어야 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     // ...
     self.instance.destroy_surface_khr(self.data.surface, None);
@@ -73,26 +73,26 @@ unsafe fn destroy(&mut self) {
 }
 ```
 
-Make sure that the surface is destroyed before the instance.
+instance전에 surface를 파괴하는것을 확인하세요.
 
 ## Querying for presentation support
 
-Although the Vulkan implementation may support window system integration, that does not mean that every device in the system supports it. Therefore we need to extend our physical device selection code to ensure that our chosen device can present images to the surface we created. Since the presentation is a queue-specific feature, the problem is actually about finding a queue family that supports presenting to the surface we created.
+Vulkan 구현이 window system integration을 지원하더라도, 이것이 시스템에서 모든 디바이스를 지원하는것을 의미하지 않습니다. 그러므로 우리의 physical device 선택 코드를 선택된 디바이스가 만들었던 surface에 이미지를 보여줄수 있는지 확신할 수 있도록 확장해야 합니다. presentation은 queue-specific feature이기 때문에, 문제는 실제로 생성한 surface에 표시하는것을 지원하는 queue family를 찾아내는 것입니다.
 
-It's actually possible that the queue families supporting drawing commands and the ones supporting presentation do not overlap. Therefore we have to take into account that there could be a distinct presentation queue by modifying the `QueueFamilyIndices` struct:
+drawing command를 지원하는 queue family와 presentation을 지원하는 queue family가 겹치지 않을 수도 있습니다. 그러므로 `QueueFamilyIndices`구조체를 수정하므로써 구분된 presentation queue가 있을수도 있음을 고려해야 합니다.
 
-```rust,noplaypen
+```rust
 struct QueueFamilyIndices {
     graphics: u32,
     present: u32,
 }
 ```
 
-Next, we'll modify the `QueueFamilyIndices::get` method to look for a queue family that has the capability of presenting to our window surface. The function to check for that is `get_physical_device_surface_support_khr`, which takes the physical device, queue family index. and surface as parameters and returns whether presentation is supported for that combination of physical device, queue family, and surface.
+다음으로 `QueueFamilyIndices::get` 메소드를 수정해서 우리의 window surface로 표시하는게 가능한 queue family를 찾도록 합니다. 이것을 위한 함수는 [`get_physical_device_surface_support_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSurfaceExtension.html#method.get_physical_device_surface_support_khr)입니다. 이 함수는 파라미터로 physical device, queue family index 그리고 surface를 취하고 그런 physical device, queue family 그리고 surface의 조합이 presentation을 지원하는지 여부를 반환합니다.
 
-Modify `QueueFamilyIndices::get` to find a presentation queue family index below where a graphics queue family index is found.
+`QueueFamilyIndices::get`을 수정해서 graphics queue family index가 찾아진 경우 밑에서 presentation queue family index를 찾도록 합니다.
 
-```rust,noplaypen
+```rust
 let mut present = None;
 for (index, properties) in properties.iter().enumerate() {
     if instance.get_physical_device_surface_support_khr(
@@ -106,9 +106,9 @@ for (index, properties) in properties.iter().enumerate() {
 }
 ```
 
-We'll also need to add `present` to the final expression:
+또한 present를 마지막 표현식에 추가합니다.
 
-```rust,noplaypen
+```rust
 if let (Some(graphics), Some(present)) = (graphics, present) {
     Ok(Self { graphics, present })
 } else {
@@ -116,22 +116,22 @@ if let (Some(graphics), Some(present)) = (graphics, present) {
 }
 ```
 
-Note that it's very likely that these end up being the same queue family after all, but throughout the program we will treat them as if they were separate queues for a uniform approach. Nevertheless, you could add logic to explicitly prefer a physical device that supports drawing and presentation in the same queue for improved performance.
+결국에는 이것들이 같은 queue family가 될 가능성이 높음을 숙지합니다. 그러나 프로그램동안 일관적인 접근법을 위해 그것들을 별도의 queue처럼 취급할겁니다. 그럼에도 불구하고, 향상된 퍼포먼스를 위해 같은 queue에서 drawing과 presentation을 지원하는 physical device를 명시적으로 지정하는 로직을 추가할 수도 있습니다.
 
 ## Creating the presentation queue
 
-The one thing that remains is modifying the logical device creation procedure to create the presentation queue and retrieve the `vk::Queue` handle. Add a field to `AppData` for the handle:
+남은것은 logical device 생성 절차를 수정해서 presentation queue를 생성하고 [`vk::Queue`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Queue.html) handle을 가져오는 것입니다. `AppData`에 그 queue 핸들을 위한 field를 추가합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     present_queue: vk::Queue,
 }
 ```
 
-Next, we need to have multiple `vk::DeviceQueueCreateInfo` structs to create a queue from both families. An easy way to do that is to create a set of all unique queue families that are necessary for the required queues. We'll do this in the `create_logical_device` function:
+다음으로, 두 family로부터 queue를 생성하기 위해 여러개의 [`vk::DeviceQueueCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.DeviceQueueCreateInfo.html) 구조체가 필요합니다. 이걸 하는 쉬운 방법은 요구되는 queue를 위한 필수적인 모든 unique queue의 세트를 생성하는 겁니다. 이것을 `create_logical_device` 함수 안에서 할겁니다.
 
-```rust,noplaypen
+```rust
 let indices = QueueFamilyIndices::get(instance, data, data.physical_device)?;
 
 let mut unique_indices = HashSet::new();
@@ -149,9 +149,9 @@ let queue_infos = unique_indices
     .collect::<Vec<_>>();
 ```
 
-And delete the previous `queue_infos` slice and take a reference to the `queue_infos` list for `vk::DeviceCreateInfo`:
+그리고 이전의 `queue_infos` slice를 지우고 [`vk::DeviceCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.DeviceCreateInfo.html)를 위해 `queue_infos`리스트에 대한 참조를 가져옵니다.
 
-```rust,noplaypen
+```rust
 let info = vk::DeviceCreateInfo::builder()        
     .queue_create_infos(&queue_infos)
     .enabled_layer_names(&layers)
@@ -159,10 +159,10 @@ let info = vk::DeviceCreateInfo::builder()
     .enabled_features(&features);
 ```
 
-If the queue families are the same, then we only need to pass its index once. Finally, add a call to retrieve the queue handle:
+만약 queue family들이 같다면, index를 한번만 넘겨주면 됩니다. 마지막으로 queue handle을 가져오기위한 call을 추가합니다.
 
-```rust,noplaypen
+```rust
 data.present_queue = device.get_device_queue(indices.present, 0);
 ```
 
-In case the queue families are the same, the two handles will most likely have the same value now. In the next chapter we're going to look at swapchains and how they give us the ability to present images to the surface.
+queue family들이 같은 경우에, 지금은 두 handle이 같은 값을 가질겁니다. 다음 챕터에서는 swapchain을 찾고 어떻게 그게 surface로 image를 표시하는 기능을 주는지 알아볼겁니다.
