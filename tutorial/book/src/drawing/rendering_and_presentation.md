@@ -2,27 +2,27 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/15_hello_triangle.rs)
 
-This is the chapter where everything is going to come together. We're going to implement the `App::render` function that will be called from the main loop to put the triangle on the screen.
+이 챕터는 모든것이 모이는 챕터입니다. 화면에 삼각형을 놓기 위해 main loop에서 호출될 `App::render` 함수를 구현합니다.
 
 ## Synchronization
 
-The `App::render` function will perform the following operations:
+`App::render` 함수는 다음 연산들을 수행합니다.
 
-* Acquire an image from the swapchain
-* Execute the command buffer with that image as attachment in the framebuffer
-* Return the image to the swapchain for presentation
+- swapchain으로부터 이미지를 얻습니다.
+- framebuffer에서 이미지를 attachment로 이용하여 command buffer를 실행합니다.
+- presentation을 위해 이미지를 swapchain으로 반환합니다.
 
-Each of these events is set in motion using a single function call, but they are executed asynchronously. The function calls will return before the operations are actually finished and the order of execution is also undefined. That is unfortunate, because each of the operations depends on the previous one finishing.
+각 이벤트들은 single function call을 이용하여 실행되지만, 비동기적으로 실행됩니다. function call들은 연산들이 실제로 실행되기전에 return되고 execution 순서는 undefined입니다. 각 연산은 이전의 연산의 종료에 의존하기때문에, 안타까운일입니다.
 
-There are two ways of synchronizing swapchain events: fences and semaphores. They're both objects that can be used for coordinating operations by having one operation signal and another operation wait for a fence or semaphore to go from the unsignaled to signaled state.
+swapchain event들을 동기화하는 두 방법이 있습니다. fences와 semaphores입니다. 이 두 방법은 한개의 operation signal을 갖고 또다른 operation이 unsignaled에서 signaled state가 되기 위해 기다리도록 하여 operation을 coordinate하는 객체입니다.
 
-The difference is that the state of fences can be accessed from your program using calls like `wait_for_fences` and semaphores cannot be. Fences are mainly designed to synchronize your application itself with rendering operation, whereas semaphores are used to synchronize operations within or across command queues. We want to synchronize the queue operations of draw commands and presentation, which makes semaphores the best fit.
+차이점은 fences의 state들은 [`wait_for_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.wait_for_fences)같은 호출을 사용하는 프로그램에서 접근이 가능하지만 semaphores는 그렇지 않은 것입니다. fences는 주로 애플리케이션을 rendering operation과 동기화하기위해 디자인되었습니다. 우리는 draw commands와 presentation의 queue operations들을 동기화하기를 원하므로, semaphores가 딱 맞습니다.
 
 ## Semaphores
 
-We'll need one semaphore to signal that an image has been acquired and is ready for rendering, and another one to signal that rendering has finished and presentation can happen. Create two `AppData` fields to store these semaphore objects:
+한 이미지가 얻어졌고 rendering을 위해 준비가 됨을 signal하기 위해서 semaphore가 하나 필요합니다. 그리고 rendering이 끝나고 presentation이 일어남을 signal 위해서 또 하나가 필요합니다. 두 개의 `AppData`  필드를 생성해서 이 semaphore 오브젝트들을 저장하도록 합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     image_available_semaphore: vk::Semaphore,
@@ -30,9 +30,9 @@ struct AppData {
 }
 ```
 
-To create the semaphores, we'll add the last `create` function for this part of the tutorial, `create_sync_objects`:
+semaphores를 생성하기 위해, 튜토리얼의 이 파트를 위한 마지막 `create` 함수를 추가할겁니다. `create_sync_objects` 함수를 추가합니다.
 
-```rust,noplaypen
+```rust
 impl App {
     unsafe fn create(window: &Window) -> Result<Self> {
         // ...
@@ -47,9 +47,9 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-Creating semaphores requires filling in the `vk::SemaphoreCreateInfo`, but in the current version of the API it doesn't actually have any required fields.
+semaphore를 생성하는 것은 [`vk::SemaphoreCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SemaphoreCreateInfo.html)를 채울 것을 요구하지만, API의 이 버전은 실제로 어떤 필드도 요구하지 않습니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
     let semaphore_info = vk::SemaphoreCreateInfo::builder();
 
@@ -57,16 +57,16 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-Future versions of the Vulkan API or extensions may add functionality for the `flags` and `p_next` parameters like it does for the other structures. Creating the semaphores follows the familiar pattern:
+Vulkan API 또는 extensions의 미래 버전은 아마 다른 구조체를 위해 했던것처럼, `flags`와 `p_next`를 위한 기능을 추가할 수도 있습니다. semaphore를 생성하는것은 비슷한 패턴을 따릅니다.
 
-```rust,noplaypen
+```rust
 data.image_available_semaphore = device.create_semaphore(&semaphore_info, None)?;
 data.render_finished_semaphore = device.create_semaphore(&semaphore_info, None)?;
 ```
 
-The semaphores should be cleaned up at the end of the program, when all commands have finished and no more synchronization is necessary:
+semaphores는 프로그램의 끝에 청소되어야합니다. 모든 command들이 끝나고 더이상 synchronization이 필요하지 않을 때 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.device.destroy_semaphore(self.data.render_finished_semaphore, None);
     self.device.destroy_semaphore(self.data.image_available_semaphore, None);
@@ -76,9 +76,9 @@ unsafe fn destroy(&mut self) {
 
 ## Acquiring an image from the swapchain
 
-As mentioned before, the first thing we need to do in the `App::render` function is acquire an image from the swapchain. Recall that the swapchain is an extension feature, so we must use a function with the `*_khr` naming convention:
+이전에 언급했듯이, `App::render` 함수에서 처음으로 해야할 것은 swapchain으로부터 image를 얻어오는 것입니다. swapchain이 extension feature임을 회상하면, `*_khr` 네이밍 컨벤션을 따르는 함수를 사용해야 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     let image_index = self
         .device
@@ -94,17 +94,17 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-The first parameter of `acquire_next_image_khr` is the swapchain from which we wish to acquire an image. The second parameter specifies a timeout in nanoseconds for an image to become available. Using the maximum value of a 64 bit unsigned integer disables the timeout.
+[`acquire_next_image_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.acquire_next_image_khr)의 첫 번째 파라미터는 swapchain입니다. 이 swapchain으로부터 이미지를 얻기를 원합니다. 두 번째 파라미터는 이용할 수 있게 된 이미지에 대한 timeout을 nanoseconds로 지정합니다. 64 bit unsigned integer의 최대 값을 사용하면 timeout을 비활성화합니다.
 
-The next two parameters specify synchronization objects that are to be signaled when the presentation engine is finished using the image. That's the point in time where we can start drawing to it. It is possible to specify a semaphore, fence or both. We're going to use our `image_available_semaphore` for that purpose here.
+다음 두 파라미터는 synchronization 오브젝트를 지정합니다. 이들은 image를 사용하여 presentation engine이 끝날 때 signaled됩니다. 이 시점이  presentation engine에 이미지를 그릴수 있게 된 시점입니다. semaphore, fence 또는 둘다 지정하는것이 가능합니다. 여기서 이 용도로 우리의 `image_avilable_semaphore`를 사용합니다.
 
-This function returns the index of the swapchain image that has become available. The index refers to the `vk::Image` in our `swapchain_images` array. We're going to use that index to pick the right command buffer.
+이 함수는 이용가능한 swapchain image의 index를 반환합니다. 반환된 index는 우리의 `swapchain_images` 배열 안의 [`vk::Image`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Image.html)를 가리킵니다. 적절한 command buffer를 선택하기 위해 이 index를 사용합니다.
 
 ## Submitting the command buffer
 
-Queue submission and synchronization is configured through parameters in the `vk::SubmitInfo` structure.
+queue submission과 synchronization은 [`vk::SubmitInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubmitInfo.html) 구조체안의 파라미터를 통해 구성됩니다.
 
-```rust,noplaypen
+```rust
 let wait_semaphores = &[self.data.image_available_semaphore];
 let wait_stages = &[vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT];
 let command_buffers = &[self.data.command_buffers[image_index as usize]];
@@ -116,51 +116,51 @@ let submit_info = vk::SubmitInfo::builder()
     .signal_semaphores(signal_semaphores);
 ```
 
-The first two parameters, `^wait_semaphores` and `wait_dst_stage_mask`, specify which semaphores to wait on before execution begins and in which stage(s) of the pipeline to wait. We want to wait with writing colors to the image until it's available, so we're specifying the stage of the graphics pipeline that writes to the color attachment. That means that theoretically the implementation can already start executing our vertex shader and such while the image is not yet available. Each entry in the `wait_stages` array corresponds to the semaphore with the same index in `^wait_semaphores`.
+처음 두 파라미터, `wait_semaphores`와 `wait_dst_stage_mask`는 execution 시작 전에 대기할 semaphores와 pipeline의 어느 stage(s)에서 대기할지 지정합니다. 이미지가 이용가능해질 때 까지 이미지에 색을 작성하는것을 미루고 싶으므로, color attachment에 write하는 graphics pipeline의 stage를 지정합니다. 이것은 이론상, 이미지가 아직 이용불가능하더라도, 구현이 미리 우리의 vertex shader 등의 실행을 시작할 수 있는 것을 의미합니다. `wait_stages` 배열의 각 entry는 `wait_semaphores`의 같은 index인 semaphore와 대응됩니다.
 
-The next parameter, `command_buffers`, specifies which command buffers to actually submit for execution. As mentioned earlier, we should submit the command buffer that binds the swapchain image we just acquired as color attachment.
+다음 `command_buffers` 파라미터는 실행을 위해 실제로 어떤 command buffer가 제출될지 지정합니다. 이전에 언급했듯이, color attachment로써 얻어진 swapchain image를 바인딩하는 command buffer를 제출해야합니다.
 
-Lastly `signal_semaphores` specifies which semaphores to signal once the command buffer(s) have finished execution. In our case we're using the `render_finished_semaphore` for that purpose.
+마지막으로 `signal_semaphores`는 command buffer(s)가 실행을 끝낼 때 signal할 semaphore를 지정합니다. 우리의 경우 이를 위해 `render_finished_sepahore`를 사용합니다.
 
-```rust,noplaypen
+```rust
 self.device.queue_submit(
     self.data.graphics_queue, &[submit_info], vk::Fence::null())?;
 ```
 
-We can now submit the command buffer to the graphics queue using `queue_submit`. The function takes an array of `vk::SubmitInfo` structures as argument for efficiency when the workload is much larger. The last parameter references an optional fence that will be signaled when the command buffers finish execution. We're using semaphores for synchronization, so we'll just pass a `vk::Fence::null()`.
+이제 [`queue_submit`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.queue_submit)를 사용하여 graphics queue에 command buffer를 제출할 수 있습니다. 이 함수는 workload가 훨씬 클때 효율을 위해 [`vk::SubmitInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubmitInfo.html) 구조체의 배열을 인수로 받습니다. 마지막 파라미터는 optional fence를 받고 이 fence는 command buffers가 실행을 끝낼 때 signaled됩니다. synchronization을 위해 semaphores를 썼으므로, 단지 `vk::Fence::null()`을 넘깁니다.
 
 ## Subpass dependencies
 
-Remember that the subpasses in a render pass automatically take care of image layout transitions. These transitions are controlled by *subpass dependencies*, which specify memory and execution dependencies between subpasses. We have only a single subpass right now, but the operations right before and right after this subpass also count as implicit "subpasses".
+render pass에서 subpass는 자동으로 image layout transitions을 관리하는 것을 기억하세요. 이러한 transitions은 *subpass dependencies*에 의해 제어됩니다. 그리고 subpass dependencies는 subpasses사이에서 memory와 execution dependencies를 지정합니다. 당장은 한개의 single pass만 갖고있지만, 이 subpass 직전과 직후의 연산은 암시적으로 "subpasses"로 카운팅됩니다.
 
-There are two built-in dependencies that take care of the transition at the start of the render pass and at the end of the render pass, but the former does not occur at the right time. It assumes that the transition occurs at the start of the pipeline, but we haven't acquired the image yet at that point! There are two ways to deal with this problem. We could change the `wait_stages` for the `image_available_semaphore` to `vk::PipelineStageFlags::TOP_OF_PIPE` to ensure that the render passes don't begin until the image is available, or we can make the render pass wait for the `vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT` stage. I've decided to go with the second option here, because it's a good excuse to have a look at subpass dependencies and how they work.
+render pass의 시작과 끝에서 transition을 관리하는 두가지 built-in dependencies가 있지만, 전자는 적절한 시간에 발생하지 않습니다. pipeline의 시작에서 transition이 발생했지만, 그 시점에 이미지를 아직 얻지 못했다고 가정해봅시다. 이 문제를 다룰 두 가지 방법이 있습니다. `image_available_semaphore`를 위한 `wait_stages`를 [`vk::PipelineStageFlags::TOP_OF_PIPE`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PipelineStageFlags.html#associatedconstant.TOP_OF_PIPE)로 변경하여 render passes가 이미지가 이용가능해질 때 까지 시작하지 않는 것을 보장하거나, render pass가 [`vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PipelineStageFlags.html#associatedconstant.COLOR_ATTACHMENT_OUTPUT) stage를 기다리도록 할 수 있습니다. 저는 여기서 두 번째 옵션을 선택했습니다. 왜냐하면, subpass dependencies와 이 dependencies들이 어떻게 작동하는지 보기에 좋은 변명이 되기 때문입니다.
 
-Subpass dependencies are specified in `vk::SubpassDependency` structs. Go to our `^create_render_pass` function and add one:
+subpass dependencies는 [`vk::SubpassDependency`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubpassDependency.html) 구조체로 지정됩니다. `create_render_pass` 함수로 가서 하나 추가합니다.
 
-```rust,noplaypen
+```rust
 let dependency = vk::SubpassDependency::builder()
     .src_subpass(vk::SUBPASS_EXTERNAL)
     .dst_subpass(0)
     // continued...
 ```
 
-The first two fields specify the indices of the dependency and the dependent subpass. The special value `vk::SUBPASS_EXTERNAL` refers to the implicit subpass before or after the render pass depending on whether it is specified in `src_subpass` or `dst_subpass`. The index `0` refers to our subpass, which is the first and only one. The `dst_subpass` must always be higher than `src_subpass` to prevent cycles in the dependency graph (unless one of the subpasses is `vk::SUBPASS_EXTERNAL`).
+첫 두개의 필드는 dependency의 index들과 dependent subpass를 지정합니다. special value인 [`vk::SUBPASS_EXTERNAL`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/constant.SUBPASS_EXTERNAL.html)는 `src_subpass`나 `dst_subpass`에 지정되었는지에 따라 render pass의 전이나 후의 암시적인 subpass를 가리킵니다. index `0`은 우리의 subpass를 가리킵니다. 이 subpass는 첫번째고 오직 하나입니다. `dst_subpass`는 dependency graph에서 cycles을 방지하기 위해 항상 `src_subpass`보다 높아야합니다(subpass들 중 하나가 [`vk::SUBPASS_EXTERNAL`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/constant.SUBPASS_EXTERNAL.html)가 아닌 한).
 
-```rust,noplaypen
+```rust
     .src_stage_mask(vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT)
     .src_access_mask(vk::AccessFlags::empty())
 ```
 
-The next two fields specify the operations to wait on and the stages in which these operations occur. We need to wait for the swapchain to finish reading from the image before we can access it. This can be accomplished by waiting on the color attachment output stage itself.
+다음 두개의 필드는 기다릴 operations들과 이 operations들이 일어날 stages를 지정합니다. 우리가 이미지에 접근하기 전에 swapchain이 image로부터 읽기를 끝내기를 기다려야합니다. 이 과정은 color attachment output stage 자체에서 기다림으로써 가능합니다.
 
-```rust,noplaypen
+```rust
     .dst_stage_mask(vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT)
     .dst_access_mask(vk::AccessFlags::COLOR_ATTACHMENT_WRITE);
 ```
 
-The operations that should wait on this are in the color attachment stage and involve the writing of the color attachment. These settings will prevent the transition from happening until it's actually necessary (and allowed): when we want to start writing colors to it.
+여기서 기다려야 할 operations은 color attachment stage안에 있고 color attachment의 작성을 포함합니다. 이러한 세팅은 실제로 필요할 때 까지(그리고 허용될 때 까지) transition이 가 발생하지 않도록 합니다. 즉, 우리가 color를 쓰려고 할 때 까지입니다.
 
-```rust,noplaypen
+```rust
 let attachments = &[color_attachment];
 let subpasses = &[subpass];
 let dependencies = &[dependency];
@@ -170,13 +170,13 @@ let info = vk::RenderPassCreateInfo::builder()
     .dependencies(dependencies);
 ```
 
-The `vk::RenderPassCreateInfo` struct has a field to specify an array of dependencies.
+[`vk::RenderPassCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.RenderPassCreateInfo.html) 구조체는 dependencies의 배열을 지정할 필드를 가지고 있습니다.
 
 ## Presentation
 
-The last step of drawing a frame is submitting the result back to the swapchain to have it eventually show up on the screen. Presentation is configured through a `vk::PresentInfoKHR` structure at the end of the `App::render` function.
+frame을 그리는 마지막 단계는 결과를 swapchain에 반환하여 마침내 화면에 보여지도록 하는것입니다. Presentation `App::render` 함수의 끝에서 [`vk::PresentInfoKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentInfoKHR.html) 구조체를 통해 구성됩니다.
 
-```rust,noplaypen
+```rust
 let swapchains = &[self.data.swapchain];
 let image_indices = &[image_index as u32];
 let present_info = vk::PresentInfoKHR::builder()
@@ -185,33 +185,33 @@ let present_info = vk::PresentInfoKHR::builder()
     .image_indices(image_indices);
 ```
 
-The first parameter specifies which semaphores to wait on before presentation can happen, just like `vk::SubmitInfo`.
+첫 번째 파라미터는 presentation이 일어나기 전에, [`vk::SubmitInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubmitInfo.html)같은, 어떤 semaphore에서 기다릴지 지정합니다.
 
-The next two parameters specify the swapchains to present images to and the index of the image for each swapchain. This will almost always be a single one.
+다음 두개의 파라미터는 이미지를 표시할 swapchains을 지정하고 각 swapchain에 대한 이미지의 index를 지정합니다. 거의 항상 single one일겁니다.
 
-There is one last optional parameter called `results`. It allows you to specify an array of `vk::Result` values to check for every individual swapchain if presentation was successful. It's not necessary if you're only using a single swapchain, because you can simply use the return value of the present function.
+마지막으로 `results`로 불리는 optional 파라미터가 있습니다. 이 파라미터는 [`vk::Result`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Result.html) value의 배열을 지정하여 각 모든 swapchain에 대해 presentation이 성공적인지 확인할 수 있도록 합니다. single swapchain만 쓴다면 필수적이지 않습니다. 왜냐하면 단순히 present function의 리턴값만 사용할수 있기 때문입니다.
 
-```rust,noplaypen
+```rust
 self.device.queue_present_khr(self.data.present_queue, &present_info)?;
 ```
 
-The `queue_present_khr` function submits the request to present an image to the swapchain. We'll modify the error handling for both `acquire_next_image_khr` and `queue_present_khr` in the next chapter, because their failure does not necessarily mean that the program should terminate, unlike the functions we've seen so far.
+[`queue_present_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr) 함수는 swapchain에 이미지를 표시하기 위한 요청을 제출합니다. 다음 챕터에서 에러 핸들링을 위한 [`acquire_next_image_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.acquire_next_image_khr)과 [`queue_present_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr)를 수정할겁니다. 왜냐하면, 이들의 실패는 지금까지 본 함수와 달리, 프로그램이 꼭 종료되어야함을 의미하지 않기 때문입니다.
 
-If you did everything correctly up to this point, then you should now see something resembling the following when you run your program:
+여기까지 모든것이 올바르게 되었다면, 프로그램을 실행할 때 다음과 비슷한 무언가를 볼것입니다.
 
-![](../images/triangle.png)
+![triangle](https://kylemayes.github.io/vulkanalia/images/triangle.png)
 
->This colored triangle may look a bit different from the one you're used to seeing in graphics tutorials. That's because this tutorial lets the shader interpolate in linear color space and converts to sRGB color space afterwards. See [this blog post](https://medium.com/@heypete/hello-triangle-meet-swift-and-wide-color-6f9e246616d9) for a discussion of the difference.
+> 이 colored triangle는 graphics tutorial에서 보기위해 사용한것과 약간 다르게 보일 수 있습니다. 이 튜토리얼은 linear color space에서 셰이더를 선형으로 보간하고 후에 sRGB color space로 변환하기 때문입니다. See [this blog post](https://medium.com/@heypete/hello-triangle-meet-swift-and-wide-color-6f9e246616d9) for a discussion of the difference.
 
-Yay! Unfortunately, you'll see that when validation layers are enabled, the program crashes as soon as you close it. The messages printed to the terminal from `debug_callback` tell us why:
+와! 불행히도 validation layers가 활성화되어있다면, 프로그램을 닫자마자 크래시를 일으킬겁니다. `debug_callback`으로부터 터미널에 출력된 메세지는 이유를 알려줍니다.
 
-![](../images/semaphore_in_use.png)
+![semaphore_in_use](https://kylemayes.github.io/vulkanalia/images/semaphore_in_use.png)
 
-Remember that all of the operations in `App::render` are asynchronous. That means that when we call `App::destroy` before exiting the loop in `main`, drawing and presentation operations may still be going on. Cleaning up resources while that is happening is a bad idea.
+`App::render` 안의 모든 operations은 asynchronous임을 기억하세요. 이것은 `main`la에서 loop를 끝내기 전 `App::destroy`를 호출할 때 drawing과 presentation operations들이 여전히 진행중임을 의미합니다. 이러한 상황에서 리소스를 정리하는것은 나쁜 생각입니다.
 
-To fix that problem, we should wait for the logical device to finish operations using `device_wait_idle` before calling `App::destroy`:
+이 문제를 해결하기 위해, `App::destroy`를 호출하기 전에 [`device_wait_idle`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.device_wait_idle)를 사용하여 logical device가 operations을 끝내기를 기다려야합니다.
 
-```rust,noplaypen
+```rust
 Event::WindowEvent { event: WindowEvent::CloseRequested, .. } => {
     destroying = true;
     *control_flow = ControlFlow::Exit;
@@ -220,15 +220,15 @@ Event::WindowEvent { event: WindowEvent::CloseRequested, .. } => {
 }
 ```
 
-You can also wait for operations in a specific command queue to be finished with `queue_wait_idle`. These functions can be used as a very rudimentary way to perform synchronization. You'll see that the program no longer crashes when closing the window (though you will see some errors related to synchronization if you have the validation layers enabled).
+[`queue_wait_idle`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.queue_wait_idle)를 사용하여 특정 command queue의 operation이 끝날 때 까지 기다리는것 또한 가능합니다. 이런한 함수들은 synchronization을 수행하기위한 가장 기초적인 방법으로 사용됩니다. 윈도우를 닫을 때 프로그램이 더이상 크래시를 일으키지 않는 것을 볼 겁니다(그래도 validation layers가 활성화되어있다면, synchronization과 관련한 몇가지 오류를 볼겁니다.).
 
 ## Frames in flight
 
-If you run your application with validation layers enabled now you may either get errors or notice that the memory usage slowly grows. The reason for this is that the application is rapidly submitting work in the `App::render` function, but doesn't actually check if any of it finishes. If the CPU is submitting work faster than the GPU can keep up with then the queue will slowly fill up with work. Worse, even, is that we are reusing the `image_available_semaphore` and `render_finished_semaphore` semaphores, along with the command buffers, for multiple frames at the same time!
+만약 validation layers를 활성화한채로 애플리케이션을 실행하면 아마 오류를 보거나 메모리 사용량이 천천히 높아진다는 notice를 볼겁니다. 이 이유는 애플리케이션이 `App::render` 함수에서 작업을 빠르게 제출하지만, 실제로는 그것이 끝났는지 체크하지 않기때문입니다. 만약 CPU가 GPU가 할수있는 것보다 빠르게 작업을 제출하는것이, queue는 천천히 작업으로 채워질겁니다. 심지어 더 안좋은일은 우리가 동시에 multiple frames에 대해 `image_available_semaphore`와 `render_finished_semaphore` semaphores, 그리고 command buffer를 재사용한다는 것입니다.
 
-The easy way to solve this is to wait for work to finish right after submitting it, for example by using `queue_wait_idle` (note: don't actually make this change):
+이 문제를 해결하기 위한 쉬운 방법은 작업을 제출후에 그것이 끝날때까지 대기하는 것입니다. 예를 들어, [`queue_wait_idle`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.queue_wait_idle)를 사용합니다. (note: 실제로 이렇게 변경하지 마세요)
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     // ...
 
@@ -239,17 +239,17 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-However, we are likely not optimally using the GPU in this way, because the whole graphics pipeline is only used for one frame at a time right now. The stages that the current frame has already progressed through are idle and could already be used for a next frame. We will now extend our application to allow for multiple frames to be *in-flight* while still bounding the amount of work that piles up.
+그러나, 이 방법으로는 GPU를 최적으로 사용하지 않을것같습니다. 왜냐하면 전체 graphics pipeline은 당장은 한 time에 한개의 frame을 위해서만 사용되기 때문입니다. 현재 frame이 진행한 stage는 idle이고 이미 다음 프레임을 위해 사용될 수 있습니다. 이제 우리의 애플리케이션을 확장하여 여전히 누적되는 작업량을 제한하면서 multiple frames이  *in-flight*가 되도록 할겁니다.
 
-Start by adding a constant at the top of the program that defines how many frames should be processed concurrently:
+프로그램의 상단에 얼마나 많은 frames이 동시에 실행되는지 정의하는 상수를 추가하면서 시작합니다.
 
-```rust,noplaypen
+```rust
 const MAX_FRAMES_IN_FLIGHT: usize = 2;
 ```
 
-Each frame should have its own set of semaphores in `AppData`:
+각 frame은 `AppData`에서 자신만의 semaphores의 세트를 가져야합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     image_available_semaphores: Vec<vk::Semaphore>,
@@ -257,9 +257,9 @@ struct AppData {
 }
 ```
 
-The `create_sync_objects` function should be changed to create all of these:
+`create_sync_objects` 함수는 이 모든것들을 생성하도록 수정되어야 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
     let semaphore_info = vk::SemaphoreCreateInfo::builder();
 
@@ -274,9 +274,9 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-Similarly, they should also all be cleaned up:
+비슷하게, 이것들 또한 청소되어야합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.data.render_finished_semaphores
         .iter()
@@ -288,18 +288,18 @@ unsafe fn destroy(&mut self) {
 }
 ```
 
-To use the right pair of semaphores every time, we need to keep track of the current frame. We will use a frame index for that purpose which we'll add to `App` (initialize it to `0` in `App::create`):
+매 시간 적절한 semaphores의 쌍을 사용하기 위해서, 현재 frame의 track를 유지해야합니다. 이를위해 frame index를 사용할거고, `App`에 추가합니다(이 값을 `App::create`에서 `0`으로 초기화합니다).
 
-```rust,noplaypen
+```rust
 struct App {
     // ...
     frame: usize,
 }
 ```
 
-The `App::render` function can now be modified to use the right objects:
+이제 `App::render` 함수는 올바른 오브젝트를 쓰도록 수정됩니다.
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     let image_index = self
         .device
@@ -325,9 +325,9 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-Of course, we shouldn't forget to advance to the next frame every time:
+물론, 매 시간 다음 frame으로 이동해야하는 것을 잊어서는 안됩니다.
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     // ...
 
@@ -337,22 +337,22 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-By using the modulo (%) operator, we ensure that the frame index loops around after every `MAX_FRAMES_IN_FLIGHT` enqueued frames.
+modular (%) 연산자를 사용함으로써, frame index가 매 `MAX_FRAMES_IN_FLIGHT`  frame이 enqueue된 후 순환되도록 보장합니다.
 
-Although we've now set up the required objects to facilitate processing of multiple frames simultaneously, we still don't actually prevent more than `MAX_FRAMES_IN_FLIGHT` from being submitted. Right now there is only GPU-GPU synchronization and no CPU-GPU synchronization going on to keep track of how the work is going. We may be using the frame #0 objects while frame #0 is still in-flight!
+비록 이제 multiple frame이 동시에 처리되는것을 가능하도록 필요한 오브젝트를 설정했지만, 여전히 `MAX_FRAME_IN_FLIGHT` 보다 많은게 제출되는것을 실제로 막지는 않았습니다. 지금은 CPU-GPU synchronization만 있고 진행상황을 추적하기위한 CPU-GPU synchronization이 진행되고 있지 않습니다. 아마 여전히 frame #0 이 in-flight일때 frame #0 을 사용하고있을 수 있습니다.
 
-To perform CPU-GPU synchronization, Vulkan offers a second type of synchronization primitive called *fences*. Fences are similar to semaphores in the sense that they can be signaled and waited for, but this time we actually wait for them in our own code. We'll first create a fence for each frame in `AppData`:
+CPU-GPU synchronization을 수행하기 위해, Vulkan은 *fences*로 불리는 synchronization primitive의 두번째 타입을 제공합니다. Fences는 이들이 singaled되고 그것을 기다릴수 있다는 점에서 semaphores와 유사하지만, 이번 시간에는 우리만의 코드에서 실제로 기다릴겁니다. 먼저 `AppData`에 각 frame을 위한 fence를 만듭니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     in_flight_fences: Vec<vk::Fence>,
 }
 ```
 
-We'll create the fences together with the semaphores in the `create_sync_objects` function:
+`create_sync_object` 함수 안에서 fences를 semaphores와 함께 만들겁니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
     let semaphore_info = vk::SemaphoreCreateInfo::builder();
     let fence_info = vk::FenceCreateInfo::builder();
@@ -370,9 +370,9 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-The creation of fences (`vk::Fence`) is very similar to the creation of semaphores. Also make sure to clean up the fences in `App::destroy`:
+fences([`vk::Fence`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Fence.html))의 생성은 semaphores의 생성과 매우 유사합니다. 또한 `App::destroy`에서 fences를 청소해야합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.data.in_flight_fences
         .iter()
@@ -381,25 +381,9 @@ unsafe fn destroy(&mut self) {
 }
 ```
 
-We will now change `App::render` to use the fences for synchronization. The `queue_submit` call includes an optional parameter to pass a fence that should be signaled when the command buffer finishes executing. We can use this to signal that a frame has finished.
+이제 남은것은 오직 `App::render`의 시작에서 frame이 끝나기를 기다리는 것입니다.
 
-```rust,noplaypen
-unsafe fn render(&mut self, window: &Window) -> Result<()> {
-    // ...
-
-    self.device.queue_submit(
-        self.data.graphics_queue,
-        &[submit_info],
-        self.data.in_flight_fences[self.frame],
-    )?;
-
-    // ...
-}
-```
-
-Now the only thing remaining is to change the beginning of `App::render` to wait for the frame to be finished:
-
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     self.device.wait_for_fences(
         &[self.data.in_flight_fences[self.frame]],
@@ -413,13 +397,13 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-The `wait_for_fences` function takes an array of fences and waits for either any or all of them to be signaled before returning. The `true` we pass here indicates that we want to wait for all fences, but in the case of a single one it obviously doesn't matter. Just like `acquire_next_image_khr` this function also takes a timeout. Unlike the semaphores, we manually need to restore the fence to the unsignaled state by resetting it with the `reset_fences` call.
+[`wait_for_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.wait_for_fences) 함수는 fences의 배열을 갖고 하나라도 또는 그 모든것들이 전부 반환되기전에 signaled 되기를 기다립니다. 여기서 넘긴 `true`는 모든 fences를 기다리기를 원한다는 것을 가리키지만, single fence인 이 경우에는 분명히 문제가 되지는 않습니다. [`acquire_next_image_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.acquire_next_image_khr)와 같이 이 함수는 timeout을 취합니다. semaphores와 다르게, 수동으로 [`reset_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.reset_fences) call을 이용하여 리셋함으로써 fence를 unsignaled 상태로 복구해야합니다.
 
-If you run the program now, you'll notice something something strange. The application no longer seems to be rendering anything and might even be frozen.
+이제 프로그램을 실행하면 뭔가 이상한것을 알아챌겁니다. 애플리케이션이 더이상 아무것도 렌더링하지않고, 심지어는 아마 frozen일겁니다.
 
-That means that we're waiting for a fence that has not been submitted. The problem here is that, by default, fences are created in the unsignaled state. That means that `wait_for_fences` will wait forever if we haven't used the fence before. To solve that, we can change the fence creation to initialize it in the signaled state as if we had rendered an initial frame that finished:
+이것은 제출되지 않은 fence를 기다리고 있다는 것을 의미합니다. 문제는 이것입니다. 기본적으로, fences들은 unsignaled 상태로 생성됩니다. 이것이 [`wait_for_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.wait_for_fences)가 fence를 이전에 사용하지 않았다면, 영원히 기다릴것이라는 것을 의미합니다. 이를 해결하기 위해, fence 생성을 완료된 초기 frame을 렌더링한것처럼 signaled 샅애로 초기화하도록 수정합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
     // ...
 
@@ -430,11 +414,11 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-The memory leak is gone now, but the program is not quite working correctly yet. If `MAX_FRAMES_IN_FLIGHT` is higher than the number of swapchain images or `acquire_next_image_khr` returns images out-of-order then it's possible that we may start rendering to a swapchain image that is already *in flight*. To avoid this, we need to track for each swapchain image if a frame in flight is currently using it. This mapping will refer to frames in flight by their fences so we'll immediately have a synchronization object to wait on before a new frame can use that image.
+memory leak은 이제 없어졌지만, 아직 프로그램이 올바르게 작동하지 않습니다. 만약 `MAX_FRAMES_IN_FLIGHT`가 swapchain image의 수보다 크거나, [`acquire_next_image_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.acquire_next_image_khr)가 out-of-order로 이미지를 반환한다면, 이미 *in flight*인 swapchain image에 렌더링을 시작할겁니다. 이것을 피하기 위해, frame이 이미 swapchain image를 사용중인지 추적해야합니다. 이 mapping은 in flight frames을 frame들의 fences를 통해 참조하므로 새로운 프레임이 해당 이미지를 사용할수 있게되기 전에 즉시 대기할 synchronization 오브젝트를 확보하게됩니다.
 
-First add a new list called `images_in_flight` to `AppData` to track this:
+먼저 `AppData`에 `images_in_flight`라는 새로운 리스트를 추가하여 이를 추적할 수 있도록 합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     in_flight_fences: Vec<vk::Fence>,
@@ -442,9 +426,9 @@ struct AppData {
 }
 ```
 
-Prepare it in `create_sync_objects`:
+`create_sync_objects`에서 준비합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
     // ...
 
@@ -457,9 +441,9 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-Initially not a single frame is using an image so we explicitly initialize it to *no fence*. Now we'll modify `App::render` to wait on any previous frame that is using the image that we've just been assigned for the new frame:
+초기에는 single frame이 이미지를 사용하지 않으므로 명시적으로 *no fence*로 초기화합니다. 이제 `App::render`를 수정해서 다음 frame을 위해 할당한 이미지를 사용하는 어떤 이전 frame이던 기다리도록 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     // ...
 
@@ -488,9 +472,9 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-Because we now have more calls to `wait_for_fences`, the `reset_fences` call should be **moved**. It's best to simply call it right before actually using the fence:
+이제 더 많은 [`wait_for_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.wait_for_fences) 호출이 있으므로, [`reset_fences`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.reset_fences) call은 **이동**되어야 합니다. 실제로 fence를 사용하기 직전에 호출하는것이 베스트입니다.
 
-```rust,noplaypen
+```rust
 unsafe fn render(&mut self, window: &Window) -> Result<()> {
     // ...
 
@@ -506,12 +490,12 @@ unsafe fn render(&mut self, window: &Window) -> Result<()> {
 }
 ```
 
-We've now implemented all the needed synchronization to ensure that there are no more than two frames of work enqueued and that these frames are not accidentally using the same image. Note that it is fine for other parts of the code, like the final cleanup, to rely on more rough synchronization like `device_wait_idle`. You should decide on which approach to use based on performance requirements.
+이제 모든 synchronization을 구현해서 enqueue된 작업 frame이 두개를 넘지 않고 이 frame들이 실수로 같은 이미지를 사용하지 않도록 보장했습니다. final cleanup 같은 코드의 다른 부분이 [`device_wait_idle`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.device_wait_idle)같은 더 rough synchronization에 의존하는것은 괜찮은것을 숙제하세요. 퍼포먼스 요구사하엥 기반한 어떤 접근을 써야하는지 결정해야합니다.
 
-To learn more about synchronization through examples, have a look at [this extensive overview](https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples#swapchain-image-acquire-and-present) by Khronos.
+예제를 통해 synchronization에 대해 더 배우고싶다면, Khronos의 [this extensive overview](https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples#swapchain-image-acquire-and-present)를 살펴보세요
 
 ## Conclusion
 
-A little over 600 (non-empty) lines of code later, we've finally gotten to the stage of seeing something pop up on the screen! Bootstrapping a Vulkan program is definitely a lot of work, but the take-away message is that Vulkan gives you an immense amount of control through its explicitness. I recommend you to take some time now to reread the code and build a mental model of the purpose of all of the Vulkan objects in the program and how they relate to each other. We'll be building on top of that knowledge to extend the functionality of the program from this point on.
+600줄이 조금 넘는 (비어있지 않은)코드 우헤야, 마침에 스크린에 무언가를 띄우는 stage에 도달했습니다. Vulkan 프로그램을 Bootstrapping하는 것은 많응 양의 작업이지만, 핵심은 Vulkan이 그 명시적인 특성을 통해 엄청난 제어권을 제공한다는 것입니다. 이제 코드를 다시 읽고 프로그램에서 모든 Vulkan 오브젝트들의 목적과 그들이 서로 어떻게 상호작용하는지 이해하는 mental model을 구축하는데 시간을 투자하는것을 권장합니다. 이 지식을 바탕으로, 이 지점부터 프로그램의 기능을 확장할겁니다.
 
-In the next chapter we'll deal with one more small thing that is required for a well-behaved Vulkan program.
+다음 장에서는 well-behaved Vulkan 프로그램을 위해 필요한 작은 사항을 하나 다룰겁니다.
