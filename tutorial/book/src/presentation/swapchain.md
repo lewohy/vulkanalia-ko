@@ -2,48 +2,25 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/06_swapchain_creation.rs)
 
-Vulkan does not have the concept of a "default framebuffer", hence it requires an infrastructure that will own the buffers we will render to before we visualize them on the screen. This infrastructure is known as the *swapchain* and must be created explicitly in Vulkan. The swapchain is essentially a queue of images that are waiting to be presented to the screen. Our application will acquire such an image to draw to it, and then return it to the queue. How exactly the queue works and the conditions for presenting an image from the queue depend on how the swapchain is set up, but the general purpose of the swapchain is to synchronize the presentation of images with the refresh rate of the screen.
+Vulkan은 "default framebuffer"의 개념을 갖고 있지 않습니다. 그러므로 소유하고 있는 buffer를 스크린에 시각화하기 전에 그 렌더링할 버퍼를 소유하는 infrastructure을 요구합니다. 이 infrastructure는 *swapchain*으로 알려져있고, Vulkan에서는 명시적으로 생성되어야 합니다. 이 swapchain은 근본적으로 스크린에 표시되기를 기다리는 이미지의 queue입니다. 애플리케이션은 그려내기 위한 이미지를 얻어냅니다. 그리고 그 이미지를 queue에 반환합니다. 정확히 어떻게 그 queue가 작동하는지와 그 queue로부터 이미지를 표시하는 조건들은 swapchain이 어떻게 설정되었는지에 의존합니다. 그러나 swapchain의 일반적인 목적은 스크린의 refresh rate와 이미지의 presentation을 동기화하는 것입니다.
 
 ## Checking for swapchain support
 
-Not all graphics cards are capable of presenting images directly to a screen for various reasons, for example because they are designed for servers and don't have any display outputs. Secondly, since image presentation is heavily tied into the window system and the surfaces associated with windows, it is not actually part of the Vulkan core. You have to enable the `VK_KHR_swapchain` device extension after querying for its support. Also, like before, you need to import the `vulkanalia` extension trait for `VK_KHR_swapchain`:
+다양한 이유로 모든 그래픽카드가 스크린에 직접 이미지를 제공할 수 있는게 아닙니다, 예를들어 server를 위해 디자인되었고 어떤 디스플레이 output을 갖고 있지 않은 경우가 있습니다. 두번째로, 이미지 프레젠테이션은 window system과 window와 연관된 surface에 심하게 묶여있기 때문에, 실제 Vulkan core의 역할이 아닙니다. [`VK_KHR_swapchain`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_swapchain.html) device extension의 support를 query한 후 활성화해야만 합니다. 이전과 같이, [`VK_KHR_swapchain`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_swapchain.html)를 위한 `vulkanlia` extension trait를 import해야합니다.
 
-```rust,noplaypen
+```rust
 use vulkanalia::vk::KhrSwapchainExtension;
 ```
 
-Then we'll first extend the `check_physical_device` function to check if this extension is supported. We've previously seen how to list the extensions that are supported by a `vk::PhysicalDevice`, so doing that should be fairly straightforward.
+그리고 첫번째로 `check_physical_device` 함수를 확장해서 이 extension이 지원되는지 체크할겁니다. 어떻게 [`vk::PhysicalDevice`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PhysicalDevice.html)에 의해 지원되는 확장을 리스팅하는지 이전에 봤고, 꽤 간단하게 합니다.
 
-First declare a list of required device extensions, similar to the list of validation layers to enable.
+첫번쨰로 요구되는 device extension의 리스트를 선언합니다. 활성화할 validation layer의 리스트와 비슷합니다.
 
-```rust,noplaypen
-const DEVICE_EXTENSIONS: &[vk::ExtensionName] = &[vk::KHR_SWAPCHAIN_EXTENSION.name];
-```
+다음으로, `check_physical_device_extensions` 라는 새로운 함수를 추가합니다. 이 함수는 `check_physical_device`에서 추가적인 체크로써 호출됩니다.
 
-Next, create a new function `check_physical_device_extensions` that is called from `check_physical_device` as an additional check:
+함수의 바디를 수정해서 extension을 열거하고 요구된 extension들이 거기에 있는지 확인합니다.
 
-```rust,noplaypen
-unsafe fn check_physical_device(
-    instance: &Instance,
-    data: &AppData,
-    physical_device: vk::PhysicalDevice,
-) -> Result<()> {
-    QueueFamilyIndices::get(instance, data, physical_device)?;
-    check_physical_device_extensions(instance, physical_device)?;
-    Ok(())
-}
-
-unsafe fn check_physical_device_extensions(
-    instance: &Instance,
-    physical_device: vk::PhysicalDevice,
-) -> Result<()> {
-    Ok(())
-}
-```
-
-Modify the body of the function to enumerate the extensions and check if all of the required extensions are amongst them.
-
-```rust,noplaypen
+```rust
 unsafe fn check_physical_device_extensions(
     instance: &Instance,
     physical_device: vk::PhysicalDevice,
@@ -61,13 +38,13 @@ unsafe fn check_physical_device_extensions(
 }
 ```
 
-Now run the code and verify that your graphics card is indeed capable of creating a swapchain. It should be noted that the availability of a presentation queue, as we checked in the previous chapter, implies that the swapchain extension must be supported. However, it's still good to be explicit about things, and the extension does have to be explicitly enabled.
+이제 코드를 실행하고 그래픽카드가 정말로 swapchain생성을 지원하는지 확인합니다. 이것은 presentation queue의 이용가능성으로 노트될겁니다. 이전 챕터에서 체크했듯이, presentation queue는 swapchain extension이 지원되는지 암시합니다. 그러나 여전히 이것들에 명시적인것이 좋은 생각이고 extension은 명시적으로 활성화되어야 합니다.
 
 ## Enabling device extensions
 
-Using a swapchain requires enabling the `VK_KHR_swapchain` extension first. Enabling the extension just requires a small change to our list of device extensions in the `create_logical_device` function. Initialize our list of device extensions with a list of null-terminated strings constructed from `DEVICE_EXTENSIONS`:
+swapchain의 사용은 [`VK_KHR_swapchain`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_swapchain.html) extension를 먼저 활성화하는것을 요구합니다. extension을 활성화하는 것은 `create_logical_device` 함수에서 device extension의 리스트에 작은 변화만 주는 것을 요구합니다. device extensions을 `DEVICE_EXTENSIONS`에서 null-terminated string을 생성하여 초기화합니다.
 
-```rust,noplaypen
+```rust
 let mut extensions = DEVICE_EXTENSIONS
     .iter()
     .map(|n| n.as_ptr())
@@ -76,17 +53,17 @@ let mut extensions = DEVICE_EXTENSIONS
 
 ## Querying details of swapchain support
 
-Just checking if a swapchain is available is not sufficient, because it may not actually be compatible with our window surface. Creating a swapchain also involves a lot more settings than instance and device creation, so we need to query for some more details before we're able to proceed.
+swapchain이 이용가능한지 체크하는것만으로는 충분하지 않습니다. 왜냐하면 swapchain이 우리의 window surface와 실제로 호환이 안될수도 있기 때문입니다. swapchain을 생성하는 것은 instance보다 더 많은 세팅을 포함합니다. 그러므로 더 진행하기 전에 더 많은 디테일을 query해야 합니다.
 
-There are basically three kinds of properties we need to check:
+세 가지 체크해야할 기본적인 프로퍼티 종류가 있습니다.
 
-* Basic surface capabilities (min/max number of images in swapchain, min/max width and height of images)
-* Surface formats (pixel format, color space)
-* Available presentation modes
+- Basic surface capabilities(최소/최대 swapchain의 이미지 수, 최소/최대 image의 width와 height)
+- Surface formats(pixel format, color space)
+- Available presentation modes
 
-Similar to `QueueFamilyIndices`, we'll use a struct to pass these details around once they've been queried. The three aforementioned types of properties come in the form of the following structs and lists of structs:
+`QueueFamilyIndices`와 비슷하게, 프로퍼티들이 query된 후 이 디테일들을 여러군데에 넘기기 위해 구조체를 사용할겁니다. 앞서 진술한 세가지 프로퍼티 타입은 다음 구조체와 구조체의 리스토로 들어옵니다.
 
-```rust,noplaypen
+```rust
 #[derive(Clone, Debug)]
 struct SwapchainSupport {
     capabilities: vk::SurfaceCapabilitiesKHR,
@@ -95,35 +72,13 @@ struct SwapchainSupport {
 }
 ```
 
-We'll now create a new method `SwapchainSupport::get` that will initialize this struct with all of the structs we need.
+이제 새로운 `SwapchainSupport::get` 메소드를 만듭니다. 이 메소드는 구조체를 필요한 구조체로 초기화합니다.
 
-```rust,noplaypen
-impl SwapchainSupport {
-    unsafe fn get(
-        instance: &Instance,
-        data: &AppData,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Self> {
-        Ok(Self {
-            capabilities: instance
-                .get_physical_device_surface_capabilities_khr(
-                    physical_device, data.surface)?,
-            formats: instance
-                .get_physical_device_surface_formats_khr(
-                    physical_device, data.surface)?,
-            present_modes: instance
-                .get_physical_device_surface_present_modes_khr(
-                    physical_device, data.surface)?,
-        })
-    }
-}
-```
+이 구조체들의 의미와 그 구조체들이 포함하는 데이터가 정확히 무엇인지에 대한 것은 다음 섹션에서 설명합니다.
 
-The meaning of these structs and exactly which data they contain is discussed in the next section.
+모든 디테일은 이제 구조체안에 있습니다. 그러므로 `check_physical_device`를 한번 더 확장해서 그 swapchain의 support가 충분한지 확인하도록 이용합니다. swapchain support는 최소한 한 개의 image format 지원과 우리가 가진 window surface에서 한개의 presentation mode만 지원하면 이 튜토리얼에는 충분합니다.
 
-All of the details are in the struct now, so let's extend `check_physical_device` once more to utilize this method to verify that swapchain support is adequate. swapchain support is sufficient for this tutorial if there is at least one supported image format and one supported presentation mode given the window surface we have.
-
-```rust,noplaypen
+```rust
 unsafe fn check_physical_device(
     instance: &Instance,
     data: &AppData,
@@ -140,36 +95,36 @@ unsafe fn check_physical_device(
 }
 ```
 
-It is important that we only try to query for swapchain support after verifying that the extension is available.
+swapchain extension이 이용가능한지 확인한 후에만 swapchain support를 위한 쿼리를 하는 것이 중요합니다.
 
 ## Choosing the right settings for the swapchain
 
-If the conditions we just added were met then the support is definitely sufficient, but there may still be many different modes of varying optimality. We'll now write a couple of functions to find the right settings for the best possible swapchain. There are three types of settings to determine:
+추가한 조건이 만족한다면, 그 support는 분명히 충분합니다. 그러나 여전히 다양한 optimality의 많이 다른 모드가 있습니다. 함수 몇개를 작성해서 가장 좋은 swapchain을 위한 적절한 세팅을 찾도록 할겁니다. 결정하기 위한 세 가지 타입이 있습니다.
 
-* Surface format (color depth)
-* Presentation mode (conditions for "swapping" images to the screen)
-* Swap extent (resolution of images in swapchain)
+- Surface format (color depth)
+- Presentation mode (conditions for "swapping" images to the screen)
+- Swap extent (resolution of images in swapchain)
 
-For each of these settings we'll have an ideal value in mind that we'll go with if it's available and otherwise we'll create some logic to find the next best thing.
+이러한 모든 세팅에 대해 각각 이용가능하다면 사용할 이상적인 값을 염두해 두고, 그렇지 않으면 몇가지 로직을 만들어서 최선의 것을 찾도록 할겁니다.
 
-### Surface format
+## Surface format
 
-The function for this setting starts out like this. We'll later pass the `formats` field of the `SwapchainSupport` struct as argument.
+이 세팅을 위한 함수는 다음과 같이 시작합니다. 나중에 `SwapchainSupport`의 `formats` field를 argument로써 넘겨줄겁니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_surface_format(
     formats: &[vk::SurfaceFormatKHR],
 ) -> vk::SurfaceFormatKHR {
 }
 ```
 
-Each `vk::SurfaceFormatKHR` entry contains a `format` and a `color_space` member. The `format` member specifies the color channels and types. For example, `vk::Format::B8G8R8A8_SRGB` means that we store the B, G, R and alpha channels in that order with an 8 bit unsigned integer for a total of 32 bits per pixel. The `color_space` member indicates if the sRGB color space is supported or not using the `vk::ColorSpaceKHR::SRGB_NONLINEAR` flag.
+각 [`vk::SurfaceFormatKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceFormatKHR.html) entry는 `format`과 `color_space` 멤버를 포함합니다. `format` 멤버는 color channel과 type들을 명시합니다. 예를 들어, [`vk::Format::B8G8R8A8_SRGB`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Format.html#associatedconstant.B8G8R8A8_SRGB) 는 B, G, R과 alpha 채널을 이 순서로, 8 bit unsigned integer로 총 32 bit를 한 픽셀에 저장한다는 것을 의미합니다. `color_space` 멤버는 sRGB color space가 지원되는지 또는 [`vk::ColorSpaceKHR::SRGB_NONLINEAR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ColorSpaceKHR.html#associatedconstant.SRGB_NONLINEAR) flag를 사용하지 않는지 가리킵니다.
 
-For the color space we'll use sRGB if it is available, because it [results in more accurate perceived colors](http://stackoverflow.com/questions/12524623/). It is also pretty much the standard color space for images, like the textures we'll use later on. Because of that we should also use an sRGB color format, of which one of the most common ones is `vk::Format::B8G8R8A8_SRGB`.
+color space에 대해서는 sRGB가 이용가능하다면 이것을 쓸겁니다. 왜냐하면 sRGB가 [더 정확히 인지된 색을 만들어내기 때문입니다.](http://stackoverflow.com/questions/12524623/) 또한 이것은 나중에 텍스쳐같은것에서 사용할 이미지를 위한 꽤 많이 표준화된 color space입니다. 이 때문에 sRGB color format를 사용할것이고, 그것중 가장 일반적인것은 [`vk::Format::B8G8R8A8_SRGB`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Format.html#associatedconstant.B8G8R8A8_SRGB) 입니다.
 
-Let's go through the list and see if the preferred combination is available:
+리스트를 따라가서 선호하는 조합이 가능한지 봅니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_surface_format(
     formats: &[vk::SurfaceFormatKHR],
 ) -> vk::SurfaceFormatKHR {
@@ -184,29 +139,29 @@ fn get_swapchain_surface_format(
 }
 ```
 
-If that also fails then we could rank the available formats based on how "good" they are, but in most cases it's okay to just settle with the first format that is specified hence `.unwrap_or_else(|| formats[0])`.
+그것도 실패하면, 이용가능한 포맷들에 얼마나 그들이 "좋은지"에 기반하여 랭크를 메길수 있지만, 웬만한 경우에 단지 지정된 첫번째 포맷에 정착해도 됩니다,. 그러므로 `.unwrap_or_else(|| formats[0])`를 씁니다.
 
-### Presentation mode
+## Presentation mode
 
-The presentation mode is arguably the most important setting for the swapchain, because it represents the actual conditions for showing images to the screen. There are four possible modes available in Vulkan:
+presentation mode는 틀림없이 swapchain을 위한 가장 중요한 세팅입니다. 왜냐하면 presentation mode는 스크린에 보일 이미지에 대한 실제 조건을 나타내기 때문입니다. Vulkan에는 4가지 가능한 모드가 있습니다.
 
-* `vk::PresentModeKHR::IMMEDIATE` &ndash; Images submitted by your application are transferred to the screen right away, which may result in tearing.
-* `vk::PresentModeKHR::FIFO` &ndash; The swapchain is a queue where the display takes an image from the front of the queue when the display is refreshed and the program inserts rendered images at the back of the queue. If the queue is full then the program has to wait. This is most similar to vertical sync as found in modern games. The moment that the display is refreshed is known as "vertical blank".
-* `vk::PresentModeKHR::FIFO_RELAXED` &ndash; This mode only differs from the previous one if the application is late and the queue was empty at the last vertical blank. Instead of waiting for the next vertical blank, the image is transferred right away when it finally arrives. This may result in visible tearing.
-* `vk::PresentModeKHR::MAILBOX` &ndash; This is another variation of the second mode. Instead of blocking the application when the queue is full, the images that are already queued are simply replaced with the newer ones. This mode can be used to render frames as fast as possible while still avoiding tearing, resulting in fewer latency issues than standard vertical sync. This is commonly known as "triple buffering", although the existence of three buffers alone does not necessarily mean that the framerate is unlocked.
+- [`vk::PresentModeKHR::IMMEDIATE`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.IMMEDIATE) – 애플리케이션에서 전송되어 제공된 이미지가 스크린으로 바로갑니다. tearing이 발생할 수 있습니다.
+- [`vk::PresentModeKHR::FIFO`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.FIFO) – swapchain은 queue이고 디스플레이는 refresh될 때 큐의 맨앞에서 이미지를 가져갑니다. 프로그램은 렌더링된 이미지를 queue의 맨 뒤에 삽입합니다. queue가 꽉 찬다면 프로그램은 기다려야합니다. 이 모드는 최근 게임에서 찾을 수 있는 vertical sync와 거의 비슷합니다. 디스플레이가 refresh되는 시점은 "vertical blank"로 알려져 있습니다.
+- [`vk::PresentModeKHR::FIFO_RELAXED`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.FIFO_RELAXED) – 이 모드가 FIFO방식과 다른 점은 마지막 vertical blank에서 애플리케이션이 늦고 queue가 비어있을때만 다릅니다. 다음 vertical blank를 기다리는것 대신, 이미지가 마지막으로 도착할 때 바로 전송됩니다. 이 모드는 visible tearing이 발생할 수 있습니다.
+- [`vk::PresentModeKHR::MAILBOX`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.MAILBOX) – 두 번째 모드의 또다른 바리에이션입니다. queue가 꽉 찼을 때 애플리케이션을 블로킹하는것 대신, 이미 queue에 들어간 이미지가 새로운것으로 교체됩니다. 이 모드는 tearing를 피하면서 가능한한 프레임을 빠르게 렌더링하는데 사용됩니다. 이 모드는 표준 vertical sync보다 latency 이슈가 더 적습니다. 버퍼가 3개 존재한다는 것이 framrate가 언락됨을 의미하지는 않더라도,,이 모드는 일반적으로 "triple buffering"로 알려져있습니다.
 
-Only the `vk::PresentModeKHR::FIFO` mode is guaranteed to be available, so we'll again have to write a function that looks for the best mode that is available:
+오직 [`vk::PresentModeKHR::FIFO`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.FIFO)모드가 이용가능하다고 보장됩니다. 그러므로 다시, 이용가능한 가장 좋은 모드를 찾기 위한 함수를 작성해야합니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_present_mode(
     present_modes: &[vk::PresentModeKHR],
 ) -> vk::PresentModeKHR {
 }
 ```
 
-I personally think that `vk::PresentModeKHR::MAILBOX` is a very nice trade-off if energy usage is not a concern. It allows us to avoid tearing while still maintaining a fairly low latency by rendering new images that are as up-to-date as possible right until the vertical blank. On mobile devices, where energy usage is more important, you will probably want to use `vk::PresentModeKHR::FIFO` instead. Now, let's look through the list to see if `vk::PresentModeKHR::MAILBOX` is available:
+개인적으로  에너지 사용이 고려대상이 아니라면, [`vk::PresentModeKHR::MAILBOX`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.MAILBOX)를 가장 좋은 trade-off로 생각합니다. vertical blank직전까지 가능한 up-to-date이미지에 의해 렌더링된 꽤 적은 low latency를 유지하게 해주면서도 tearing을 피하도록 해줍니다. 에너지 사용량이 더 중요한 모바일 디바이스에서는, 아마 [`vk::PresentModeKHR::FIFO`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.FIFO) 를 대신 사용하기를 원할겁니다. 이제, 리스트를 훑어서 [`vk::PresentModeKHR::MAILBOX`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PresentModeKHR.html#associatedconstant.MAILBOX)가 이용 가능한지 봅니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_present_mode(
     present_modes: &[vk::PresentModeKHR],
 ) -> vk::PresentModeKHR {
@@ -218,11 +173,11 @@ fn get_swapchain_present_mode(
 }
 ```
 
-### Swap extent
+## Swap extent
 
-That leaves only one major property, for which we'll add one last function:
+하나의 major 프로퍼티만 남았습니다. 이를 위한 마지막 함수를 추가할겁니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_extent(
     window: &Window,
     capabilities: vk::SurfaceCapabilitiesKHR,
@@ -230,9 +185,9 @@ fn get_swapchain_extent(
 }
 ```
 
-The swap extent is the resolution of the swapchain images and it's almost always exactly equal to the resolution of the window that we're drawing to. The range of the possible resolutions is defined in the `vk::SurfaceCapabilitiesKHR` structure. Vulkan tells us to match the resolution of the window by setting the width and height in the `current_extent` member. However, some window managers do allow us to differ here and this is indicated by setting the width and height in `current_extent` to a special value: the maximum value of `u32`. In that case we'll pick the resolution that best matches the window within the `min_image_extent` and `max_image_extent` bounds.
+swap extent는 swapchain image의 해상도입니다. 그리고 이것은 거의 항상 그리려고 하는 window의 해상도와 일치합니다. 가능한 해성도의 범위는 [`vk::SurfaceCapabilitiesKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceCapabilitiesKHR.html) 구조체에 정의되어 있습니다. Vulkan은 `current_extent` 멤버의 width와 height을 설정함으로써 window의 해상도와 맞추라고 알려줍니다. 그러나 몇 window manager는 다르게하는것을 허용하고 그것은 `current_extent`의 width와 height를 special value(`u32`의 최대값)로 설정함으로서 지시할 수 있습니다. 이번 경우에는 `min_image_extent`와 `max_image_extent` bound를 통해 window와 가장 매치되는 해상도를 선택할겁니다.
 
-```rust,noplaypen
+```rust
 fn get_swapchain_extent(
     window: &Window,
     capabilities: vk::SurfaceCapabilitiesKHR,
@@ -254,15 +209,15 @@ fn get_swapchain_extent(
 }
 ```
 
-We use the [`clamp` function](https://doc.rust-lang.org/std/cmp/trait.Ord.html#method.clamp) to restrict the actual size of the window within the supported range supported by the Vulkan device.
+[`clamp` 함수](https://doc.rust-lang.org/std/cmp/trait.Ord.html#method.clamp)를 사용해서 실제 window크기를 Vulkan device에 의해 지원되는 범위안의 크기로 제한합니다.
 
 ## Creating the swapchain
 
-Now that we have all of these helper functions assisting us with the choices we have to make at runtime, we finally have all the information that is needed to create a working swapchain.
+런타임에 결정해야할 선택에 도움을 주는 헬퍼 함수들을 전부 만들었기때문에, 마침내 작동하는 swapchain을 만들기 위해 필요한 정보를 가졌습니다.
 
-Create a `create_swapchain` function that starts out with the results of these calls and make sure to call it from `App::create` after logical device creation.
+그 함수콜들의 결과와 같이 시작하는 `create_swapchain`함수를 만들고, `App::create` logical device생성 이후에 이 함수를 호출하도록 합니다.
 
-```rust,noplaypen
+```rust
 impl App {
     unsafe fn create(window: &Window) -> Result<Self> {
         // ...
@@ -289,21 +244,21 @@ unsafe fn create_swapchain(
 }
 ```
 
-Aside from these properties we also have to decide how many images we would like to have in the swapchain. The implementation specifies the minimum number that it requires to function:
+이 프로퍼티 외에도 swapchain에서 갖고싶어하는 이미지가 얼마나 많아야하는지 결정해야합니다. 구현은 작동하기위한 최소 갯수를 지정합니다.
 
-```rust,noplaypen
+```rust
 let image_count = support.capabilities.min_image_count;
 ```
 
-However, simply sticking to this minimum means that we may sometimes have to wait on the driver to complete internal operations before we can acquire another image to render to. Therefore it is recommended to request at least one more image than the minimum:
+그러나, 단순히 이 최소값에 고수하는것은 때때로 렌더링할 다른 이미지를 얻을 수 있게 되기전에 드라이버가 내부 연산을 완료할 때 까지 기다려야함을 의미합니다. 따라서 최소값보다 한개 더 많은 수를 요청하는것이 권장됩니다.
 
-```rust,noplaypen
+```rust
 let image_count = support.capabilities.min_image_count + 1;
 ```
 
-We should also make sure to not exceed the maximum number of images while doing this, where `0` is a special value that means that there is no maximum:
+또한 maximum이 존재하지 않는 `0`인 경우에, 이걸 하는 동안 최대 갯수를 넘지 않도록 해야합니다.
 
-```rust,noplaypen
+```rust
 let mut image_count = support.capabilities.min_image_count + 1;
 if support.capabilities.max_image_count != 0
     && image_count > support.capabilities.max_image_count
@@ -312,14 +267,14 @@ if support.capabilities.max_image_count != 0
 }
 ```
 
-Next, we need to specify how to handle swapchain images that will be used across multiple queue families. That will be the case in our application if the graphics queue family is different from the presentation queue. We'll be drawing on the images in the swapchain from the graphics queue and then submitting them on the presentation queue. There are two ways to handle images that are accessed from multiple queues:
+다음으로, 여러 queue family에서서 사용될 swapchain image들을 어떻게 핸들링할지 지정해야합니다. 애플리케이션에서 이런 경우는 graphics queue family가 presentation queue와 다를때 입니다. graphics queue에서 온 swapchain의 이미지에 렌더링 작업을 한 후, 그것들을 presentation queue에 제출할겁니다. 여러 queue에서 접근된 이미지를 핸들링하는 두 가지 방법이 있습니다.
 
-* `vk::SharingMode::EXCLUSIVE` &ndash; An image is owned by one queue family at a time and ownership must be explicitly transferred before using it in another queue family. This option offers the best performance.
-* `vk::SharingMode::CONCURRENT` &ndash; Images can be used across multiple queue families without explicit ownership transfers.
+- [`vk::SharingMode::EXCLUSIVE`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SharingMode.html#associatedconstant.EXCLUSIVE) – 이미지는 특정 시간에 한개의 queue family에 의해 소유됩니다. 그리고 다른 queue family에서 사용되기 전에 소유권이 명시적으로 이동되어야 합니다. 이 옵션은 최고의 퍼포먼스를 제공합니다.
+- [`vk::SharingMode::CONCURRENT`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SharingMode.html#associatedconstant.CONCURRENT) – 이미지는 여러 queue family사이에 소유권 이동 없이 사용될 수 있습니다.
 
-If the queue families differ, then we'll be using the concurrent mode in this tutorial to avoid having to do the ownership chapters, because these involve some concepts that are better explained at a later time. Concurrent mode requires you to specify in advance between which queue families ownership will be shared using the `queue_family_indices` builder method. If the graphics queue family and presentation queue family are the same, which will be the case on most hardware, then we should stick to exclusive mode, because concurrent mode requires you to specify at least two distinct queue families.
+만약 queue family들이 다르다면, 이 튜토리얼에서는 소유권 챕터를 피하기 위해 concurrent mode를 사용할겁니다. 왜냐하면 소유권 챕터는 나중에 더 잘 설명될 몇가지 개념을 포함하기 때문입니다. concurrent mode는 먼저 `queue_family_indices` 빌더 메소드를 사용하여 어떤 queue family 사이에서 소유권이 이동될 지 명시해야합니다. 만약 graphics queue family와 presentation queue family가 같다면, 그리고 웬만한 하드웨어가 그런 케이스일거고, exclusive mode를 고수해야합니다. 왜냐하면 concurrent mode는 적어도 두개의 구분된 queue family를 명시하기를 요구하기 때문입니다.
 
-```rust,noplaypen
+```rust
 let mut queue_family_indices = vec![];
 let image_sharing_mode = if indices.graphics != indices.present {
     queue_family_indices.push(indices.graphics);
@@ -330,17 +285,17 @@ let image_sharing_mode = if indices.graphics != indices.present {
 };
 ```
 
-As is tradition with Vulkan objects, creating the swapchain object requires filling in a large structure. It starts out very familiarly:
+Vulkan object의 전통처럼, swapchain 오브젝트를 만드는 것은 큰 구조체를 채우는것을 요구합니다. 그 과정은 매우 친숙하게 시작합니다.
 
-```rust,noplaypen
+```rust
 let info = vk::SwapchainCreateInfoKHR::builder()
     .surface(data.surface)
     // continued...
 ```
 
-After specifying which surface the swapchain should be tied to, the details of the swapchain images are specified:
+swapchain이 묶일 surface를 지정한 후에, swapchain 이미지의 디테일이 지정됩니다.
 
-```rust,noplaypen
+```rust
     .min_image_count(image_count)
     .image_format(surface_format.format)
     .image_color_space(surface_format.color_space)
@@ -349,92 +304,92 @@ After specifying which surface the swapchain should be tied to, the details of t
     .image_usage(vk::ImageUsageFlags::COLOR_ATTACHMENT)
 ```
 
-The `image_array_layers` specifies the amount of layers each image consists of. This is always `1` unless you are developing a stereoscopic 3D application. The `image_usage` bitmask specifies what kind of operations we'll use the images in the swapchain for. In this tutorial we're going to render directly to them, which means that they're used as color attachment. It is also possible that you'll render images to a separate image first to perform operations like post-processing. In that case you may use a value like `vk::ImageUsageFlags::TRANSFER_DST` instead and use a memory operation to transfer the rendered image to a swapchain image.
+`image_array_layers`는 각 이미지가 구성하는 레이어의 양을 지정합니다. 이 값은 stereoscopic 3D 애플리케이션을 개발하는게 아니라면, 항상 `1`입니다. `image_usage` 비트마스크는 swapchain의 이미지들이 어떤 작업에 사용될 지 지정합니다. 이 튜토리얼에서는 그 이미지들에 직접 렌더링할것이고, 이는 이미지들이 color attachment로 사용될 것을 의미합니다. post-processing같은 작업을 수행하기 위해 이미지를 별도의 이미지로 렌더링하는것도 가능합니다. 그런 경우에 [`vk::ImageUsageFlags::TRANSFER_DST`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ImageUsageFlags.html#associatedconstant.TRANSFER_DST)같은 값을 사용할겁니다. 그리고 렌더링된 이미지를 swapchain 이미지로 전송하기 위해 memory operation을 사용할겁니다.
 
-```rust,noplaypen
+```rust
     .image_sharing_mode(image_sharing_mode)
     .queue_family_indices(&queue_family_indices)
 ```
 
-Next we'll provide the image sharing mode and indices of the queue families permitted to share the swapchain images.
+다음으로 image sharing mode와 swapchain의 이미지를 공유할수 있게 된 queue family들의 index들을 제공해야합니다.
 
-```rust,noplaypen
+```rust
     .pre_transform(support.capabilities.current_transform)
 ```
 
-We can specify that a certain transform should be applied to images in the swapchain if it is supported (`supported_transforms` in `capabilities`), like a 90 degree clockwise rotation or horizontal flip. To specify that you do not want any transformation, simply specify the current transformation.
+만약 특정 transform이 지원된다면(`capabilities`에서 `supported_transform`) 그 transform이 swapchain에서 이미지에 적용되어야 함을 지정할 수 있습니다. 90도 시계방향 회전 또는 수직 뒤집기 등이 그렇습니다. 이것들을 지정하기 위해 어떠한 transformation도 원해서는 안됩니다. 단순히 현재 transformation을 지정해야 합니다.
 
-```rust,noplaypen
+```rust
     .composite_alpha(vk::CompositeAlphaFlagsKHR::OPAQUE)
 ```
 
-The `composite_alpha` method specifies if the alpha channel should be used for blending with other windows in the window system. You'll almost always want to simply ignore the alpha channel, hence `vk::CompositeAlphaFlagsKHR::OPAQUE`.
+`composite_alpha` 메소드는 alpha 채널이 window system에서 다른 window와 blending을 위해 사용되어야 하는지를 지정합니다. 거의 alpha 채널을 무시하기를 원할겁니다. 그러므로 [`vk::CompositeAlphaFlagsKHR::OPAQUE`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CompositeAlphaFlagsKHR.html#associatedconstant.OPAQUE)를 사용합니다.
 
-```rust,noplaypen
+```rust
     .present_mode(present_mode)
     .clipped(true)
 ```
 
-The `present_mode` member speaks for itself. If the `clipped` member is set to `true` then that means that we don't care about the color of pixels that are obscured, for example because another window is in front of them. Unless you really need to be able to read these pixels back and get predictable results, you'll get the best performance by enabling clipping.
+`present_mode` 멤버는 그 자체를 설명합니다. 만약 `clipped` 멤버가 `true`로 설정되어 있다면, obscure한 픽셀의 색상에 관해서 신경쓰지 않는다는 것을 의미합니다. 예를들어, 다른 윈도우가 그 픽셀 앞에 있는 경우에 그렇습니다. 이러한 픽셀을 다시 읽을수 있고 예측 가능한 결과를 얻고싶어하는게 아니라면, clipping을 활성화하여 최고의 퍼포먼스를 얻을 수 있을 것입니다.
 
-```rust,noplaypen
+```rust
     .old_swapchain(vk::SwapchainKHR::null());
 ```
 
-That leaves one last method, `old_swapchain`. With Vulkan it's possible that your swapchain becomes invalid or unoptimized while your application is running, for example because the window was resized. In that case the swapchain actually needs to be recreated from scratch and a reference to the old one must be specified in this method. This is a complex topic that we'll learn more about in a future chapter. For now we'll assume that we'll only ever create one swapchain. We could omit this method since the underlying field will default to a null handle, but we'll leave it in for completeness.
+마지막 한개의 메소드 `old_swapchain`이 남았습니다. Vulkan에서 애플리케이션이 실행중일 때 swapchain이 invalid거나 unoptimized되는게 가능합니다. 예를들어 윈도우가 resize된 경우 그렇습니다. 이런 경우에 swapchain은 실제로 처음부터 다시 생성되어야하고, 이전의 swapchain에 대한 참조는 이 메소드에서 지정되어야 합니다. 이 과정은 이후 챕터에서 배울 복잡한 주제입니다. 지금은, 오직 한개의 swapchain만 만든다고 가정합니다. 이 메소드는 기본값이 null handle이므로 생략해도 되지만, 완전성을 위해 남겨줍니다.
 
-Now add an `AppData` field to store the `vk::SwapchainKHR` object:
+[`vk::SwapchainKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SwapchainKHR.html) 오브젝트를 저장할 `AppData` 필드를 추가합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     swapchain: vk::SwapchainKHR,
 }
 ```
 
-Creating the swapchain is now as simple as calling `create_swapchain_khr`:
+이제 swapchain을 생성하는 것은 [`create_swapchain_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.create_swapchain_khr)를 호출하는것만큼 간단합니다.
 
-```rust,noplaypen
+```rust
 data.swapchain = device.create_swapchain_khr(&info, None)?;
 ```
 
-The parameters are the swapchain creation info and optional custom allocators. No surprises there. It should be cleaned up in `App::destroy` before the device:
+파라미터는 swapchain 생성 정보와 optional custom allocator입니다. 새로운거는 없습니다. swapchain도 `App::destroy`에서 device전에 청소되어야 합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.device.destroy_swapchain_khr(self.data.swapchain, None);
     // ...
 }
 ```
 
-Now run the application to ensure that the swapchain is created successfully! If at this point you get an access violation error in `vkCreateSwapchainKHR` or see a message like `Failed to find 'vkGetInstanceProcAddress' in layer SteamOverlayVulkanLayer.dll`, then see the [FAQ entry](../faq.html) about the Steam overlay layer.
+이제 애플리케이션을 실행하고 swapchain이 성공적으로 생성되는지 확인합니다. 만약 이 시점에 [`vkCreateSwapchainKHR`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/vkCreateSwapchainKHR.html)안에서 access violation error를 얻는다거나 `Failed to find 'vkGetInstanceProcAddress' in layer SteamOverlayVulkanLayer.dll` 같은 메세지를 본다면, [FAQ entry](https://kylemayes.github.io/vulkanalia/faq.html)의 Steam overlay layer에 관해 보세요
 
-Try removing the `.image_extent(extent)` line from where you are building the `vk::SwapchainCreateInfoKHR` struct with validation layers enabled. You'll see that one of the validation layers immediately catches the mistake and some helpful messages are printed which call out the illegal value provided for `image_extent`:
+[`vk::SwapchainCreateInfoKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SwapchainCreateInfoKHR.html)구조체를 를 만드는 곳에서 validation layer가 활성화 된 채로 `.image_extent(extent)`라인을 지워보세요. validation layer가 즉시 실수를 캐치하고 `image_extent`로 제공된 잘못된 값을 호출한다는 도움되는 몇가지 메세지를 출력하는것을 볼겁니다.
 
-![](../images/swapchain_validation_layer.png)
+![log](https://kylemayes.github.io/vulkanalia/images/swapchain_validation_layer.png)
 
 ## Retrieving the swapchain images
 
-The swapchain has been created now, so all that remains is retrieving the handles of the `vk::Image`s in it. We'll reference these during rendering operations in later chapters. Add an `AppData` field to store the handles:
+이제 swapchain이 생성되었습니다. 남아있는 것은 swapchain안의 [`vk::Image`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Image.html)들의 핸들을 가져오는 겁니다. 이후 챕터에서 렌더링 연산동안 이 이미지들을 참조할겁니다. `AppData`에 핸들을 저장할 필드를 추가합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     swapchain_images: Vec<vk::Image>,
 }
 ```
 
-The images were created by the implementation for the swapchain and they will be automatically cleaned up once the swapchain has been destroyed, therefore we don't need to add any cleanup code.
+swapchain을 위한 구현에 의해 이미지가 생성됩니다. 그리고 이 이미지들은 swapchain이 파괴될 때 자동으로 청소됩니다. 그러므로 어떠한 cleanup코드를 추가할 필요는 없습니다.
 
-I'm adding the code to retrieve the handles to the end of the `create_swapchain` function, right after the `create_swapchain_khr` call.
+저는 `create_swapchain`함수의 끝, [`create_swapchain_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.create_swapchain_khr) call 바로 다음에 핸들을 가져오기 위한 코드를 추가했습니다.
 
-```rust,noplaypen
+```rust
 data.swapchain_images = device.get_swapchain_images_khr(data.swapchain)?;
 ```
 
-One last thing, store the format and extent we've chosen for the swapchain images in `AppData` fields. We'll need them in future chapters.
+마지막으로 한가지, swapchain image를 위해 선택한 format과 extent를 `AppData` 필드에 저장하세요. 이후 챕터에서 필요할겁니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     swapchain_format: vk::Format,
@@ -444,11 +399,11 @@ struct AppData {
 }
 ```
 
-And then in `create_swapchain`:
+그리고 `create_swapchain`에서는
 
-```rust,noplaypen
+```rust
 data.swapchain_format = surface_format.format;
 data.swapchain_extent = extent;
 ```
 
-We now have a set of images that can be drawn onto and can be presented to the window. The next chapter will begin to cover how we can set up the images as render targets and then we start looking into the actual graphics pipeline and drawing commands!
+window로 그려지고 표시될 수 있는 이미지의 세트를 갖게 되었습니다. 다음 챕터는 어떻게 이미지를 render target으로 설정하는지 설명합니다. 그리고 실제 graphic pipeline과 drawing command를 살펴볼겁니다.
