@@ -2,22 +2,22 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/13_framebuffers.rs)
 
-We've talked a lot about framebuffers in the past few chapters and we've set up the render pass to expect a single framebuffer with the same format as the swapchain images, but we haven't actually created any yet.
+이전 몇 챕터에서 framebuffer에 대해 많은 것을 이야기했고 render pass를 설정해서 single framebuffer가 swapchain image와 같은 포맷을 갖는 것을 기대했지만, 실제로 아무것도 생성하지 않았습니다.
 
-The attachments specified during render pass creation are bound by wrapping them into a `vk::Framebuffer` object. A framebuffer object references all of the `vk::ImageView` objects that represent the attachments. In our case that will be only a single one: the color attachment. However, the image that we have to use for the attachment depends on which image the swapchain returns when we retrieve one for presentation. That means that we have to create a framebuffer for all of the images in the swapchain and use the one that corresponds to the retrieved image at drawing time.
+render pass creation동안에 지정된 attachments들은 [`vk::Framebuffer`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Framebuffer.html) 객체로 래핑되어 바인딩됩니다. framebuffer 객체는 attachment들을 나타내는 모든 [`vk::ImageView`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ImageView.html) 객체를 참조합니다. 한개의 single attachment만 쓸 우리의 경우에는 color attachment입니다. 그러나, attachment로 사용할 이미지는 presentation을 위해 이미지를 찾아올 때 swapchain이 반환하는 이미지에 따라 달라집니다. 이것은 swapchain의 모든 이미지에 대해 framebuffer를 생성하고 drawing time에 찾아온 이미지에 대응하는 framebuffer를 써야한다는 것을 의미합니다.
 
-To that end, create another `Vec` field in `AppData` to hold the framebuffers:
+목적을 달성하기 위해서, `AppData`에 framebuffer들을 저장하기 위해서 또다른 `Vec`필드를 만듭니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     framebuffers: Vec<vk::Framebuffer>,
 }
 ```
 
-We'll create the objects for this array in a new function `create_framebuffers` that is called from `App::create` right after creating the graphics pipeline:
+`create_framebuffers`라는 새로운 함수에서 이 배열을 위한 오브젝트를 만들겁니다. 이 함수는 `App::create`에서 graphics pipeline을 만든 직후 바로 호출됩니다.
 
-```rust,noplaypen
+```rust
 impl App {
     unsafe fn create(window: &Window) -> Result<Self> {
         // ...
@@ -32,25 +32,25 @@ unsafe fn create_framebuffers(device: &Device, data: &mut AppData) -> Result<()>
 }
 ```
 
-Start by mapping over the swapchain image views:
+swapchain image view들을 매핑하면서 시작합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn create_framebuffers(device: &Device, data: &mut AppData) -> Result<()> {
     data.framebuffers = data
         .swapchain_image_views
         .iter()
         .map(|i| {
-
+        
         })
         .collect::<Result<Vec<_>, _>>()?;
-
+        
     Ok(())
 }
 ```
 
-We'll then create a framebuffer for each image view:
+그러면 각 image view에 대한 framebuffer를 만들겁니다.
 
-```rust,noplaypen
+```rust
 let attachments = &[*i];
 let create_info = vk::FramebufferCreateInfo::builder()
     .render_pass(data.render_pass)
@@ -62,15 +62,15 @@ let create_info = vk::FramebufferCreateInfo::builder()
 device.create_framebuffer(&create_info, None)
 ```
 
-As you can see, creation of framebuffers is quite straightforward. We first need to specify with which `render_pass` the framebuffer needs to be compatible. You can only use a framebuffer with the render passes that it is compatible with, which roughly means that they use the same number and type of attachments.
+보이듯이, framebuffer를 만드는것은 꽤나 직관적입니다. 먼저 framebuffer가 어떤 `render_pass`화 호환될지 지정해야합니다. framebuffer는 호환되는 render pass들이랑만 사용할 수 있습니다. 그리고 그것은 대략 동일한 수와 타입의 attachment를 사용해야한다는 것을 의미합니다.
 
-The `attachments` field specifies the `vk::ImageView` objects that should be bound to the respective attachment descriptions in the render pass `attachment` array.
+`attachments` 필드는 render pass `attachment` 배열에서 각 attachment에 바인딩되어야할 [`vk::ImageView`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ImageView.html) 오브젝트를 지정합니다.
 
-The `width` and `height` parameters are self-explanatory and `layers` refers to the number of layers in image arrays. Our swapchain images are single images, so the number of layers is `1`.
+`width`와 `height` 파라미터는 자명합니다. `layer`는 image 배열들의 layer의 수를 가리킵니다. 우리의 swapchain 이미지는 single image이므로, layer의 수는 `1`입니다.
 
-We should delete the framebuffers before the image views and render pass that they are based on, but only after we've finished rendering:
+framebuffer가 의존하고있는 image view와 render pass전에 framebuffer를 삭제해야하지만, 렌더링을 끝낸 후에만 해야합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.data.framebuffers
         .iter()
@@ -79,4 +79,4 @@ unsafe fn destroy(&mut self) {
 }
 ```
 
-We've now reached the milestone where we have all of the objects that are required for rendering. In the next chapter we're going to write the first actual drawing commands.
+렌더링을 위해 필요한 오브젝트를 가져아하는 milestone에 도달했습니다. 다음챕터에서는 첫번째 실제 drawing command를 작성할겁니다.
