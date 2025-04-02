@@ -2,20 +2,20 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/04_logical_device.rs)
 
-After selecting a physical device to use we need to set up a logical device to interface with it. The logical device creation process is similar to the instance creation process and describes the features we want to use. We also need to specify which queues to create now that we've queried which queue families are available. You can even create multiple logical devices from the same physical device if you have varying requirements.
+사용할 physical device를 선택한 후에 장치와 인터페이스를 형성하기 위해 logical device를 설정해야 합니다. logical device생성 과정은 instance생성 과정과 비슷하며 사용하기를 원하는 기능들을 설명합니다. 또한 어떤 queue family가 이용가능한지 쿼리했으므로, 어떤 queue를 생성할지 지정해야 합니다. 다양한 요구사항을 갖고있다면, 한개의 physical device로부터 여러개의 logical device를 생성하는것도 가능합니다.
 
-Start by adding a new `App` field to store the logical device in:
+logical device가 저장될 새로운 `App` field를 추가하면서 시작합니다.
 
-```rust,noplaypen
+```rust
 struct App {
     // ...
     device: Device,
 }
 ```
 
-Next, add a `create_logical_device` function that is called from `App::create` and add the resulting logical device to the `App` initializer:
+다음으로, `create_logical_device`함수를 추가합니다. 이 함수는 `App::create`에서 호출되고 생성된 logical device를 `App`의 초기화자에 추가해줍니다.
 
-```rust,noplaypen
+```rust
 impl App {
     unsafe fn create(window: &Window) -> Result<Self> {
         // ...
@@ -30,13 +30,14 @@ unsafe fn create_logical_device(
     data: &mut AppData,
 ) -> Result<Device> {
 }
+
 ```
 
 ## Specifying the queues to be created
 
-The creation of a logical device involves specifying a bunch of details in structs again, of which the first one will be `vk::DeviceQueueCreateInfo`. This structure describes the number of queues we want for a single queue family. Right now we're only interested in a queue with graphics capabilities.
+logical device를 생성하는 것은 struct의 많은 디테일을 또 지정하는 것을 포함합니다. 그 중 첫번째는 [`vk::DeviceQueueCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.DeviceQueueCreateInfo.html)입니다. 이 구조체는 single queue family를 위한 필요한 queue의 수를 설명합니다. 당장은 graphics capabilities를 사용하는 큐만 관심이 있습니다.
 
-```rust,noplaypen
+```rust
 let indices = QueueFamilyIndices::get(instance, data, data.physical_device)?;
 
 let queue_priorities = &[1.0];
@@ -45,21 +46,21 @@ let queue_info = vk::DeviceQueueCreateInfo::builder()
     .queue_priorities(queue_priorities);
 ```
 
-The currently available drivers will only allow you to create a small number of queues for each queue family and you don't really need more than one. That's because you can create all of the command buffers on multiple threads and then submit them all at once on the main thread with a single low-overhead call.
+현재 이용가능한 드라이버는 각 queue family를 위한 작은 수의 큐만 생성하는 것을 허용하고 실제로 한개보다 많이 필요하지 않을겁니다. 왜냐하면, multiple thread에서 모든 command buffer를 생성할 수 있고 그 버퍼들을 한번에 메인쓰레드로 single-low-overhead call로 보낼수 있기 때문입니다.
 
-Vulkan lets you assign priorities to queues to influence the scheduling of command buffer execution using floating point numbers between `0.0` and `1.0`. This is required even when only creating a single queue.
+Vulkan은 `0.0`에서 `1.0`사이의 floating point number를 사용하여 command buffer execution의 스케쥴링에 영향을 줄 수 있도록 큐에 프로퍼티를 할당하게 해줍니다. 이런 작업은 single queue를 생성할때도 필요합니다.
 
 ## Specifying the layers to enable
 
-The next piece of information we need to provide bears a resemblance to the `vk::InstanceCreateInfo` struct. Once again we need to specify any layers or extensions we want to enable, but this time any specified extensions are device specific rather than global.
+제공해줘야 할 다음 정보는 [`vk::InstanceCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.InstanceCreateInfo.html)구조체와 닯았습니다. 일단은 다시 활성화하기 원하는 어떤 layer나 extension들을 지정해야합니다. 그러나 이번에는 global이라기보다는 device specific한 extension을 지정합니다.
 
-An example of a device specific extension is `VK_KHR_swapchain`, which allows you to present rendered images from that device to windows. It is possible that there are Vulkan devices in the system that lack this ability, for example because they only support compute operations. We will come back to this extension in the swapchain chapter.
+device specific extension의 예로, [`VK_KHR_swapchain`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_swapchain.html)가 있는데, 이것은 device에서 window로 렌더링된 이미지를 보내게 해줍니다. 이런 기능이 없는 시스템의 Vulkan device가 존재할 수 있습니다. 예를 들어, 오직 compute operation만 지원하는 경우가 그렇습니다. swapchain 챕터에서 다시 그런 extension을 봅니다.
 
-Previous implementations of Vulkan made a distinction between instance and device specific validation layers, but this is no longer the case. That means that the layer names we pass to `enabled_layer_names` later are ignored by up-to-date implementations. However, it is still a good idea to set them anyway to be compatible with older implementations.
+Vulkan의 이전 구현에서는 instance와 device specific validation layer를 구분했습니다. 그러나 더이상 그러진 않습니다. 이것은 `enabled_layer_names`로 넘길 layer의 이름이 이후 최신업데이트에서는 무시될것이라는것을 의미합니다. 그러나 아직 옜날 구현에 호환성을 맞추기 위해 이름을 지정하는것은 좋은 생각입니다.
 
-We wont be enabling any device extensions yet, so we will just construct a list of layer names containing the validation layer if validation is enabled.
+아직은 어떤 device extension을 활성화하지 않을것이므로, validation이 활성화된 경우 validation layer를 포함하는 layer 이름 리스트를 생성합니다.
 
-```rust,noplaypen
+```rust
 let layers = if VALIDATION_ENABLED {
     vec![VALIDATION_LAYER.as_ptr()]
 } else {
@@ -69,9 +70,9 @@ let layers = if VALIDATION_ENABLED {
 
 ## Specifying the extensions to enable
 
-As discussed in the `Instance` chapter, certain Vulkan extensions must be enabled for applications that use Vulkan implementations that aren't fully conformant with the Vulkan specification. In that chapter, we enabled the instance extensions needed for compatibility with these non-conformant implementations. Here, we'll enable the device extension needed for the same purpose.
+[`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)챕터에서 설명했듯이, 특정 Vulkan extension은 Vulkan specification을 완전히 준수하지 않는 Vulkan 구현을 사용하는 애플리케이션을 위해 활성화되어야 합니다. 그 챕터에서는, 비-준수 구현과의 호환성을 위해 instance extension을 활성화했습니다. 여기서는, 같은 목적으로 필요한 device extension을 활성화할겁니다.
 
-```rust,noplaypen
+```rust
 let mut extensions = vec![];
 
 // Required by Vulkan SDK on macOS since 1.3.216.
@@ -82,17 +83,17 @@ if cfg!(target_os = "macos") && entry.version()? >= PORTABILITY_MACOS_VERSION {
 
 ## Specifying used device features
 
-The next information to specify is the set of device features that we'll be using. These are the features that we queried support for with `get_physical_device_features` in the previous chapter, like geometry shaders. Right now we don't need anything special, so we can simply define it and leave everything to the default values (`false`). We'll come back to this structure once we're about to start doing more interesting things with Vulkan.
+지정해야할 다음 정보는 사용하게 될 device feature의 집합입니다. 이 기능들은 이전챕터에서 [`get_physical_device_features`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.get_physical_device_features)를 사용하여 지원하는 기능을 쿼리했습니다(geometry shader같은 기능들). 당장은 특별한게 필요하지 않으므로, 단순히 우리는 정의만 하고 전부 default value(`false`)로 남겨둡니다. Vulkan과 더 재밌는 일을 시작할때 다시 돌아옵니다.
 
-```rust,noplaypen
+```rust
 let features = vk::PhysicalDeviceFeatures::builder();
 ```
 
 ## Creating the logical device
 
-With the previous two structures, the validation layer (if enabled), and the device extensions in place, we can fill in the main `vk::DeviceCreateInfo` structure.
+이전의 두 구조체에서, validation layer(활성화 된 경우)과 device extension이 준비되면 [`vk::DeviceCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.DeviceCreateInfo.html)구조체를 채울 수 있습니다.
 
-```rust,noplaypen
+```rust
 let queue_infos = &[queue_info];
 let info = vk::DeviceCreateInfo::builder()
     .queue_create_infos(queue_infos)
@@ -101,48 +102,48 @@ let info = vk::DeviceCreateInfo::builder()
     .enabled_features(&features);
 ```
 
-That's it, we're now ready to instantiate the logical device with a call to the appropriately named `create_device` method.
+끝입니다. 이제 logical device를 적절히 네이밍된 [`create_device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.create_device) 메소드를 통해서 인스턴스화할 수 있습니다.
 
-```rust,noplaypen
+```rust
 let device = instance.create_device(data.physical_device, &info, None)?;
 ```
 
-The parameters are the physical device to interface with, the queue and usage info we just specified, and the optional allocation callbacks. Similarly to the instance creation function, this call can return errors based on enabling non-existent extensions or specifying the desired usage of unsupported features.
+파라미터들은 소통하기위한 physical device입니다. 지정했던 queue와 usage info 그리고 optional allocation callback입니다. instance 생성 함수와 유사하게, 이 call은 존재하지 않는 extension을 활성화하거나, 지원되지 않는 feature들을 사용하는 요구사항을 지정하는경우 오류를 반환합니다.
 
-The device should be destroyed in `App::destroy`:
+이 device는 `App:destroy`에서 파괴되어야합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.device.destroy_device(None);
     // ...
 }
 ```
 
-Logical devices don't interact directly with instances, which is why it's not included as a parameter.
+logical device는 instance와 직접적으로 상호작용하지 않습니다. 왜 파라미터로 제공되지 않았는지에 대한 이유입니다.
 
 ## Retrieving queue handles
 
-The queues are automatically created along with the logical device, but we don't have a handle to interface with them yet. First add a new `AppData` field to store a handle to the graphics queue:
+queue들은 logical device따라 자동으로 생성됩니다. 그러나 아직 그 queue들을 interface하기위한 핸들을 가지고있지 않습니다. 먼저, graphics queue의 핸들을 저장하기 위한 `AppData` field를 추가합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     graphics_queue: vk::Queue,
 }
 ```
 
-Device queues are implicitly cleaned up when the device is destroyed, so we don't need to do anything in `App::destroy`.
+device queue는 device가 파괴될 때 암시적으로 청소됩니다. 따라서 `App::destory`에서 아무것도 안해도 됩니다.
 
-We can use the `get_device_queue` function to retrieve queue handles for each queue family. The parameters are the logical device, queue family, and queue index. Because we're only creating a single queue from this family, we'll simply use index 0.
+각 queue family를 위한 queue 핸들을 가져오기 위해 [`get_device_queue`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.get_device_queue) 함수를 사용할 수 있습니다. 파라미터는 logical device, queue family 그리고 queue index입니다. 이 family를 위한 single queue를 생성할거기 때문에, 단순히 index 0을 사용합니다.
 
-```rust,noplaypen
+```rust
 data.graphics_queue = device.get_device_queue(indices.graphics, 0);
 ```
 
-Lastly, return the created logical device from `create_logical_device`:
+마지막으로 `create_logical_device`에서 생성된 logical device를 리턴합니다.
 
-```rust,noplaypen
+```rust
 Ok(device)
 ```
 
-With the logical device and queue handles we can now actually start using the graphics card to do things! In the next few chapters we'll set up the resources to present results to the window system.
+logical device와 queue핸들을 가지고 이제 뭔가를 하기 위해 그래픽카드를 쓸 수 있습니다. 다음 몇 챕터에서 window system에 결과를 보여주기 위해 resource를 설정할겁니다.
