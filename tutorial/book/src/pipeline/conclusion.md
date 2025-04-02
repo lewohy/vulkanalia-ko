@@ -2,25 +2,25 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/12_graphics_pipeline_complete.rs)
 
-We can now combine all of the structures and objects from the previous chapters to create the graphics pipeline! Here's the types of objects we have now, as a quick recap:
+이제 이전 챕터에서의 모든 구조체와 객체를 조합하여 graphics pipeline을 만들 수 있습니다! 여기에 우리가 가지고있는 오브젝트들의 타입이 있습니다. quick recap
 
-* Shader stages &ndash; the shader modules that define the functionality of the programmable stages of the graphics pipeline
-* Fixed-function state &ndash; all of the structures that define the fixed-function stages of the pipeline, like input assembly, rasterizer, viewport and color blending
-* Pipeline layout &ndash; the uniform and push values referenced by the shader that can be updated at draw time
-* Render pass &ndash; the attachments referenced by the pipeline stages and their usage
+- Shader stages – graphics pipeline의 programmable stage의 기능성을 정의하는 shader modules
+- Fixed-function state – input assembly, rasterizer, viewport 그리고 color blending과 같은 pipeline의 fixed-function stage를 정의하는 모든 구조체
+- Pipeline layout – draw time에 업데이트 가능한 shader에 의해 참조된 uniform과 push values
+- Render pass – pipeline stage와 그것의 사용에 의해 참조되는 attachments
 
-All of these combined fully define the functionality of the graphics pipeline, so we can now begin filling in the `vk::GraphicsPipelineCreateInfo` structure at the end of the `create_pipeline` function (but before the shader modules are destroyed). But before the calls to `DeviceV1_0:::destroy_shader_module` because these are still to be used during the creation.
+이 모든 것들의 조합은 graphics pipeline의 모든 기능성을 정의하므로 `create_pipeline` 함수의 끝(shader module이 파괴되기 전)에 [`vk::GraphicsPipelineCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.GraphicsPipelineCreateInfo.html)를 채우기 시작할 수 있습니다. `DeviceV1_0:::destroy_shader_module`전에 호출해야합니다. 왜냐하면 이것들은 여전히 creation에 사용되기 때문입니다.
 
-```rust,noplaypen
+```rust
 let stages = &[vert_stage, frag_stage];
 let info = vk::GraphicsPipelineCreateInfo::builder()
     .stages(stages)
     // continued...
 ```
 
-We start by providing an array of the `vk::PipelineShaderStageCreateInfo` structs.
+[`vk::PipelineShaderStageCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PipelineShaderStageCreateInfo.html) 구조체의 배열을 제공하면서 시작합니다.
 
-```rust,noplaypen
+```rust
     .vertex_input_state(&vertex_input_state)
     .input_assembly_state(&input_assembly_state)
     .viewport_state(&viewport_state)
@@ -29,55 +29,55 @@ We start by providing an array of the `vk::PipelineShaderStageCreateInfo` struct
     .color_blend_state(&color_blend_state)
 ```
 
-Then we reference all of the structures describing the fixed-function stage.
+그리고 fixed-function stage를 설명하는 구조체의 모든 구조체를 참조합니다.
 
-```rust,noplaypen
+```rust
     .layout(data.pipeline_layout)
 ```
 
-After that comes the pipeline layout, which is a Vulkan handle rather than a struct reference.
+그 후에 pipeline layout이 나옵니다. 참조대신 handle을 씁니다.
 
-```rust,noplaypen
+```rust
     .render_pass(data.render_pass)
     .subpass(0);
 ```
 
-And finally we have the reference to the render pass and the index of the sub pass where this graphics pipeline will be used. It is also possible to use other render passes with this pipeline instead of this specific instance, but they have to be *compatible* with `render_pass`. The requirements for compatibility are described [here](https://www.khronos.org/registry/vulkan/specs/1.2/html/vkspec.html#renderpass-compatibility), but we won't be using that feature in this tutorial.
+그리고 마지막으로 render pass에 대한 참조와 이 graphics pipeline이 사용될 sub pass의 index를 갖습니다. 이 specific instance대신 이 pipeline을 이용하여 다른 render passes를 사용하는것도 가능하지만, 이것들은 `render_pass`와 *호환되어야* 합니다. 호환성을 위한 요구사항은 [여기에](https://www.khronos.org/registry/vulkan/specs/1.2/html/vkspec.html#renderpass-compatibility) 설명되어 있지만, 이 튜토리얼에서 그런 기능을 쓰지는 않을것입니다.
 
-```rust,noplaypen
+```rust
     .base_pipeline_handle(vk::Pipeline::null()) // Optional.
     .base_pipeline_index(-1)                    // Optional.
 ```
 
-There are actually two more parameters: `base_pipeline_handle` and `base_pipeline_index`. Vulkan allows you to create a new graphics pipeline by deriving from an existing pipeline. The idea of pipeline derivatives is that it is less expensive to set up pipelines when they have much functionality in common with an existing pipeline and switching between pipelines from the same parent can also be done quicker. You can either specify the handle of an existing pipeline with `base_pipeline_handle` or reference another pipeline that is about to be created by index with `base_pipeline_index`. Right now there is only a single pipeline, so we'll simply specify a null handle and an invalid index. These values are only used if the `vk::PipelineCreateFlags::DERIVATIVE` flag is also specified in the `flags` field of `vk::GraphicsPipelineCreateInfo`.
+실제로는 파라미터가 두개 더 있습니다. `base_pipeline_handle`과 `base_pipeline_index`입니다. Vulkan은 이미 있는 pipeline으로부터 파생된 새로운 graphics pipeline을 생성하게 해줍니다. pipeline derivatives의 아이디어는 기존 파이프라인과 많은 기능을 공통으로 가지고 있을 때 파이프라인을 설정하는 비용이 저렴하고 동일한 부모의 파이프라인 간 전환도 빨리 수행할 수 있다는 것입니다. `base_pipeline_handle`를 사용하여 이미 존재하는 pipeline의 핸들을 지정하거나 `base_pipeline_index`에 의해 생성될 또다른 pipeline에 대한 참조를 할 수 있습니다. 이제 오직 single pipeline만 있으므로 단순히 null handle과 invalid index를 지정합니다. 이 값들은 오직 [`vk::GraphicsPipelineCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.GraphicsPipelineCreateInfo.html) 의 `flag` 필드가 [`vk::PipelineCreateFlags::DERIVATIVE`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PipelineCreateFlags.html#associatedconstant.DERIVATIVE)일때만 사용됩니다.
 
-Now prepare for the final step by creating a field in `AppData` to hold the `vk::Pipeline` object:
+이제 마지막 단계를 위해 `AppData`에 필드를 생성하여 [`vk::Pipeline`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Pipeline.html) 객제츷 저장하도록 합니다.
 
-```rust,noplaypen
+```rust
 struct AppData {
     // ...
     pipeline: vk::Pipeline,
 }
 ```
 
-And finally create the graphics pipeline:
+그리고 마침내 graphics pipeline을 생성합니다.
 
-```rust,noplaypen
+```rust
 data.pipeline = device.create_graphics_pipelines(
     vk::PipelineCache::null(), &[info], None)?.0[0];
 ```
 
-The `create_graphics_pipelines` function actually has more parameters than the usual object creation functions in Vulkan. It is designed to take multiple `vk::GraphicsPipelineCreateInfo` objects and create multiple `vk::Pipeline` objects in a single call.
+Vulkan에서 [`create_graphics_pipelines`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_graphics_pipelines) 함수는 실제로는 일반적인 오브젝트 생성 함수보다 더 많은 파라미터를 갖습니다. 이 함수는 single call에 여러 [`vk::GraphicsPipelineCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.GraphicsPipelineCreateInfo.html) 오브젝트들을 취하고 여러 [`vk::Pipeline`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Pipeline.html) 오브젝트를 생성합니다.
 
-The first parameter, for which we've passed the `vk::PipelineCache::null()` argument, references an optional `vk::PipelineCache` object. A pipeline cache can be used to store and reuse data relevant to pipeline creation across multiple calls to `create_graphics_pipelines` and even across program executions if the cache is stored to a file. This makes it possible to significantly speed up pipeline creation at a later time.
+`vk::PipelineCache::null()` 인수를 넘긴 첫 번째 파라미터는 optional [`vk::PipelineCache`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PipelineCache.html) 오브젝트를 참조합니다. pipeline cache는 [`create_graphics_pipelines`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_graphics_pipelines)을 여러번 호출할때, 그리고 심지어는 cache가 file로 저장되어있다면 프로그램 실행동안 pipeline creation과 관련된 데이터를 저장하고 재활용할 수 있게 해줍니다. 이것은 이후에 pipeline creation의 속도를 상당히 올려주는걸 가능하게 합니다.
 
-The graphics pipeline is required for all common drawing operations, so it should also only be destroyed at the end of the program in `App::destroy`:
+graphics pipeline은 모든 common drawing operation에 필요하므로, 이 또한 `App::destroy`에서 프로그램의 끝에서 파괴되어야합니다.
 
-```rust,noplaypen
+```rust
 unsafe fn destroy(&mut self) {
     self.device.destroy_pipeline(self.data.pipeline, None);
     // ...
 }
 ```
 
-Now run your program to confirm that all this hard work has resulted in a successful pipeline creation! We are already getting quite close to seeing something pop up on the screen. In the next couple of chapters we'll set up the actual framebuffers from the swapchain images and prepare the drawing commands.
+이제 프로그램을 실행해서 이 고된 작업이 성공적인 pipeline creation을 만들어내는지 확인하세요! 우리는 화면에 뭔가를 띄우는것을 보는것에 거의 근접해왔습니다. 다음 몇 챕터에서는 실제로 swapchain image로부터 framebuffers를 설정하고 drawing commands를 준비할겁니다.
