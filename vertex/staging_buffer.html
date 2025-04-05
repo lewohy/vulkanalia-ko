@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Staging buffer - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html" class="active"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="staging-buffer"><a class="header" href="#staging-buffer">Staging buffer</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/19_staging_buffer.rs">main.rs</a></p>
+<p>The vertex buffer we have right now works correctly, but the memory type that allows us to access it from the CPU may not be the most optimal memory type for the graphics card itself to read from. The most optimal memory has the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.MemoryPropertyFlags.html#associatedconstant.DEVICE_LOCAL"><code class="hljs">vk::MemoryPropertyFlags::DEVICE_LOCAL</code></a> flag and is usually not accessible by the CPU on dedicated graphics cards. In this chapter we're going to create two vertex buffers. One <em>staging buffer</em> in CPU accessible memory to upload the data from the vertex array to, and the final vertex buffer in device local memory. We'll then use a buffer copy command to move the data from the staging buffer to the actual vertex buffer.</p>
+<h2 id="transfer-queue"><a class="header" href="#transfer-queue">Transfer queue</a></h2>
+<p>The buffer copy command requires a queue family that supports transfer operations, which is indicated using <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.TRANSFER"><code class="hljs">vk::QueueFlags::TRANSFER</code></a>. The good news is that any queue family with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.GRAPHICS"><code class="hljs">vk::QueueFlags::GRAPHICS</code></a> or <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.COMPUTE"><code class="hljs">vk::QueueFlags::COMPUTE</code></a> capabilities already implicitly support <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.TRANSFER"><code class="hljs">vk::QueueFlags::TRANSFER</code></a> operations. The implementation is not required to explicitly list it in <code>queue_flags</code> in those cases.</p>
+<p>If you like a challenge, then you can still try to use a different queue family specifically for transfer operations. It will require you to make the following modifications to your program:</p>
+<ul>
+<li>Modify <code>QueueFamilyIndices</code> and <code>QueueFamilyIndices::get</code> to explicitly look for a queue family with the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.TRANSFER"><code class="hljs">vk::QueueFlags::TRANSFER</code></a> bit, but not the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.QueueFlags.html#associatedconstant.GRAPHICS"><code class="hljs">vk::QueueFlags::GRAPHICS</code></a>.</li>
+<li>Modify <code>create_logical_device</code> to request a handle to the transfer queue</li>
+<li>Create a second command pool for command buffers that are submitted on the transfer queue family</li>
+<li>Change the <code>sharing_mode</code> of resources to be <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SharingMode.html#associatedconstant.CONCURRENT"><code class="hljs">vk::SharingMode::CONCURRENT</code></a> and specify both the graphics and transfer queue families</li>
+<li>Submit any transfer commands like <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_copy_buffer"><code class="hljs">cmd_copy_buffer</code></a> (which we'll be using in this chapter) to the transfer queue instead of the graphics queue</li>
+</ul>
+<p>It's a bit of work, but it'll teach you a lot about how resources are shared between queue families.</p>
+<h2 id="abstracting-buffer-creation"><a class="header" href="#abstracting-buffer-creation">Abstracting buffer creation</a></h2>
+<p>Because we're going to create multiple buffers in this chapter, it's a good idea to move buffer creation to a helper function. Create a new function <code>create_buffer</code> and move the code in <code>create_vertex_buffer</code> (except mapping) to it.</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_buffer(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;AppData,
+    size: vk::DeviceSize,
+    usage: vk::BufferUsageFlags,
+    properties: vk::MemoryPropertyFlags,
+) -&gt; Result&lt;(vk::Buffer, vk::DeviceMemory)&gt; {
+    let buffer_info = vk::BufferCreateInfo::builder()
+        .size(size)
+        .usage(usage)
+        .sharing_mode(vk::SharingMode::EXCLUSIVE);
+
+    let buffer = device.create_buffer(&amp;buffer_info, None)?;
+
+    let requirements = device.get_buffer_memory_requirements(buffer);
+
+    let memory_info = vk::MemoryAllocateInfo::builder()
+        .allocation_size(requirements.size)
+        .memory_type_index(get_memory_type_index(
+            instance,
+            data,
+            properties,
+            requirements,
+        )?);
+
+    let buffer_memory = device.allocate_memory(&amp;memory_info, None)?;
+
+    device.bind_buffer_memory(buffer, buffer_memory, 0)?;
+
+    Ok((buffer, buffer_memory))
+}
+</code></pre>
+<p>Make sure to add parameters for the buffer size, usage and memory properties so that we can use this function to create many different types of buffers.</p>
+<p>You can now remove the buffer creation and memory allocation code from <code>create_vertex_buffer</code> and just call <code>create_buffer</code> instead:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_vertex_buffer(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;mut AppData,
+) -&gt; Result&lt;()&gt; {
+    let size = (size_of::&lt;Vertex&gt;() * VERTICES.len()) as u64;
+
+    let (vertex_buffer, vertex_buffer_memory) = create_buffer(
+        instance,
+        device,
+        data,
+        size,
+        vk::BufferUsageFlags::VERTEX_BUFFER,
+        vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
+    )?;
+
+    data.vertex_buffer = vertex_buffer;
+    data.vertex_buffer_memory = vertex_buffer_memory;
+
+    let memory = device.map_memory(
+        vertex_buffer_memory,
+        0,
+        size,
+        vk::MemoryMapFlags::empty(),
+    )?;
+
+    memcpy(VERTICES.as_ptr(), memory.cast(), VERTICES.len());
+
+    device.unmap_memory(vertex_buffer_memory);
+
+    Ok(())
+}
+</code></pre>
+<p>Run your program to make sure that the vertex buffer still works properly.</p>
+<h2 id="using-a-staging-buffer"><a class="header" href="#using-a-staging-buffer">Using a staging buffer</a></h2>
+<p>We're now going to change <code>create_vertex_buffer</code> to only use a host visible buffer as temporary buffer and use a device local one as actual vertex buffer.</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_vertex_buffer(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;mut AppData,
+) -&gt; Result&lt;()&gt; {
+    let size = (size_of::&lt;Vertex&gt;() * VERTICES.len()) as u64;
+
+    let (staging_buffer, staging_buffer_memory) = create_buffer(
+        instance,
+        device,
+        data,
+        size,
+        vk::BufferUsageFlags::TRANSFER_SRC,
+        vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
+    )?;
+
+    let memory = device.map_memory(
+        staging_buffer_memory,
+        0,
+        size,
+        vk::MemoryMapFlags::empty(),
+    )?;
+
+    memcpy(VERTICES.as_ptr(), memory.cast(), VERTICES.len());
+
+    device.unmap_memory(staging_buffer_memory);
+
+    let (vertex_buffer, vertex_buffer_memory) = create_buffer(
+        instance,
+        device,
+        data,
+        size,
+        vk::BufferUsageFlags::TRANSFER_DST | vk::BufferUsageFlags::VERTEX_BUFFER,
+        vk::MemoryPropertyFlags::DEVICE_LOCAL,
+    )?;
+
+    data.vertex_buffer = vertex_buffer;
+    data.vertex_buffer_memory = vertex_buffer_memory;
+
+    Ok(())
+}
+</code></pre>
+<p>We're now using a new <code>staging_buffer</code> with <code>staging_buffer_memory</code> for mapping and copying the vertex data. In this chapter we're going to use two new buffer usage flags:</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.BufferUsageFlags.html#associatedconstant.TRANSFER_SRC"><code class="hljs">vk::BufferUsageFlags::TRANSFER_SRC</code></a> – Buffer can be used as source in a memory transfer operation.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.BufferUsageFlags.html#associatedconstant.TRANSFER_DST"><code class="hljs">vk::BufferUsageFlags::TRANSFER_DST</code></a> – Buffer can be used as destination in a memory transfer operation.</li>
+</ul>
+<p>The <code>vertex_buffer</code> is now allocated from a memory type that is device local, which generally means that we're not able to use <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.map_memory"><code class="hljs">map_memory</code></a>. However, we can copy data from the <code>staging_buffer</code> to the <code>vertex_buffer</code>. We have to indicate that we intend to do that by specifying the transfer source flag for the <code>staging_buffer</code> and the transfer destination flag for the <code>vertex_buffer</code>, along with the vertex buffer usage flag.</p>
+<p>We're now going to write a function to copy the contents from one buffer to another, called <code>copy_buffer</code>.</p>
+<pre><code class="language-rust noplaypen">unsafe fn copy_buffer(
+    device: &amp;Device,
+    data: &amp;AppData,
+    source: vk::Buffer,
+    destination: vk::Buffer,
+    size: vk::DeviceSize,
+) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+</code></pre>
+<p>Memory transfer operations are executed using command buffers, just like drawing commands. Therefore we must first allocate a temporary command buffer. You may wish to create a separate command pool for these kinds of short-lived buffers, because the implementation may be able to apply memory allocation optimizations. You should use the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.TRANSIENT"><code class="hljs">vk::CommandPoolCreateFlags::TRANSIENT</code></a> flag during command pool generation in that case.</p>
+<pre><code class="language-rust noplaypen">unsafe fn copy_buffer(
+    device: &amp;Device,
+    data: &amp;AppData,
+    source: vk::Buffer,
+    destination: vk::Buffer,
+    size: vk::DeviceSize,
+) -&gt; Result&lt;()&gt; {
+    let info = vk::CommandBufferAllocateInfo::builder()
+        .level(vk::CommandBufferLevel::PRIMARY)
+        .command_pool(data.command_pool)
+        .command_buffer_count(1);
+
+    let command_buffer = device.allocate_command_buffers(&amp;info)?[0];
+
+    Ok(())
+}
+</code></pre>
+<p>And immediately start recording the command buffer:</p>
+<pre><code class="language-rust noplaypen">let info = vk::CommandBufferBeginInfo::builder()
+    .flags(vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT);
+
+device.begin_command_buffer(command_buffer, &amp;info)?;
+</code></pre>
+<p>We're only going to use the command buffer once and wait with returning from the function until the copy operation has finished executing. It's good practice to tell the driver about our intent using <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.ONE_TIME_SUBMIT"><code class="hljs">vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT</code></a>.</p>
+<pre><code class="language-rust noplaypen">let regions = vk::BufferCopy::builder().size(size);
+device.cmd_copy_buffer(command_buffer, source, destination, &amp;[regions]);
+</code></pre>
+<p>Contents of buffers are transferred using the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_copy_buffer"><code class="hljs">cmd_copy_buffer</code></a> command. It takes the source and destination buffers as arguments, and an array of regions to copy. The regions are defined in <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.BufferCopy.html"><code class="hljs">vk::BufferCopy</code></a> structs and consist of a source buffer offset, destination buffer offset and size. It is not possible to specify <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/constant.WHOLE_SIZE.html"><code class="hljs">vk::WHOLE_SIZE</code></a> here, unlike the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.map_memory"><code class="hljs">map_memory</code></a> command.</p>
+<pre><code class="language-rust noplaypen">device.end_command_buffer(command_buffer)?;
+</code></pre>
+<p>This command buffer only contains the copy command, so we can stop recording right after that. Now execute the command buffer to complete the transfer:</p>
+<pre><code class="language-rust noplaypen">let command_buffers = &amp;[command_buffer];
+let info = vk::SubmitInfo::builder()
+    .command_buffers(command_buffers);
+
+device.queue_submit(data.graphics_queue, &amp;[info], vk::Fence::null())?;
+device.queue_wait_idle(data.graphics_queue)?;
+</code></pre>
+<p>Unlike the draw commands, there are no events we need to wait on this time. We just want to execute the transfer on the buffers immediately. There are again two possible ways to wait on this transfer to complete. We could use a fence and wait with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.wait_for_fences"><code class="hljs">wait_for_fences</code></a>, or simply wait for the transfer queue to become idle with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.queue_wait_idle"><code class="hljs">queue_wait_idle</code></a>. A fence would allow you to schedule multiple transfers simultaneously and wait for all of them complete, instead of executing one at a time. That may give the driver more opportunities to optimize.</p>
+<pre><code class="language-rust noplaypen">device.free_command_buffers(data.command_pool, &amp;[command_buffer]);
+</code></pre>
+<p>Don't forget to clean up the command buffer used for the transfer operation.</p>
+<p>We can now call <code>copy_buffer</code> from the <code>create_vertex_buffer</code> function to move the vertex data to the device local buffer:</p>
+<pre><code class="language-rust noplaypen">copy_buffer(device, data, staging_buffer, vertex_buffer, size)?;
+</code></pre>
+<p>After copying the data from the staging buffer to the device buffer, we should clean it up:</p>
+<pre><code class="language-rust noplaypen">device.destroy_buffer(staging_buffer, None);
+device.free_memory(staging_buffer_memory, None);
+</code></pre>
+<p>Run your program to verify that you're seeing the familiar triangle again. The improvement may not be visible right now, but its vertex data is now being loaded from high performance memory. This will matter when we're going to start rendering more complex geometry.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It should be noted that in a real world application, you're not supposed to actually call <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.allocate_memory"><code class="hljs">allocate_memory</code></a> for every individual buffer. The maximum number of simultaneous memory allocations is limited by the <code>max_memory_allocation_count</code> physical device limit, which may be as low as <code>4096</code> even on high end hardware like an NVIDIA GTX 1080. The right way to allocate memory for a large number of objects at the same time is to create a custom allocator that splits up a single allocation among many different objects by using the <code>offset</code> parameters that we've seen in many functions.</p>
+<p>However, for this tutorial it's okay to use a separate allocation for every resource, because we won't come close to hitting any of these limits for now.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../vertex/vertex_buffer_creation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../vertex/index_buffer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../vertex/vertex_buffer_creation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../vertex/index_buffer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Index buffer - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html" class="active"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="index-buffer"><a class="header" href="#index-buffer">Index buffer</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/20_index_buffer.rs">main.rs</a></p>
+<p>The 3D meshes you'll be rendering in a real world application will often share vertices between multiple triangles. This already happens even with something simple like drawing a rectangle:</p>
+<p><img src="../images/vertex_vs_index.svg" alt="" /></p>
+<p>Drawing a rectangle takes two triangles, which means that we need a vertex buffer with 6 vertices. The problem is that the data of two vertices needs to be duplicated resulting in 50% redundancy. It only gets worse with more complex meshes, where vertices are reused in an average number of 3 triangles. The solution to this problem is to use an <em>index buffer</em>.</p>
+<p>An index buffer is essentially an array of pointers into the vertex buffer. It allows you to reorder the vertex data, and reuse existing data for multiple vertices. The illustration above demonstrates what the index buffer would look like for the rectangle if we have a vertex buffer containing each of the four unique vertices. The first three indices define the upper-right triangle and the last three indices define the vertices for the bottom-left triangle.</p>
+<h2 id="index-buffer-creation"><a class="header" href="#index-buffer-creation">Index buffer creation</a></h2>
+<p>In this chapter we're going to modify the vertex data and add index data to draw a rectangle like the one in the illustration. Modify the vertex data to represent the four corners:</p>
+<pre><code class="language-rust noplaypen">static VERTICES: [Vertex; 4] = [
+    Vertex::new(vec2(-0.5, -0.5), vec3(1.0, 0.0, 0.0)),
+    Vertex::new(vec2(0.5, -0.5), vec3(0.0, 1.0, 0.0)),
+    Vertex::new(vec2(0.5, 0.5), vec3(0.0, 0.0, 1.0)),
+    Vertex::new(vec2(-0.5, 0.5), vec3(1.0, 1.0, 1.0)),
+];
+</code></pre>
+<p>The top-left corner is red, top-right is green, bottom-right is blue and the bottom-left is white. We'll add a new array <code>INDICES</code> to represent the contents of the index buffer. It should match the indices in the illustration to draw the upper-right triangle and bottom-left triangle.</p>
+<pre><code class="language-rust noplaypen">const INDICES: &amp;[u16] = &amp;[0, 1, 2, 2, 3, 0];
+</code></pre>
+<p>It is possible to use either <code>u16</code> or <code>u32</code> for your index buffer depending on the number of entries in <code>VERTICES</code>. We can stick to <code>u16</code> for now because we're using less than 65,536 unique vertices.</p>
+<p>Just like the vertex data, the indices need to be uploaded into a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Buffer.html"><code class="hljs">vk::Buffer</code></a> for the GPU to be able to access them. Define two new <code>AppData</code> fields to hold the resources for the index buffer:</p>
+<pre><code class="language-rust noplaypen">struct AppData {
+    // ...
+    vertex_buffer: vk::Buffer,
+    vertex_buffer_memory: vk::DeviceMemory,
+    index_buffer: vk::Buffer,
+    index_buffer_memory: vk::DeviceMemory,
+}
+</code></pre>
+<p>The <code>create_index_buffer</code> function that we'll add now is almost identical to <code>create_vertex_buffer</code>:</p>
+<pre><code class="language-rust noplaypen">impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_vertex_buffer(&amp;instance, &amp;device, &amp;mut data)?;
+        create_index_buffer(&amp;instance, &amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+unsafe fn create_index_buffer(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;mut AppData,
+) -&gt; Result&lt;()&gt; {
+    let size = (size_of::&lt;u16&gt;() * INDICES.len()) as u64;
+
+    let (staging_buffer, staging_buffer_memory) = create_buffer(
+        instance,
+        device,
+        data,
+        size,
+        vk::BufferUsageFlags::TRANSFER_SRC,
+        vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
+    )?;
+
+    let memory = device.map_memory(
+        staging_buffer_memory,
+        0,
+        size,
+        vk::MemoryMapFlags::empty(),
+    )?;
+
+    memcpy(INDICES.as_ptr(), memory.cast(), INDICES.len());
+
+    device.unmap_memory(staging_buffer_memory);
+
+    let (index_buffer, index_buffer_memory) = create_buffer(
+        instance,
+        device,
+        data,
+        size,
+        vk::BufferUsageFlags::TRANSFER_DST | vk::BufferUsageFlags::INDEX_BUFFER,
+        vk::MemoryPropertyFlags::DEVICE_LOCAL,
+    )?;
+
+    data.index_buffer = index_buffer;
+    data.index_buffer_memory = index_buffer_memory;
+
+    copy_buffer(device, data, staging_buffer, index_buffer, size)?;
+
+    device.destroy_buffer(staging_buffer, None);
+    device.free_memory(staging_buffer_memory, None);
+
+    Ok(())
+}
+</code></pre>
+<p>There are only two notable differences. The <code>size</code> is now equal to the number of indices times the size of the index type, either <code>u16</code> or <code>u32</code>. The usage of the <code>index_buffer</code> should be <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.BufferUsageFlags.html#associatedconstant.INDEX_BUFFER"><code class="hljs">vk::BufferUsageFlags::INDEX_BUFFER</code></a> instead of <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.BufferUsageFlags.html#associatedconstant.VERTEX_BUFFER"><code class="hljs">vk::BufferUsageFlags::VERTEX_BUFFER</code></a>, which makes sense. Other than that, the process is exactly the same. We create a staging buffer to copy the contents of <code>INDICES</code> to and then copy it to the final device local index buffer.</p>
+<p>The index buffer should be cleaned up at the end of the program, just like the vertex buffer:</p>
+<pre><code class="language-rust noplaypen">unsafe fn destroy(&amp;mut self) {
+    self.destroy_swapchain();
+    self.device.destroy_buffer(self.data.index_buffer, None);
+    self.device.free_memory(self.data.index_buffer_memory, None);
+    self.device.destroy_buffer(self.data.vertex_buffer, None);
+    self.device.free_memory(self.data.vertex_buffer_memory, None);
+    // ...
+}
+</code></pre>
+<h2 id="using-an-index-buffer"><a class="header" href="#using-an-index-buffer">Using an index buffer</a></h2>
+<p>Using an index buffer for drawing involves two changes to <code>create_command_buffers</code>. We first need to bind the index buffer, just like we did for the vertex buffer. The difference is that you can only have a single index buffer. It's unfortunately not possible to use different indices for each vertex attribute, so we do still have to completely duplicate vertex data even if just one attribute varies.</p>
+<pre><code class="language-rust noplaypen">device.cmd_bind_vertex_buffers(*command_buffer, 0, &amp;[data.vertex_buffer], &amp;[0]);
+device.cmd_bind_index_buffer(*command_buffer, data.index_buffer, 0, vk::IndexType::UINT16);
+</code></pre>
+<p>An index buffer is bound with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_bind_index_buffer"><code class="hljs">cmd_bind_index_buffer</code></a> which has the index buffer, a byte offset into it, and the type of index data as parameters. As mentioned before, the possible types are <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.IndexType.html#associatedconstant.UINT16"><code class="hljs">vk::IndexType::UINT16</code></a> and <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.IndexType.html#associatedconstant.UINT32"><code class="hljs">vk::IndexType::UINT32</code></a>.</p>
+<p>Just binding an index buffer doesn't change anything yet, we also need to change the drawing command to tell Vulkan to use the index buffer. Remove the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_draw"><code class="hljs">cmd_draw</code></a> line and replace it with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_draw_indexed"><code class="hljs">cmd_draw_indexed</code></a>:</p>
+<pre><code class="language-rust noplaypen">device.cmd_draw_indexed(*command_buffer, INDICES.len() as u32, 1, 0, 0, 0);
+</code></pre>
+<p>A call to this function is very similar to <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_draw"><code class="hljs">cmd_draw</code></a>. The first two parameters after the command buffer specify the number of indices and the number of instances. We're not using instancing, so just specify <code>1</code> instance. The number of indices represents the number of vertices that will be passed to the vertex buffer. The next parameter specifies an offset into the index buffer, using a value of <code>1</code> would cause the graphics card to start reading at the second index. The second to last parameter specifies an offset to add to the indices in the index buffer. The final parameter specifies an offset for instancing, which we're not using.</p>
+<p>Now run your program and you should see the following:</p>
+<p><img src="../images/indexed_rectangle.png" alt="" /></p>
+<p>You now know how to save memory by reusing vertices with index buffers. This will become especially important in a future chapter where we're going to load complex 3D models.</p>
+<p>The previous chapter already mentioned that you should allocate multiple resources like buffers from a single memory allocation, but in fact you should go a step further. <a href="https://developer.nvidia.com/vulkan-memory-management">Driver developers recommend</a> that you also store multiple buffers, like the vertex and index buffer, into a single <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Buffer.html"><code class="hljs">vk::Buffer</code></a> and use offsets in commands like <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_bind_vertex_buffers"><code class="hljs">cmd_bind_vertex_buffers</code></a>. The advantage is that your data is more cache friendly in that case, because it's closer together. It is even possible to reuse the same chunk of memory for multiple resources if they are not used during the same render operations, provided that their data is refreshed, of course. This is known as <em>aliasing</em> and some Vulkan functions have explicit flags to specify that you want to do this.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../vertex/staging_buffer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../uniform/descriptor_set_layout_and_buffer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../vertex/staging_buffer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../uniform/descriptor_set_layout_and_buffer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

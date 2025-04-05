@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Instance - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html" class="active"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="instance"><a class="header" href="#instance">Instance</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/01_instance_creation.rs">main.rs</a></p>
+<p>가장 먼저 할 일은 <em>instance</em>를 만들어서 Vulkan 라이브러리를 초기화하는 것입니다. 생성한 instance는 애플리케이션과 Vulkan 라이브러리간의 커넥션입니다. instance를 생성하는 것은 애플리케이션에 드라이버에 대한 몇가지 디테일을 포함시키는것입니다. 시작하기위해, 다음을 임포트합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use anyhow::{anyhow, Result};
+use log::*;
+use vulkanalia::loader::{LibloadingLoader, LIBRARY};
+use vulkanalia::window as vk_window;
+use vulkanalia::prelude::v1_0::*;
+<span class="boring">}
+</span></code></pre></pre>
+<p>여기서 먼저 <code>anyhow</code>에서 <a href="https://docs.rs/anyhow/latest/anyhow/macro.anyhow.html"><code>anyhow!</code></a>매크로를 임포트합니다. 이 매크로는 <code>anyhow</code>오류 인스턴스를 쉽게 생성하는데 사용됩니다. 그리고 <code>log::*</code>를 임포트해서 <code>log</code>크레이트의 로깅 매크로를 사용합니다. 다음으로, <code>LibloadingLoader</code>를 임포트합니다. 이것은 <code>vulkanalia</code>의 <code>libloading</code> integration의 역할을 합니다. 이건 Vulkan shared library에서 초기 Vulkan 커맨드를 로드하기위해 사용합니다.
+운영체제에 맞는 표준 Vulkan shared library 이름(예를들어 Windows에서는 <code>vulkan-1.dll</code>)이 <code>LIBRARY</code>로 임포트됩니다.</p>
+<p>다음으로 <code>vulkanalia</code>의 window integration을 <code>vk_window</code>로 임포트합니다. 이 챕터에서 우리는 window에 렌더링하기 위해 필요한 전역 Vulkan extensions을 열거하기 위해 사용합니다. 이후 챕터에서는 <code>vk_window</code>또한 사용하여 Vulkan instance를 <code>winit</code> window와 링크시킬겁니다.</p>
+<p>마지막으로 <code>vulkanalia</code>에서 Vulkan 1.0의 프렐루드를 임포트합니다. 이것은 이번 챕터와 이후 챕터에서 필요한 Vulkan과 관련된 다른 임포트를 제공합니다.</p>
+<p>이제, 인스턴스를 생성하기 위해 애플리케이션의 몇몇 정보를 구조체에 채워야합니다. 이 데이터들은 기술적으로는 optional이지만, 몇몇 애플리케이션을 최적화하는데 유용한 정보를 드라이버에 제공할 수 있습니다(왜냐하면, 인스턴스는 특정 행동과 함께 잘 알려진 그래픽 엔진을 사용하기 때문에).  이 구조체는 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ApplicationInfo.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ApplicationInfo.html"><code class="hljs">vk::ApplicationInfo</code></a></a>라고 불립니다. 그리고 이 구조체를 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.EntryV1_0.html#method.create_instance"><code class="hljs">create_instance</code></a>라는 새로운 함수로 만들것입니다. 이 함수는 window와 Vulkan entry point(나중에 생성합니다)를 파라미터로 갖고 Vulkan 인스턴스를 반환합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn create_instance(window: &amp;Window, entry: &amp;Entry) -&gt; Result&lt;Instance&gt; {
+    let application_info = vk::ApplicationInfo::builder()
+        .application_name(b&quot;Vulkan Tutorial\0&quot;)
+        .application_version(vk::make_version(1, 0, 0))
+        .engine_name(b&quot;No Engine\0&quot;)
+        .engine_version(vk::make_version(1, 0, 0))
+        .api_version(vk::make_version(1, 0, 0));
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>함수의 파라미터 대신에 Vulkan의 많은 양의 정보가 구조체로 들어갑니다. 그리고 인스턴스를 생성하기 위해 충분한 정보를 제공할 구조체를 하나 더 채워야합니다. 다음 구조체는 optional이 아닙니다. 그리고 이 구조체는 Vulkan 드라이버에 global extension과 validation layer를 알려줍니다. 여기서 global이란 특정 장치가 아닌 전체적인 프로그램에 적용되는 것을 의미합니다. global은 몇 챕터 뒤에서 명확해집니다. 먼저, 필요한 global extension과 이 extensions들을 열거하고 null-terminated C 문자열(<code>char * const c_char</code>)로 변환하기 위해 <code>vulkanlia</code>의 window integration을 사용해야 합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let extensions = vk_window::get_required_instance_extensions(window)
+    .iter()
+    .map(|e| e.as_ptr())
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+<span class="boring">}
+</span></code></pre></pre>
+<p>필요한 global extension리스트를 가지고 함수로 넘어온 Vulkan entry point를 사용하면 Vulkan 인스턴스를 생성하고 반환할 수 있습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let info = vk::InstanceCreateInfo::builder()
+    .application_info(&amp;application_info)
+    .enabled_extension_names(&amp;extensions);
+
+Ok(entry.create_instance(&amp;info, None)?)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Vulkan에서 일반적인 객체 생성 함수 파라미터의 패턴은 다음처럼 보입니다.</p>
+<ul>
+<li>생성 정보를 위한 구조체의 reference</li>
+<li>optional인 커스텀 allocator callback의 reference, 튜토리얼에서는 항상 <code>None</code>를 씁니다.</li>
+</ul>
+<p>지금은, entry point로부터 Vulkan instance를 생성하는 함수를 만들었습니다. 다음으로 Vulkan entry point를 만들어야 합니다. entry point는 instance support를 쿼리하고 인스턴스를 생성하는데 사용될 Vulkan 커맨드를 로딩합니다. 그러나 이걸 하기 전에, <code>App</code> 구조체에 몇 가지 필드를 추가해서 Vulkan entry point와 생성할 instance를 저장할 수 있게 합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct App {
+    entry: Entry,
+    instance: Instance,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>이 필드들을 조작하기 위해 <code>App::create</code>메소드를 다음과 같이 업데이트합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+    let loader = LibloadingLoader::new(LIBRARY)?;
+    let entry = Entry::new(loader).map_err(|b| anyhow!(&quot;{}&quot;, b))?;
+    let instance = create_instance(window, &amp;entry)?;
+    Ok(Self { entry, instance })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>여기서 Vulkan function loader를 처음으로 생성합니다. 이 로더는 초기  Vulkan 커맨드를 Vulkan shared library에서 로딩하는데 사용됩니다. 다음으로 Vulkan entry point를 만들었던 function loader를 사용해서 생성합니다. 로더는 Vulkan 인스턴스를 관리하기 위해 필요한 모든 커맨드를 로딩합니다. 마지막으로, 이제  만들었던 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.EntryV1_0.html#method.create_instance"><code class="hljs">create_instance</code></a>함수를 Vulkan entry point를 사용해서 호출할 수 있습니다.</p>
+<h2 id="cleaning-up"><a class="header" href="#cleaning-up">Cleaning up</a></h2>
+<p><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a>는 프로그램이 종료되자마자 파괴되어야 합니다. 인스턴스는 <code>App::destory</code>에서 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance"><code>destory_instance</code></a>를 사용하여 파괴할 수 있습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn destroy(&amp;mut self) {
+    self.instance.destroy_instance(None);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>객체를 생성하는데 사용된 Vulkan 커맨드처럼, 파괴하는데 사용되는 커맨드도 custom allocator callback에 대한 Optional reference를 가질 수 있습니다. 이전처럼, 디폴트 allocation behavior를 지시하기 위해 <code>None</code>를 넘겨줍니다.</p>
+<h2 id="non-conformant-vulkan-implementations"><a class="header" href="#non-conformant-vulkan-implementations">Non-conformant Vulkan implementations</a></h2>
+<p>모든 플랫폼이 Vulkan specification을 완전히 따르는 Vulkan API를 구현할정도로 운이 좋지는 않습니다.  어떤 플랫폼에서는 불가능하거나, 일관성 없는 구현/Vulkan 스펙에서 말하는 동작과 다른 구현을 사용하여 Vulkan 애플리케이션의 실제 동작이 상당히 다른 Vulkan feature가 있을 수 있습니다.</p>
+<p>Vulkan SDK의 버전 1.3.216부터는 비-일관적인 Vulkan 구현을 사용하는 애플리케이션은 몇가지 추가 Vulkan extension을 활성화해야합니다. 이런 호환성 확장은 개발자들에게 그들의 애플리케이션이 비-일관적인 Vulkan의 구현을 사용하고 있다는 것과 개발자들이 모든 것이 Vulkan의 스펙에서 말한대로 작동하지 않을 수도 있다는 것을 강제로 알게 하는 것에 주 목적이 있습니다.</p>
+<p>이 튜토리얼은 이러한 호환 Vulkan 확장을 활용해서 애플리케이션이 Vulkan 구현을 충분이 준수하지 않는 플랫폼에서도 실행되도록 합니다.</p>
+<p>그러나, 이렇게 물을 수도 있습니다. &quot;왜 그런 호환 확장을 활성화 하나요? 왜 입문자들을 위한 Vulkan 튜토리얼에서 그런 비주류 플랫폼을 걱정해야 합니까?&quot; 밝혀진 바와 같이, 그렇게까지 비주류가 아닌 macOS도 그러한 Vulkan 구현을 충분히 따르지 못하는 플랫폼입니다.</p>
+<p>introduction에서 언급했듯이., Apple은 그들만의 low-level graphic API인 <a href="https://en.wikipedia.org/wiki/Metal_(API)">Metal</a>을 갖고 있습니다. macOS를 위한 Vulkan SDK의 일부로 제공되는 Vulkan 구현체(<a href="https://moltengl.com/">MoltenVK</a>)은 애플리케이션과 Metal사이에서 애플리케이션이 만들어내는 Vulkan API call을 Metal call로 번역합니다. <a href="https://www.lunarg.com/wp-content/uploads/2022/05/The-State-of-Vulkan-on-Apple-15APR2022.pdf">MoltenVK는 Vulkan specification을 완전히 준수하지 않기 때문에</a> macOS를 지원하려면 앞서 언급한 호환 Vulkan extension을 활성화해야 합니다.</p>
+<p>코멘트로, MoltenVK가 full-conformant하지 않지만, macOS에서 튜토리얼을 따라하는 동안 Vulkan specification과의 차이로 발생하는 문제를 마주하지는 않을겁니다.</p>
+<h2 id="enabling-compatibility-extensions"><a class="header" href="#enabling-compatibility-extensions">Enabling compatibility extensions</a></h2>
+<blockquote>
+<p><strong>NOTE:</strong> macOS에서 튜토리얼을 진행하고 있지 않더라도, 이번 섹션에서 추가된 코드 몇개는 튜토리얼의 나머지 부분에서 참조되므로 스킵하면 안됩니다.</p>
+</blockquote>
+<p>사용하고 있는 Vulkan의 버전이 compatibility extension requirement를 소개하는 Vulkan버전보다 같거나 큰지 확인하고 싶을겁니다. 이 목표를 마음에 담고, 첫번째 임포트를 추가합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use vulkanalia::Version;
+<span class="boring">}
+</span></code></pre></pre>
+<p>임포트 한 수에, 최소 버전에 대한 상수를 정의합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const PORTABILITY_MACOS_VERSION: Version = Version::new(1, 3, 216);
+<span class="boring">}
+</span></code></pre></pre>
+<p>extension 열거와 인스턴스 생성 코드를 다음으로 바꿉니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut extensions = vk_window::get_required_instance_extensions(window)
+    .iter()
+    .map(|e| e.as_ptr())
+    .collect::&lt;Vec&lt;_&gt;&gt;();
+
+// Required by Vulkan SDK on macOS since 1.3.216.
+let flags = if 
+    cfg!(target_os = &quot;macos&quot;) &amp;&amp; 
+    entry.version()? &gt;= PORTABILITY_MACOS_VERSION
+{
+    info!(&quot;Enabling extensions for macOS portability.&quot;);
+    extensions.push(vk::KHR_GET_PHYSICAL_DEVICE_PROPERTIES2_EXTENSION.name.as_ptr());
+    extensions.push(vk::KHR_PORTABILITY_ENUMERATION_EXTENSION.name.as_ptr());
+    vk::InstanceCreateFlags::ENUMERATE_PORTABILITY_KHR
+} else {
+    vk::InstanceCreateFlags::empty()
+};
+
+let info = vk::InstanceCreateInfo::builder()
+    .application_info(&amp;application_info)
+    .enabled_extension_names(&amp;extensions)
+    .flags(flags);
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>이 코드는 애플리케이션이 Vulkan 구현을 준수하지 못하는 플랫폼에서 컴파일되고 Vulkan 버전이 우리가 정의한 최소 버전을 만족하거나 넘는다면, <code>KHR_PORTABILITY_ENUMERATION_EXTENSION</code>을 활성화합니다(여기서는 단순히 macOS인지 체크합니다).</p>
+<p>또한 이 코드는 <code>KHR_GET_PHYSICAL_DEVICE_PROPERTIES2_EXTENSION</code>을 같은 조건에서 활성화합니다. 이 확장은 <code>KHR_PORTABILITY_SUBSET_EXTENSION</code> device 확장을 활성화하기 위해 필요합니다(logical device를 set up하는 이후 튜토리얼에서 추가됩니다).</p>
+<h2 id="instance-vs--vkinstance"><a class="header" href="#instance-vs--vkinstance"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a> vs  <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Instance.html"><code class="hljs">vk::Instance</code></a></a></a></h2>
+<p><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.EntryV1_0.html#method.create_instance"><code class="hljs">create_instance</code></a>함수를 호출할 때, 반환되는것은 Vulkan 커맨드인 <a href="https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/vkCreateInstance.html"><a href="https://www.khronos.org/registry/vulkan/specs/latest/man/html/vkCreateInstance.html"><code class="hljs">vkCreateInstance</code></a></a>가 리턴하는 raw Vulkan 인스턴스(<a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Instance.html"><code class="hljs">vk::Instance</code></a></a>)가 아닙니다. 대신 얻게되는 것은 <code>vulkanalia</code>에서 정의한 custom type입니다. 이 타입은 raw Vulkan 인스턴스와 특정 인스턴스에 로드된 커맨드들의 조합입니다.</p>
+<p>우리가 사용한것이 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a>이며 (<code>vulkanalia</code> 프렐루드에서 임포트됨) raw Vulkan 인스턴스인 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Instance.html"><code class="hljs">vk::Instance</code></a></a>와 혼동해서는 안됩니다. 이후 챕터에서는 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Device.html"><code class="hljs">Device</code></a> 타입 또한 사용할것입니다. 이 타입은 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a>처럼, raw Vulkan 장치(<a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Device.html"><code class="hljs">vk::Device</code></a></a>)와 특정 장치를 위해 로드된 커맨드 짝지어집니다. 운좋게도, 이 튜토리얼에서는 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Instance.html"><code class="hljs">vk::Instance</code></a></a>나 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Device.html"><code class="hljs">vk::Device</code></a></a>를 직접적으로 사용하지는 않습니다. 이것들을 혼동할까봐 걱정하지 않아도 됩니다.</p>
+<p>하나의 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a>는 Vulkan 인스턴스 그리고 연관된 커맨드들을 포함하기 때문에, <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/struct.Instance.html"><code class="hljs">Instance</code></a>를 위해 구현된 커맨드 wrapper는 Vulkan커맨드에서 필요한 경우에  Vulkan 인스턴스를 제공할 수 있습니다.</p>
+<p><a href="https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/vkDestroyInstance.html"><a href="https://www.khronos.org/registry/vulkan/specs/latest/man/html/vkDestroyInstance.html"><code class="hljs">vkDestroyInstance</code></a></a>커맨드의 문서를 보면, 두개의 파라미터를 취하는 것을 볼 수 있습니다. 하나는 파괴할 인스턴스이고, 하나는 optional custom allocator callback입니다. 그러나 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance"><code class="hljs">destroy_instance</code></a></a>문서를 보면, 오직 한개의 optional custom allocator callback를 받는 것을 볼 수 있습니다. 왜냐하면 위에서 설명했듯이 raw Vulkan 핸들을 첫번째 파라미터로 제공해줄 수 있기 때문입니다.</p>
+<p>인스턴스 생성 이후 더 복잡한 단계로 가기 전에, validation layer를 체크해서 디버깅 옵션을 평가합니다.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../setup/base_code.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../setup/validation_layers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../setup/base_code.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../setup/validation_layers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

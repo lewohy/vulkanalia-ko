@@ -1,0 +1,652 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Depth buffering - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html" class="active"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="depth-buffering"><a class="header" href="#depth-buffering">Depth buffering</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/26_depth_buffering.rs">main.rs</a> | <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/shaders/26/shader.vert">shader.vert</a> | <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/shaders/26/shader.frag">shader.frag</a></p>
+<p>The geometry we've worked with so far is projected into 3D, but it's still completely flat. In this chapter we're going to add a Z coordinate to the position to prepare for 3D meshes. We'll use this third coordinate to place a square over the current square to see a problem that arises when geometry is not sorted by depth.</p>
+<h2 id="3d-geometry"><a class="header" href="#3d-geometry">3D geometry</a></h2>
+<p>Change the <code>Vertex</code> struct to use a 3D vector for the position, and update the <code>format</code> in the corresponding <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.VertexInputAttributeDescription.html"><code class="hljs">vk::VertexInputAttributeDescription</code></a> and update the offsets in the others:</p>
+<pre><code class="language-rust noplaypen">#[repr(C)]
+#[derive(Copy, Clone, Debug)]
+struct Vertex {
+    pos: Vec3,
+    color: Vec3,
+    tex_coord: Vec2,
+}
+
+impl Vertex {
+    const fn new(pos: Vec3, color: Vec3, tex_coord: Vec2) -&gt; Self {
+        Self { pos, color, tex_coord }
+    }
+
+    fn binding_description() -&gt; vk::VertexInputBindingDescription {
+        vk::VertexInputBindingDescription::builder()
+            .binding(0)
+            .stride(size_of::&lt;Vertex&gt;() as u32)
+            .input_rate(vk::VertexInputRate::VERTEX)
+            .build()
+    }
+
+    fn attribute_descriptions() -&gt; [vk::VertexInputAttributeDescription; 3] {
+        let pos = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(0)
+            .format(vk::Format::R32G32B32_SFLOAT)
+            .offset(0)
+            .build();
+        let color = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(1)
+            .format(vk::Format::R32G32B32_SFLOAT)
+            .offset(size_of::&lt;Vec3&gt;() as u32)
+            .build();
+        let tex_coord = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(2)
+            .format(vk::Format::R32G32_SFLOAT)
+            .offset((size_of::&lt;Vec3&gt;() + size_of::&lt;Vec3&gt;()) as u32)
+            .build();
+        [pos, color, tex_coord]
+    }
+}
+</code></pre>
+<p>Next, update the vertex shader to accept and transform 3D coordinates as input. Don't forget to recompile it afterwards!</p>
+<pre><code class="language-glsl">layout(location = 0) in vec3 inPosition;
+
+// ...
+
+void main() {
+    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
+    fragColor = inColor;
+    fragTexCoord = inTexCoord;
+}
+</code></pre>
+<p>Lastly, update the <code>vertices</code> container to include Z coordinates:</p>
+<pre><code class="language-rust noplaypen">static VERTICES: [Vertex; 4] = [
+    Vertex::new(vec3(-0.5, -0.5, 0.0), vec3(1.0, 0.0, 0.0), vec2(1.0, 0.0)),
+    Vertex::new(vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0), vec2(0.0, 0.0)),
+    Vertex::new(vec3(0.5, 0.5, 0.0), vec3(0.0, 0.0, 1.0), vec2(0.0, 1.0)),
+    Vertex::new(vec3(-0.5, 0.5, 0.0), vec3(1.0, 1.0, 1.0), vec2(1.0, 1.0)),
+];
+</code></pre>
+<p>If you run your application now, then you should see exactly the same result as before. It's time to add some extra geometry to make the scene more interesting, and to demonstrate the problem that we're going to tackle in this chapter. Duplicate the vertices to define positions for a square right under the current one like this:</p>
+<p><img src="../images/extra_square.svg" alt="" /></p>
+<p>Use Z coordinates of <code>-0.5</code> and add the appropriate indices for the extra square:</p>
+<pre><code class="language-rust noplaypen">static VERTICES: [Vertex; 8] = [
+    Vertex::new(vec3(-0.5, -0.5, 0.0), vec3(1.0, 0.0, 0.0), vec2(1.0, 0.0)),
+    Vertex::new(vec3(0.5, -0.5, 0.0), vec3(0.0, 1.0, 0.0), vec2(0.0, 0.0)),
+    Vertex::new(vec3(0.5, 0.5, 0.0), vec3(0.0, 0.0, 1.0), vec2(0.0, 1.0)),
+    Vertex::new(vec3(-0.5, 0.5, 0.0), vec3(1.0, 1.0, 1.0), vec2(1.0, 1.0)),
+    Vertex::new(vec3(-0.5, -0.5, -0.5), vec3(1.0, 0.0, 0.0), vec2(1.0, 0.0)),
+    Vertex::new(vec3(0.5, -0.5, -0.5), vec3(0.0, 1.0, 0.0), vec2(0.0, 0.0)),
+    Vertex::new(vec3(0.5, 0.5, -0.5), vec3(0.0, 0.0, 1.0), vec2(0.0, 1.0)),
+    Vertex::new(vec3(-0.5, 0.5, -0.5), vec3(1.0, 1.0, 1.0), vec2(1.0, 1.0)),
+];
+
+const INDICES: &amp;[u16] = &amp;[
+    0, 1, 2, 2, 3, 0,
+    4, 5, 6, 6, 7, 4,
+];
+</code></pre>
+<p>Run your program now and you'll see something resembling an Escher illustration:</p>
+<p><img src="../images/depth_issues.png" alt="" /></p>
+<p>The problem is that the fragments of the lower square are drawn over the fragments of the upper square, simply because it comes later in the index array. There are two ways to solve this:</p>
+<ul>
+<li>Sort all of the draw calls by depth from back to front</li>
+<li>Use depth testing with a depth buffer</li>
+</ul>
+<p>The first approach is commonly used for drawing transparent objects, because order-independent transparency is a difficult challenge to solve. However, the problem of ordering fragments by depth is much more commonly solved using a <em>depth buffer</em>. A depth buffer is an additional attachment that stores the depth for every position, just like the color attachment stores the color of every position. Every time the rasterizer produces a fragment, the depth test will check if the new fragment is closer than the previous one. If it isn't, then the new fragment is discarded. A fragment that passes the depth test writes its own depth to the depth buffer. It is possible to manipulate this value from the fragment shader, just like you can manipulate the color output.</p>
+<p>Before we continue, there is one issue we need to fix. The perspective projection matrix generated by <code>cgmath::perspective</code> in <code>App::update_uniform_buffer</code> uses the OpenGL depth range of <code>-1.0</code> to <code>1.0</code>. We want to use the Vulkan range of <code>0.0</code> to <code>1.0</code> instead so we'll pre-multiply the generated perspective matrix with a <a href="https://matthewwellings.com/blog/the-new-vulkan-coordinate-system">correction matrix</a> that maps the OpenGL range to the Vulkan range:</p>
+<pre><code class="language-rust noplaypen">let correction = Mat4::new(
+    1.0,  0.0,       0.0, 0.0,
+    // We're also flipping the Y-axis with this line's `-1.0`.
+    0.0, -1.0,       0.0, 0.0,
+    0.0,  0.0, 1.0 / 2.0, 0.0,
+    0.0,  0.0, 1.0 / 2.0, 1.0,
+);
+
+let proj = correction
+    * cgmath::perspective(
+        Deg(45.0),
+        self.data.swapchain_extent.width as f32 / self.data.swapchain_extent.height as f32,
+        0.1,
+        10.0,
+    );
+
+// This line should be deleted because we're now accomplishing the Y-axis flip
+// using the new correction matrix.
+// proj[1][1] *= -1.0;
+</code></pre>
+<p>Note that <code>cgmath::Matrix4::new</code> constructs a matrix in column-major order, so the parameters we passed to it seem to be transposed. So the actual matrix would look like this in row-major order:</p>
+<pre><code class="language-text">1   0   0   0
+0  -1   0   0
+0   0   ½   ½
+0   0   0   1
+</code></pre>
+<h2 id="depth-image-and-view"><a class="header" href="#depth-image-and-view">Depth image and view</a></h2>
+<p>A depth attachment is based on an image, just like the color attachment. The difference is that the swapchain will not automatically create depth images for us. We only need a single depth image, because only one draw operation is running at once. The depth image will again require the trifecta of resources: image, memory and image view.</p>
+<pre><code class="language-rust noplaypen">struct AppData {
+    // ...
+    depth_image: vk::Image,
+    depth_image_memory: vk::DeviceMemory,
+    depth_image_view: vk::ImageView,
+}
+</code></pre>
+<p>Create a new function <code>create_depth_objects</code> to set up these resources:</p>
+<pre><code class="language-rust noplaypen">impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_command_pool(&amp;instance, &amp;device, &amp;mut data)?;
+        create_depth_objects(&amp;instance, &amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+unsafe fn create_depth_objects(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;mut AppData,
+) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+</code></pre>
+<p>Creating a depth image is fairly straightforward. It should have the same resolution as the color attachment, defined by the swapchain extent, an image usage appropriate for a depth attachment, optimal tiling and device local memory. The only question is: what is the right format for a depth image? The format must contain a depth component, indicated by <code>D??_</code> in the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html"><code class="hljs">vk::Format</code></a> variant.</p>
+<p>Unlike the texture image, we don't necessarily need a specific format, because we won't be directly accessing the texels from the program. It just needs to have a reasonable accuracy, at least 24 bits is common in real-world applications. There are several formats that fit this requirement:</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html#associatedconstant.D32_SFLOAT"><code class="hljs">vk::Format::D32_SFLOAT</code></a> – 32-bit float for depth</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html#associatedconstant.D32_SFLOAT_S8_UINT"><code class="hljs">vk::Format::D32_SFLOAT_S8_UINT</code></a> – 32-bit signed float for depth and 8 bit stencil component</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html#associatedconstant.D24_UNORM_S8_UINT"><code class="hljs">vk::Format::D24_UNORM_S8_UINT</code></a> – 24-bit float for depth and 8 bit stencil component</li>
+</ul>
+<p>The stencil component is used for <a href="https://en.wikipedia.org/wiki/Stencil_buffer">stencil tests</a>, which is an additional test that can be combined with depth testing. We'll look at this in a future chapter.</p>
+<p>We could simply go for the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html#associatedconstant.D32_SFLOAT"><code class="hljs">vk::Format::D32_SFLOAT</code></a> format, because support for it is extremely common (see the hardware database), but it's nice to add some extra flexibility to our application where possible. We're going to write a <code>get_supported_format</code> function that takes a list of candidate formats in order from most desirable to least desirable and returns the first that satisfies our requirements:</p>
+<pre><code class="language-rust noplaypen">unsafe fn get_supported_format(
+    instance: &amp;Instance,
+    data: &amp;AppData,
+    candidates: &amp;[vk::Format],
+    tiling: vk::ImageTiling,
+    features: vk::FormatFeatureFlags,
+) -&gt; Result&lt;vk::Format&gt; {
+    candidates
+        .iter()
+        .cloned()
+        .find(|f| {
+
+        })
+        .ok_or_else(|| anyhow!(&quot;Failed to find supported format!&quot;))
+}
+</code></pre>
+<p>The support of a format depends on the tiling mode and usage, so we must also include these as parameters. The support of a format can be queried using the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.InstanceV1_0.html#method.get_physical_device_format_properties"><code class="hljs">get_physical_device_format_properties</code></a> function:</p>
+<pre><code class="language-rust noplaypen">let properties = instance.get_physical_device_format_properties(
+    data.physical_device,
+    *f,
+);
+</code></pre>
+<p>The <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.FormatProperties.html"><code class="hljs">vk::FormatProperties</code></a> struct contains three fields:</p>
+<ul>
+<li><code>linear_tiling_features</code> – Use cases that are supported with linear tiling</li>
+<li><code>optimal_tiling_features</code> – Use cases that are supported with optimal tiling</li>
+<li><code>buffer_features</code> – Use cases that are supported for buffers</li>
+</ul>
+<p>Only the first two are relevant here, and the one we check depends on the value provided for the <code>tiling</code> parameter of the function:</p>
+<pre><code class="language-rust noplaypen">match tiling {
+    vk::ImageTiling::LINEAR =&gt; properties.linear_tiling_features.contains(features),
+    vk::ImageTiling::OPTIMAL =&gt; properties.optimal_tiling_features.contains(features),
+    _ =&gt; false,
+}
+</code></pre>
+<p>We'll use this function now to create a <code>get_depth_format</code> helper function to select a format with a depth component that supports usage as depth attachment:</p>
+<pre><code class="language-rust noplaypen">unsafe fn get_depth_format(instance: &amp;Instance, data: &amp;AppData) -&gt; Result&lt;vk::Format&gt; {
+    let candidates = &amp;[
+        vk::Format::D32_SFLOAT,
+        vk::Format::D32_SFLOAT_S8_UINT,
+        vk::Format::D24_UNORM_S8_UINT,
+    ];
+
+    get_supported_format(
+        instance,
+        data,
+        candidates,
+        vk::ImageTiling::OPTIMAL,
+        vk::FormatFeatureFlags::DEPTH_STENCIL_ATTACHMENT,
+    )
+}
+</code></pre>
+<p>Call the function to find a depth format from <code>create_depth_objects</code>:</p>
+<pre><code class="language-rust noplaypen">let format = get_depth_format(instance, data)?;
+</code></pre>
+<p>We now have all the required information to invoke our <code>create_image</code> and <code>create_image_view</code> helper functions:</p>
+<pre><code class="language-rust noplaypen">let (depth_image, depth_image_memory) = create_image(
+    instance,
+    device,
+    data,
+    data.swapchain_extent.width,
+    data.swapchain_extent.height,
+    format,
+    vk::ImageTiling::OPTIMAL,
+    vk::ImageUsageFlags::DEPTH_STENCIL_ATTACHMENT,
+    vk::MemoryPropertyFlags::DEVICE_LOCAL,
+)?;
+
+data.depth_image = depth_image;
+data.depth_image_memory = depth_image_memory;
+
+// Image View
+
+data.depth_image_view = create_image_view(device, data.depth_image, format)?;
+</code></pre>
+<p>However, the <code>create_image_view</code> function currently assumes that the subresource always uses <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ImageAspectFlags.html#associatedconstant.COLOR"><code class="hljs">vk::ImageAspectFlags::COLOR</code></a>, so we will need to turn that field into a parameter:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_image_view(
+    device: &amp;Device,
+    image: vk::Image,
+    format: vk::Format,
+    aspects: vk::ImageAspectFlags,
+) -&gt; Result&lt;vk::ImageView&gt; {
+    let subresource_range = vk::ImageSubresourceRange::builder()
+        .aspect_mask(aspects)
+        .base_mip_level(0)
+        .level_count(1)
+        .base_array_layer(0)
+        .layer_count(1);
+
+    // ...
+}
+</code></pre>
+<p>Update all calls to this function to use the right aspect:</p>
+<pre><code class="language-rust noplaypen">create_image_view(device, *i, data.swapchain_format, vk::ImageAspectFlags::COLOR)
+
+// ...
+
+data.depth_image_view = create_image_view(
+    device,
+    data.depth_image,
+    format,
+    vk::ImageAspectFlags::DEPTH,
+)?;
+
+// ...
+
+data.texture_image_view = create_image_view(
+    device,
+    data.texture_image,
+    vk::Format::R8G8B8A8_SRGB,
+    vk::ImageAspectFlags::COLOR,
+)?;
+</code></pre>
+<p>That's it for creating the depth image. We don't need to map it or copy another image to it, because we're going to clear it at the start of the render pass like the color attachment.</p>
+<h3 id="explicitly-transitioning-the-depth-image"><a class="header" href="#explicitly-transitioning-the-depth-image">Explicitly transitioning the depth image</a></h3>
+<p>We don't need to explicitly transition the layout of the image to a depth attachment because we'll take care of this in the render pass. However, for completeness I'll still describe the process in this section. You may skip it if you like.</p>
+<p>Make a call to <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_4.html#method.transition_image_layout"><code class="hljs">transition_image_layout</code></a> at the end of the <code>create_depth_objects</code> function like so:</p>
+<pre><code class="language-rust noplaypen">transition_image_layout(
+    device,
+    data,
+    data.depth_image,
+    format,
+    vk::ImageLayout::UNDEFINED,
+    vk::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+)?;
+</code></pre>
+<p>The undefined layout can be used as initial layout, because there are no existing depth image contents that matter. We need to update some of the logic in <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_4.html#method.transition_image_layout"><code class="hljs">transition_image_layout</code></a> to use the right subresource aspect:</p>
+<blockquote>
+<p><strong>Note:</strong> The first usage of the <code>|</code> operator below describes a <a href="https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html"><em>pattern</em></a> that matches either of the specified <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Format.html"><code class="hljs">vk::Format</code></a>s in the <code>match</code> arm. Meanwhile, the second usage of the <code>|</code> operator is the <a href="https://doc.rust-lang.org/std/ops/trait.BitOr.html"><em>bitwise OR operator</em></a> which combines the bits of the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ImageAspectFlags.html"><code class="hljs">vk::ImageAspectFlags</code></a> we want to enable in this code path.</p>
+</blockquote>
+<pre><code class="language-rust noplaypen">let aspect_mask = if new_layout == vk::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL {
+    match format {
+        vk::Format::D32_SFLOAT_S8_UINT | vk::Format::D24_UNORM_S8_UINT =&gt;
+            vk::ImageAspectFlags::DEPTH | vk::ImageAspectFlags::STENCIL,
+        _ =&gt; vk::ImageAspectFlags::DEPTH
+    }
+} else {
+    vk::ImageAspectFlags::COLOR
+};
+
+let subresource = vk::ImageSubresourceRange::builder()
+    .aspect_mask(aspect_mask)
+    .base_mip_level(0)
+    .level_count(1)
+    .base_array_layer(0)
+    .layer_count(1);
+</code></pre>
+<p>Although we're not using the stencil component, we do need to include it in the layout transitions of the depth image.</p>
+<p>Finally, add the correct access masks and pipeline stages:</p>
+<pre><code class="language-rust noplaypen">let (
+    src_access_mask,
+    dst_access_mask,
+    src_stage_mask,
+    dst_stage_mask,
+) = match (old_layout, new_layout) {
+    (vk::ImageLayout::UNDEFINED, vk::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL) =&gt; (
+        vk::AccessFlags::empty(),
+        vk::AccessFlags::DEPTH_STENCIL_ATTACHMENT_READ | vk::AccessFlags::DEPTH_STENCIL_ATTACHMENT_WRITE,
+        vk::PipelineStageFlags::TOP_OF_PIPE,
+        vk::PipelineStageFlags::EARLY_FRAGMENT_TESTS,
+    ),
+    // ...
+};
+</code></pre>
+<p>The depth buffer will be read from to perform depth tests to see if a fragment is visible, and will be written to when a new fragment is drawn. The reading happens in the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.PipelineStageFlags.html#associatedconstant.EARLY_FRAGMENT_TESTS"><code class="hljs">vk::PipelineStageFlags::EARLY_FRAGMENT_TESTS</code></a> stage and the writing in the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.PipelineStageFlags.html#associatedconstant.LATE_FRAGMENT_TESTS"><code class="hljs">vk::PipelineStageFlags::LATE_FRAGMENT_TESTS</code></a>. You should pick the earliest pipeline stage that matches the specified operations, so that it is ready for usage as depth attachment when it needs to be.</p>
+<h2 id="render-pass"><a class="header" href="#render-pass">Render pass</a></h2>
+<p>We're now going to modify <code>create_render_pass</code> to include a depth attachment. First specify the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.AttachmentDescription.html"><code class="hljs">vk::AttachmentDescription</code></a>:</p>
+<pre><code class="language-rust noplaypen">let depth_stencil_attachment = vk::AttachmentDescription::builder()
+    .format(get_depth_format(instance, data)?)
+    .samples(vk::SampleCountFlags::_1)
+    .load_op(vk::AttachmentLoadOp::CLEAR)
+    .store_op(vk::AttachmentStoreOp::DONT_CARE)
+    .stencil_load_op(vk::AttachmentLoadOp::DONT_CARE)
+    .stencil_store_op(vk::AttachmentStoreOp::DONT_CARE)
+    .initial_layout(vk::ImageLayout::UNDEFINED)
+    .final_layout(vk::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+</code></pre>
+<p>The <code>format</code> should be the same as the depth image itself. This time we don't care about storing the depth data (<code>store_op</code>), because it will not be used after drawing has finished. This may allow the hardware to perform additional optimizations. Just like the color buffer, we don't care about the previous depth contents, so we can use <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ImageLayout.html#associatedconstant.UNDEFINED"><code class="hljs">vk::ImageLayout::UNDEFINED</code></a> as <code>initial_layout</code>.</p>
+<pre><code class="language-rust noplaypen">let depth_stencil_attachment_ref = vk::AttachmentReference::builder()
+    .attachment(1)
+    .layout(vk::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+</code></pre>
+<p>Add a reference to the attachment for the first (and only) subpass:</p>
+<pre><code class="language-rust noplaypen">let subpass = vk::SubpassDescription::builder()
+    .pipeline_bind_point(vk::PipelineBindPoint::GRAPHICS)
+    .color_attachments(color_attachments)
+    .depth_stencil_attachment(&amp;depth_stencil_attachment_ref);
+</code></pre>
+<p>Unlike color attachments, a subpass can only use a single depth (+stencil) attachment. It wouldn't really make any sense to do depth tests on multiple buffers.</p>
+<pre><code class="language-rust noplaypen">let attachments = &amp;[color_attachment, depth_stencil_attachment];
+let subpasses = &amp;[subpass];
+let dependencies = &amp;[dependency];
+let info = vk::RenderPassCreateInfo::builder()
+    .attachments(attachments)
+    .subpasses(subpasses)
+    .dependencies(dependencies);
+</code></pre>
+<p>Next, update the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.RenderPassCreateInfo.html"><code class="hljs">vk::RenderPassCreateInfo</code></a> struct to refer to both attachments.</p>
+<pre><code class="language-rust noplaypen">let dependency = vk::SubpassDependency::builder()
+    .src_subpass(vk::SUBPASS_EXTERNAL)
+    .dst_subpass(0)
+    .src_stage_mask(vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT
+        | vk::PipelineStageFlags::EARLY_FRAGMENT_TESTS)
+    .src_access_mask(vk::AccessFlags::empty())
+    .dst_stage_mask(vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT
+        | vk::PipelineStageFlags::EARLY_FRAGMENT_TESTS)
+    .dst_access_mask(vk::AccessFlags::COLOR_ATTACHMENT_WRITE
+        | vk::AccessFlags::DEPTH_STENCIL_ATTACHMENT_WRITE);
+</code></pre>
+<p>Finally, we need to extend our subpass dependencies to make sure that there is no conflict between the transitioning of the depth image and it being cleared as part of its load operation. The depth image is first accessed in the early fragment test pipeline stage and because we have a load operation that <em>clears</em>, we should specify the access mask for writes.</p>
+<h2 id="framebuffer"><a class="header" href="#framebuffer">Framebuffer</a></h2>
+<p>The next step is to modify the framebuffer creation to bind the depth image to the depth attachment. Go to <code>create_framebuffers</code> and specify the depth image view as second attachment:</p>
+<pre><code class="language-rust noplaypen">let attachments = &amp;[*i, data.depth_image_view];
+let create_info = vk::FramebufferCreateInfo::builder()
+    .render_pass(data.render_pass)
+    .attachments(attachments)
+    .width(data.swapchain_extent.width)
+    .height(data.swapchain_extent.height)
+    .layers(1);
+</code></pre>
+<p>The color attachment differs for every swapchain image, but the same depth image can be used by all of them because only a single subpass is running at the same time due to our semaphores.</p>
+<p>You'll also need to move the call to <code>create_framebuffers</code> to make sure that it is called after the depth image view has actually been created:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+    // ...
+    create_depth_objects(&amp;instance, &amp;device, &amp;mut data)?;
+    create_framebuffers(&amp;device, &amp;mut data)?;
+    // ...
+}
+</code></pre>
+<h2 id="clear-values"><a class="header" href="#clear-values">Clear values</a></h2>
+<p>Because we now have multiple attachments with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.AttachmentLoadOp.html#associatedconstant.CLEAR"><code class="hljs">vk::AttachmentLoadOp::CLEAR</code></a>, we also need to specify multiple clear values. Go to <code>create_command_buffers</code> and add an instance of <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/union.ClearValue.html"><code class="hljs">vk::ClearValue</code></a> to the <code>clear_values</code> array:</p>
+<pre><code class="language-rust noplaypen">let color_clear_value = vk::ClearValue {
+    color: vk::ClearColorValue {
+        float32: [0.0, 0.0, 0.0, 1.0],
+    },
+};
+
+let depth_clear_value = vk::ClearValue {
+    depth_stencil: vk::ClearDepthStencilValue {
+        depth: 1.0,
+        stencil: 0,
+    },
+};
+
+let clear_values = &amp;[color_clear_value, depth_clear_value];
+</code></pre>
+<p>The range of depths in the depth buffer is <code>0.0</code> to <code>1.0</code> in Vulkan, where <code>1.0</code> lies at the far view plane and <code>0.0</code> at the near view plane. The initial value at each point in the depth buffer should be the furthest possible depth, which is <code>1.0</code>.</p>
+<p>Note that the order of <code>clear_values</code> should be identical to the order of your attachments.</p>
+<h2 id="depth-and-stencil-state"><a class="header" href="#depth-and-stencil-state">Depth and stencil state</a></h2>
+<p>The depth attachment is ready to be used now, but depth testing still needs to be enabled in the graphics pipeline. It is configured through the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.PipelineDepthStencilStateCreateInfo.html"><code class="hljs">vk::PipelineDepthStencilStateCreateInfo</code></a> struct:</p>
+<pre><code class="language-rust noplaypen">let depth_stencil_state = vk::PipelineDepthStencilStateCreateInfo::builder()
+    .depth_test_enable(true)
+    .depth_write_enable(true)
+    // continued ...
+</code></pre>
+<p>The <code>depth_test_enable</code> field specifies if the depth of new fragments should be compared to the depth buffer to see if they should be discarded. The <code>depth_write_enable</code> field specifies if the new depth of fragments that pass the depth test should actually be written to the depth buffer.</p>
+<pre><code class="language-rust noplaypen">    .depth_compare_op(vk::CompareOp::LESS)
+</code></pre>
+<p>The <code>depth_compare_op</code> field specifies the comparison that is performed to keep or discard fragments. We're sticking to the convention of lower depth = closer, so the depth of new fragments should be <em>less</em>.</p>
+<pre><code class="language-rust noplaypen">    .depth_bounds_test_enable(false)
+    .min_depth_bounds(0.0) // Optional.
+    .max_depth_bounds(1.0) // Optional.
+</code></pre>
+<p>The <code>depth_bounds_test_enable</code>, <code>min_depth_bounds</code> and <code>max_depth_bounds</code> fields are used for the optional depth bound test. Basically, this allows you to only keep fragments that fall within the specified depth range. We won't be using this functionality.</p>
+<pre><code class="language-rust noplaypen">    .stencil_test_enable(false)
+    .front(/* vk::StencilOpState */) // Optional.
+    .back(/* vk::StencilOpState */); // Optional.
+</code></pre>
+<p>The last three fields configure stencil buffer operations, which we also won't be using in this tutorial. If you want to use these operations, then you will have to make sure that the format of the depth/stencil image contains a stencil component.</p>
+<pre><code class="language-rust noplaypen">let info = vk::GraphicsPipelineCreateInfo::builder()
+    .stages(stages)
+    .vertex_input_state(&amp;vertex_input_state)
+    .input_assembly_state(&amp;input_assembly_state)
+    .viewport_state(&amp;viewport_state)
+    .rasterization_state(&amp;rasterization_state)
+    .multisample_state(&amp;multisample_state)
+    .depth_stencil_state(&amp;depth_stencil_state)
+    .color_blend_state(&amp;color_blend_state)
+    .layout(data.pipeline_layout)
+    .render_pass(data.render_pass)
+    .subpass(0);
+</code></pre>
+<p>Update the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.GraphicsPipelineCreateInfo.html"><code class="hljs">vk::GraphicsPipelineCreateInfo</code></a> struct to reference the depth stencil state we just filled in. A depth stencil state must always be specified if the render pass contains a depth stencil attachment.</p>
+<p>If you run your program now, then you should see that the fragments of the geometry are now correctly ordered:</p>
+<p><img src="../images/depth_correct.png" alt="" /></p>
+<h2 id="handling-window-resize"><a class="header" href="#handling-window-resize">Handling window resize</a></h2>
+<p>The resolution of the depth buffer should change when the window is resized to match the new color attachment resolution. Extend the <code>App::recreate_swapchain</code> method to recreate the depth resources in that case:</p>
+<pre><code class="language-rust noplaypen">unsafe fn recreate_swapchain(&amp;mut self, window: &amp;Window) -&gt; Result&lt;()&gt; {
+    self.device.device_wait_idle()?;
+    self.destroy_swapchain();
+    create_swapchain(window, &amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_swapchain_image_views(&amp;self.device, &amp;mut self.data)?;
+    create_render_pass(&amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_pipeline(&amp;self.device, &amp;mut self.data)?;
+    create_depth_objects(&amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_framebuffers(&amp;self.device, &amp;mut self.data)?;
+    create_uniform_buffers(&amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_descriptor_pool(&amp;self.device, &amp;mut self.data)?;
+    create_descriptor_sets(&amp;self.device, &amp;mut self.data)?;
+    create_command_buffers(&amp;self.device, &amp;mut self.data)?;
+    Ok(())
+}
+</code></pre>
+<p>The cleanup operations should happen in the swapchain cleanup function:</p>
+<pre><code class="language-rust noplaypen">unsafe fn destroy_swapchain(&amp;mut self) {
+    self.device.destroy_image_view(self.data.depth_image_view, None);
+    self.device.free_memory(self.data.depth_image_memory, None);
+    self.device.destroy_image(self.data.depth_image, None);
+    // ...
+}
+</code></pre>
+<p>Congratulations, your application is now finally ready to render arbitrary 3D geometry and have it look right. We're going to try this out in the next chapter by drawing a textured model!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../texture/combined_image_sampler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../model/loading_models.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../texture/combined_image_sampler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../model/loading_models.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

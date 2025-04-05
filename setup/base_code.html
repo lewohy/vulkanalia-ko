@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Base code - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html" class="active"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="base-code"><a class="header" href="#base-code">Base code</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/00_base_code.rs">main.rs</a></p>
+<p><code>Development environment</code>에서 Cargo project를 만들었고, 필수적인 dependencies를 추가했습니다. 이 챕터에서는 <code>src/main.rs</code>안의 코드를 다음 코드로 바꿉니다.</p>
+<pre><pre class="playground"><code class="language-rust">#![allow(
+    dead_code,
+    unused_variables,
+    clippy::too_many_arguments,
+    clippy::unnecessary_wraps
+)]
+
+use anyhow::Result;
+use winit::dpi::LogicalSize;
+use winit::event::{Event, WindowEvent};
+use winit::event_loop::EventLoop;
+use winit::window::{Window, WindowBuilder};
+
+fn main() -&gt; Result&lt;()&gt; {
+    pretty_env_logger::init();
+
+    // Window
+
+    let event_loop = EventLoop::new()?;
+    let window = WindowBuilder::new()
+        .with_title(&quot;Vulkan Tutorial (Rust)&quot;)
+        .with_inner_size(LogicalSize::new(1024, 768))
+        .build(&amp;event_loop)?;
+
+    // App
+
+    let mut app = unsafe { App::create(&amp;window)? };
+    event_loop.run(move |event, elwt| {
+        match event {
+            // Request a redraw when all events were processed.
+            Event::AboutToWait =&gt; window.request_redraw(),
+            Event::WindowEvent { event, .. } =&gt; match event {
+                // Render a frame if our Vulkan app is not being destroyed.
+                WindowEvent::RedrawRequested if !elwt.exiting() =&gt; unsafe { app.render(&amp;window) }.unwrap(),
+                // Destroy our Vulkan app.
+                WindowEvent::CloseRequested =&gt; {
+                    elwt.exit();
+                    unsafe { app.destroy(); }
+                }
+                _ =&gt; {}
+            }
+            _ =&gt; {}
+        }
+    })?;
+
+    Ok(())
+}
+
+/// Our Vulkan app.
+#[derive(Clone, Debug)]
+struct App {}
+
+impl App {
+    /// Creates our Vulkan app.
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        Ok(Self {})
+    }
+
+    /// Renders a frame for our Vulkan app.
+    unsafe fn render(&amp;mut self, window: &amp;Window) -&gt; Result&lt;()&gt; {
+        Ok(())
+    }
+
+    /// Destroys our Vulkan app.
+    unsafe fn destroy(&amp;mut self) {}
+}
+
+/// The Vulkan handles and associated properties used by our Vulkan app.
+#[derive(Clone, Debug, Default)]
+struct AppData {}
+</code></pre></pre>
+<p>먼저 <code>anyhow::Result</code>를 임포트해서 <code>anyhow</code>의 <a href="https://docs.rs/anyhow/latest/anyhow/type.Result.html">Result</a>타입을 실패가능한 함수에 쓸 수 있도록 합니다. 그리고 window를 생성하고 그 window를 위한 event loop를 시작시키기 위해 필요한 <code>winit</code>의 모든 타입을 임포트합니다.</p>
+<p>다음으로 <code>main</code>함수(<code>anyhow::Result</code>를 리턴합니다)로 갑니다. 이 함수는 로그를 콘솔에 출력하는 <code>pretty_env_logger</code>(이후에 설명될 것처럼)를 초기화하면서 시작합니다.</p>
+<p>그러면, <code>winit</code>를 이용해 event loop와 렌더링할 window를 생성하고, <code>LogicalSize</code>를 통해 디스플레이의 DPI에 맞춰 창 크기를 조정합니다. UI 스케일링에 대해 더 알고싶다면 <a href="https://docs.rs/winit/latest/winit/dpi/index.html"><code>winit</code> 문서</a>를 참고합니다.</p>
+<p>다음으로 Vulkan app의 인스턴스를 만들고 rendering loop로 들어갑니다. 이 루프는 app이 파괴되고 프로그램이 종료되는, window를 닫는 요청을 할 때 까지 window에 scene을 계속 렌더링합니다. <code>destroying</code>플래그는 파괴된 Vulkan 리소스에 접근하는 시도 이후에 프로그램 crash를 만들어내는 가능성이 높은, app이 종료되는 동안 scene에 렌더링하는것을 방지하기 위해 필수적입니다.</p>
+<p>마지막으로 <code>App</code>과 <code>AppData</code>로 옵니다. <code>App</code>은 따라오는 챕터의 코스를 빌드할 Vulkan프로그램을 위해 요구되는 setup, rendering 그리고 destruction 로직을 구현하는데 사용됩니다. <code>AppData</code>는 단순히 우리가 생성하고 초기화할 다수의 Vulkan 리소스 컨테이너 역할을 합니다. <code>AppData</code>는 Vulkan 리소스들이 쉽게 함수로 전달되어 읽거나 수정될 수 있도록 합니다. <code>AppData</code>는 <a href="https://doc.rust-lang.org/std/default/trait.Default.html">Default trait</a>를 구현하므로, 쉽게 비어있거나 기본값으로 구조체의 인스턴스를 생성할 수 있습니다.</p>
+<p><code>&amp;mut AppData</code>를 갖거나 Vulkan 리소스를 생성하고 초기화하는 함수들을 추가하는것으로 구성된 챕터들이 많기때문에, <code>AppData</code>는 유용합니다. 이 함수들은 Vulkan app을 set up하기 위해 <code>App:create</code> 생성자에서 호출됩니다. 그러면 프로그램이 종료되기 전에, Vulkan 리소스들은 <code>App:destroy</code>메소드에 의해 해제됩니다.</p>
+<h2 id="a-note-on-safety"><a class="header" href="#a-note-on-safety">A Note on Safety</a></h2>
+<p>모든 Vulkan command(raw command와 command wrapper)들은 <code>vulkanalia</code>에서 <code>unsafe</code>로 표시됩니다. 이것은 거의 Vulkan command들이 Rust에 의해 강제되는 방식으로 호출될 수 없기 때문입니다().(unless a higher-level interface that hides the Vulkan API is provided like in <a href="https://vulkano.rs/"><code>vulkano</code></a>)</p>
+<p>이 튜토리얼에서는 <code>unsafe</code>로 Vulkan command를 호출하는 모든 함수와 메소드를 마킹하는 방식으로 설명합니다. 이런 방식은 문법적 잡음을 최소화하지만, 실제 프로그램에서는 호출하는 Vulkan command에 불변 조건을 강제하는 인터페이스를 만들고, 자체적으로 만든 안전한 인터페이스를 노출시키는것이 좋습니다.</p>
+<h2 id="resource-management"><a class="header" href="#resource-management">Resource management</a></h2>
+<p><code>malloc</code>를 이용해 C에서 할당된 메모리의 각 청크들이 대응하는 <code>free</code> 호출을 필요로하듯이, 우리가 만들 모든 Vulkan 오브젝트들은 더이상 필요가 없을 때 명시적으로 파괴되어야합니다. Rust에서는 아마 <code>Rc</code>또는 <code>Arc</code>같은 스마트 포인터와 결합된  <a href="https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">RAII</a>를 사용하여 자동으로 자원 관리를 수행하는것이 가능합니다. 그러나, <a href="https://vulkan-tutorial.com/">https://vulkan-tutorial.com</a>의 저자는 이 튜토리얼에서 Vulkan 오브젝트의 allocation과 deallocation에 대하여 명시적인것을 선택했고 저도 같은 접근법을 결정했습니다. 어쨌든, Vulkan의 niche는 실수를 피하는 모든 연산에 대해 명시적이게 되는것이므로 API가 어떻게 작동하는지 배우기위해 오브젝트들의 lifetime에대해 명시적이게되는것은 좋습니다.</p>
+<p>이 튜토리얼을 따른 후에, Vulkan 오브젝트를 감싼 Rust 구조체를 작성함으로써 automatic resource management를 구현하거나 거기에 <code>Drop</code>를 구현하여 해제하는것이 가능합니다. RAII는 큰 Vulkan 프로그램을 위한 추천되는 모델이지만, 학습의 목적에서는, scenes의 뒤에서 무슨 일이 일어나는지 아는것이 항상 좋습니다.</p>
+<p>Vulkan 오브젝트들은 <code>create_xxx</code>같은 commands로 직접 생성되거나 <code>allocate_xxx</code>같은 commands로 다른 오브젝트를 통해 할당됩니다. 한 오브젝트가 더이상 어디서도 쓰이지 않는다는것을 확신한 후에, 대응하는 <code>destroy_xxx</code> 그리고 <code>free_xxx</code>를 사용하여 오브젝트를 파괴해야합니다. 이 commands를 위한 파라미터들은 일반적으로 오브젝트의 타입마다 다양하지만, 모든것에 공통으로 공유하는 한가지 <code>allocator</code> 파라미터가 있습니다. 이것은 optional 파라미터이고 custom memory allocator를 위한 callbacks을 지정할 수 있도록 해줍니다. 우리는 튜토리얼에서 이 파라미터를 무시할거고, 항상 <code>None</code>를 매개변수로 넘겨줄것입니다.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../faq.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../setup/instance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../faq.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../setup/instance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

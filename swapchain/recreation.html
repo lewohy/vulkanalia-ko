@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Recreation - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html" class="active"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="recreation"><a class="header" href="#recreation">Recreation</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/16_swapchain_recreation.rs">main.rs</a></p>
+<p>The application we have now successfully draws a triangle, but there are some circumstances that it isn't handling properly yet. It is possible for the window surface to change such that the swapchain is no longer compatible with it. One of the reasons that could cause this to happen is the size of the window changing. We have to catch these events and recreate the swapchain.</p>
+<h2 id="recreating-the-swapchain"><a class="header" href="#recreating-the-swapchain">Recreating the swapchain</a></h2>
+<p>Create a new <code>App::recreate_swapchain</code> method that calls <code>create_swapchain</code> and all of the creation functions for the objects that depend on the swapchain or the window size.</p>
+<pre><code class="language-rust noplaypen">unsafe fn recreate_swapchain(&amp;mut self, window: &amp;Window) -&gt; Result&lt;()&gt; {
+    self.device.device_wait_idle()?;
+    create_swapchain(window, &amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_swapchain_image_views(&amp;self.device, &amp;mut self.data)?;
+    create_render_pass(&amp;self.instance, &amp;self.device, &amp;mut self.data)?;
+    create_pipeline(&amp;self.device, &amp;mut self.data)?;
+    create_framebuffers(&amp;self.device, &amp;mut self.data)?;
+    create_command_buffers(&amp;self.device, &amp;mut self.data)?;
+    self.data
+        .images_in_flight
+        .resize(self.data.swapchain_images.len(), vk::Fence::null());
+    Ok(())
+}
+</code></pre>
+<p>We first call <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.device_wait_idle"><code class="hljs">device_wait_idle</code></a>, because just like in the last chapter, we shouldn't touch resources that may still be in use. Obviously, the first thing we'll have to do is recreate the swapchain itself. The image views need to be recreated because they are based directly on the swapchain images. The render pass needs to be recreated because it depends on the format of the swapchain images. It is rare for the swapchain image format to change during an operation like a window resize, but it should still be handled. Viewport and scissor rectangle size is specified during graphics pipeline creation, so the pipeline also needs to be rebuilt. It is possible to avoid this by using dynamic state for the viewports and scissor rectangles. Then, the framebuffers and command buffers also directly depend on the swapchain images. Lastly we resize our list of fences for the swapchain images since there is a possibility that there might be a different number of swapchain images after recreation.</p>
+<p>To make sure that the old versions of these objects are cleaned up before recreating them, we should move some of the cleanup code to a separate method that we can call from the <code>App::recreate_swapchain</code> method after waiting for the device to be idle. Let's call it <code>App::destroy_swapchain</code>:</p>
+<pre><code class="language-rust noplaypen">unsafe fn recreate_swapchain(&amp;mut self, window: &amp;Window) -&gt; Result&lt;()&gt; {
+    self.device.device_wait_idle()?;
+    self.destroy_swapchain();
+    // ...
+}
+
+unsafe fn destroy_swapchain(&amp;mut self) {
+
+}
+</code></pre>
+<p>We'll move the cleanup code of all objects that are recreated as part of a swapchain refresh from <code>App::destroy</code> to <code>App::destroy_swapchain</code>:</p>
+<pre><code class="language-rust noplaypen">unsafe fn destroy(&amp;mut self) {
+    self.destroy_swapchain();
+
+    self.data.in_flight_fences
+        .iter()
+        .for_each(|f| self.device.destroy_fence(*f, None));
+    self.data.render_finished_semaphores
+        .iter()
+        .for_each(|s| self.device.destroy_semaphore(*s, None));
+    self.data.image_available_semaphores
+        .iter()
+        .for_each(|s| self.device.destroy_semaphore(*s, None));
+    self.device.destroy_command_pool(self.data.command_pool, None);
+    self.device.destroy_device(None);
+    self.instance.destroy_surface_khr(self.data.surface, None);
+
+    if VALIDATION_ENABLED {
+        self.instance.destroy_debug_utils_messenger_ext(self.data.messenger, None);
+    }
+
+    self.instance.destroy_instance(None);
+}
+
+unsafe fn destroy_swapchain(&amp;mut self) {
+    self.data.framebuffers
+        .iter()
+        .for_each(|f| self.device.destroy_framebuffer(*f, None));
+    self.device.free_command_buffers(self.data.command_pool, &amp;self.data.command_buffers);
+    self.device.destroy_pipeline(self.data.pipeline, None);
+    self.device.destroy_pipeline_layout(self.data.pipeline_layout, None);
+    self.device.destroy_render_pass(self.data.render_pass, None);
+    self.data.swapchain_image_views
+        .iter()
+        .for_each(|v| self.device.destroy_image_view(*v, None));
+    self.device.destroy_swapchain_khr(self.data.swapchain, None);
+}
+</code></pre>
+<p>We could recreate the command pool from scratch, but that is rather wasteful. Instead I've opted to clean up the existing command buffers with the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.free_command_buffers"><code class="hljs">free_command_buffers</code></a> command. This way we can reuse the existing pool to allocate the new command buffers.</p>
+<p>That's all it takes to recreate the swapchain! However, the disadvantage of this approach is that we need to stop all rendering before creating the new swapchain. It is possible to create a new swapchain while drawing commands on an image from the old swapchain are still in-flight. You need to pass the previous swapchain to the <code>old_swapchain</code> field in the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SwapchainCreateInfoKHR.html"><code class="hljs">vk::SwapchainCreateInfoKHR</code></a> struct and destroy the old swapchain as soon as you've finished using it.</p>
+<h2 id="suboptimal-or-out-of-date-swapchain"><a class="header" href="#suboptimal-or-out-of-date-swapchain">Suboptimal or out-of-date swapchain</a></h2>
+<p>Now we just need to figure out when swapchain recreation is necessary and call our new <code>App::recreate_swapchain</code> method. Luckily, Vulkan will usually just tell us that the swapchain is no longer adequate during presentation. The <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.acquire_next_image_khr"><code class="hljs">acquire_next_image_khr</code></a> and <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr"><code class="hljs">queue_present_khr</code></a> commands can return the following special values to indicate this.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ErrorCode.html#associatedconstant.OUT_OF_DATE_KHR"><code class="hljs">vk::ErrorCode::OUT_OF_DATE_KHR</code></a> – The swapchain has become incompatible with the surface and can no longer be used for rendering. Usually happens after a window resize.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SuccessCode.html#associatedconstant.SUBOPTIMAL_KHR"><code class="hljs">vk::SuccessCode::SUBOPTIMAL_KHR</code></a> – The swapchain can still be used to successfully present to the surface, but the surface properties are no longer matched exactly.</li>
+</ul>
+<pre><code class="language-rust noplaypen">let result = self.device.acquire_next_image_khr(
+    self.data.swapchain,
+    u64::MAX,
+    self.data.image_available_semaphores[self.frame],
+    vk::Fence::null(),
+);
+
+let image_index = match result {
+    Ok((image_index, _)) =&gt; image_index as usize,
+    Err(vk::ErrorCode::OUT_OF_DATE_KHR) =&gt; return self.recreate_swapchain(window),
+    Err(e) =&gt; return Err(anyhow!(e)),
+};
+</code></pre>
+<p>If the swapchain turns out to be out of date when attempting to acquire an image, then it is no longer possible to present to it. Therefore we should immediately recreate the swapchain and try again in the next <code>App::render</code> call.</p>
+<p>You could also decide to do that if the swapchain is suboptimal, but I've chosen to proceed anyway in that case because we've already acquired an image. Since <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SuccessCode.html#associatedconstant.SUBOPTIMAL_KHR"><code class="hljs">vk::SuccessCode::SUBOPTIMAL_KHR</code></a> is considered a success code rather than an error code, it will be handled by the <code>Ok</code> arm in the <code>match</code> block.</p>
+<pre><code class="language-rust noplaypen">let result = self.device.queue_present_khr(self.data.present_queue, &amp;present_info);
+
+let changed = result == Ok(vk::SuccessCode::SUBOPTIMAL_KHR)
+    || result == Err(vk::ErrorCode::OUT_OF_DATE_KHR);
+
+if changed {
+    self.recreate_swapchain(window)?;
+} else if let Err(e) = result {
+    return Err(anyhow!(e));
+}
+</code></pre>
+<p>The <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr"><code class="hljs">queue_present_khr</code></a> function returns the same values with the same meaning. In this case we will also recreate the swapchain if it is suboptimal, because we want the best possible result.</p>
+<h2 id="handling-resizes-explicitly"><a class="header" href="#handling-resizes-explicitly">Handling resizes explicitly</a></h2>
+<p>Although many drivers and platforms trigger <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ErrorCode.html#associatedconstant.OUT_OF_DATE_KHR"><code class="hljs">vk::ErrorCode::OUT_OF_DATE_KHR</code></a> automatically after a window resize, it is not guaranteed to happen. That's why we'll add some extra code to also handle resizes explicitly. First add a new field to the <code>App</code> struct to track whether a resize has happpened:</p>
+<pre><code class="language-rust noplaypen">struct App {
+    // ...
+    resized: bool,
+}
+</code></pre>
+<p>Don't forget to initialize this new field to <code>false</code> in <code>App::create</code>. The <code>App::render</code> method should then be modified to also check for this flag after calling <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr"><code class="hljs">queue_present_khr</code></a>:</p>
+<pre><code class="language-rust noplaypen">let result = self.device.queue_present_khr(self.data.present_queue, &amp;present_info);
+
+let changed = result == Ok(vk::SuccessCode::SUBOPTIMAL_KHR)
+    || result == Err(vk::ErrorCode::OUT_OF_DATE_KHR);
+
+if self.resized || changed {
+    self.resized = false;
+    self.recreate_swapchain(window)?;
+} else if let Err(e) = result {
+    return Err(anyhow!(e));
+}
+</code></pre>
+<p>It is important to do this after <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.KhrSwapchainExtension.html#method.queue_present_khr"><code class="hljs">queue_present_khr</code></a> to ensure that the semaphores are in a consistent state, otherwise a signalled semaphore may never be properly waited upon. Now to actually detect resizes we can add an arm to our window event <code>match</code> block in <code>main</code>:</p>
+<pre><code class="language-rust noplaypen">match event {
+    // ...
+    Event::WindowEvent { event: WindowEvent::Resized(_), .. } =&gt; app.resized = true,
+    // ...
+}
+</code></pre>
+<p>Now try to run the program and resize the window to see if the framebuffer is indeed resized properly with the window.</p>
+<h2 id="handling-minimization"><a class="header" href="#handling-minimization">Handling minimization</a></h2>
+<p>There is another case where a swapchain may become out of date and that is a special kind of window resizing: window minimization. This case is special because it will result in a framebuffer size of <code>0</code>. In this tutorial we will handle that by not rendering frames while the window is minimized:</p>
+<pre><code class="language-rust noplaypen">let mut app = unsafe { App::create(&amp;window)? };
+let mut minimized = false;
+event_loop.run(move |event,elwt| {
+    match event {
+        // ...
+        Event::WindowEvent { event, .. } =&gt; match event {
+            WindowEvent::RedrawRequested if !elwt.exiting() &amp;&amp; !minimized =&gt; {
+                unsafe { app.render(&amp;window) }.unwrap();
+            },
+            WindowEvent::Resized(size) =&gt; {
+                if size.width == 0 || size.height == 0 {
+                    minimized = true;
+                } else {
+                    minimized = false;
+                    app.resized = true;
+                }
+            }
+            // ...
+        }
+        // ...
+    }
+})?;
+</code></pre>
+<p>Congratulations, you've now finished your very first well-behaved Vulkan program! In the next chapter we're going to get rid of the hardcoded vertices in the vertex shader and actually use a vertex buffer.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../drawing/rendering_and_presentation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../vertex/vertex_input_description.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../drawing/rendering_and_presentation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../vertex/vertex_input_description.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

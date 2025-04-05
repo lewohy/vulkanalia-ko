@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Command buffers - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html" class="active"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="command-buffers"><a class="header" href="#command-buffers">Command buffers</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/14_command_buffers.rs">main.rs</a></p>
+<p>Vulkan에서 drawing operation과 memory transfer같은 command는 function call을 통해 직접 실행되는게 아닙니다. command buffer 오브젝트에서 실행되기를 원하는 모든 operation들을 기록해야합니다. 이것의 이점은 drawing command들을 세팅하는 등의 고된 작업을 미리 그리고 여러 쓰레드에서 완료될 수 있다는 것입니다. 그 후에 단지 Vulkan에 main loop에서 그 command들을 실행하라고 알려주기만 하면 됩니다.</p>
+<h2 id="command-pools"><a class="header" href="#command-pools">Command pools</a></h2>
+<p>command buffer들을 만들기 전에 command pool을 먼저 만들어야 합니다. command pool들은 buffer들을 저장하기 위해 사용되는 메모리를 관리하고 command buffer들은 command pool들로부터 할당됩니다. <code>AppData</code> 필드를 추가해서 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandPool.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandPool.html"><code class="hljs">vk::CommandPool</code></a></a>를 저장하도록 합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct AppData {
+    // ...
+    command_pool: vk::CommandPool,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>그리고 새로운 <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_command_pool"><code class="hljs">create_command_pool</code></a> 함수를 생성하고 <code>App::create</code>에서 framebuffers가 생성된 후에 호출합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_framebuffers(&amp;device, &amp;mut data)?;
+        create_command_pool(&amp;instance, &amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+unsafe fn create_command_pool(
+    instance: &amp;Instance,
+    device: &amp;Device,
+    data: &amp;mut AppData,
+) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>command pool 생성은 오직 두개의 파라미터만 받습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let indices = QueueFamilyIndices::get(instance, data, data.physical_device)?;
+
+let info = vk::CommandPoolCreateInfo::builder()
+    .flags(vk::CommandPoolCreateFlags::empty()) // Optional.
+    .queue_family_index(indices.graphics);
+<span class="boring">}
+</span></code></pre></pre>
+<p>우리가 가져왔던 graphics 그리고 presentation queue처럼 command buffer들은 device queue들중 하나에 제출함으로써 실행됩니다. 각 command pool은 오직 queue의 single type에 제출될 command buffers만 할당할 수 있습니다. drawing을 위한 commands를 기록할겁니다. 이것이 왜 graphics queue family를 선택한 이유입니다.</p>
+<p>command pools을 위한 3가지 가능한 flags들이 있습니다.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.TRANSIENT"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.TRANSIENT"><code class="hljs">vk::CommandPoolCreateFlags::TRANSIENT</code></a></a> – 매우 자주 새로운 command들이 command buffers에 재기록되는것을 암시합니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.RESET_COMMAND_BUFFER"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.RESET_COMMAND_BUFFER"><code class="hljs">vk::CommandPoolCreateFlags::RESET_COMMAND_BUFFER</code></a></a> – command buffers가 개별적으로 기록되도록 합니다. 이 플래그가 없다면 모든 command buffer들이 한번에 초기화될겁니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.PROTECTED"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandPoolCreateFlags.html#associatedconstant.PROTECTED"><code class="hljs">vk::CommandPoolCreateFlags::PROTECTED</code></a></a> – Vulkan이 메모리 접근으로부터 비허가된 연산을 막는 <a href="https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#memory-protected-access-rules">&quot;protected&quot; memory</a>에 저장될 &quot;protected&quot; command buffers를 생성합니다.</li>
+</ul>
+<p>프로그램의 시작에서만 command buffers를 기록하고 main loop에서 여러번 실행할겁니다. 그리고 DRM을 이용해서 우리의 삼각형을 보호할 필요는 없기 때문에, 이 중의 어떤 플래그도 사용하지 않을겁니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>data.command_pool = device.create_command_pool(&amp;info, None)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p>commands는 프로그램 내내 화면에 무언가를 그리기위해 사용되므로 pool은 마지막에만 파괴되어야합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn destroy(&amp;mut self) {
+    self.device.destroy_command_pool(self.data.command_pool, None);
+    // ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="command-buffer-allocation"><a class="header" href="#command-buffer-allocation">Command buffer allocation</a></h2>
+<p>이제 command buffers를 할당하고 drawing commands를 command buffers에 기록할 수 있습니다. drawing command들 중 한가지는 올바른 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Framebuffer.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Framebuffer.html"><code class="hljs">vk::Framebuffer</code></a></a>에 바인딩되는것을 포함하기 때문에, 실제로 swapchain에서 모든 이미지에 대해 command buffer를 다시 기록해야합니다. 이를 위해서, <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBuffer.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBuffer.html"><code class="hljs">vk::CommandBuffer</code></a></a> 오브젝트의 리스트를 <code>AppData</code>의 필드로써 생성합니다. command buffer들은 command pool이 파괴될 때 자동으로 해제되므로, 명시적으로 청소할 필요는 없습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct AppData {
+    // ...
+    command_buffers: Vec&lt;vk::CommandBuffer&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>이제 <code>create_command_buffers</code> 함수에서 작업을 시작합니다. 이 함수는 각 swapchain image에 대한 commands를 할당하고 기록합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_command_pool(&amp;instance, &amp;device, &amp;mut data)?;
+        create_command_buffers(&amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+unsafe fn create_command_buffers(device: &amp;Device, data: &amp;mut AppData) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>command buffers는 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.allocate_command_buffers"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.allocate_command_buffers"><code class="hljs">allocate_command_buffers</code></a></a> 함수를 통해 할당됩니다. 이 함수는 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferAllocateInfo.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferAllocateInfo.html"><code class="hljs">vk::CommandBufferAllocateInfo</code></a></a> 구조체를 파라미터로 받습니다. 이 구조체는 command pool과 할당할 buffer들의 수를 지정합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let allocate_info = vk::CommandBufferAllocateInfo::builder()
+    .command_pool(data.command_pool)
+    .level(vk::CommandBufferLevel::PRIMARY)
+    .command_buffer_count(data.framebuffers.len() as u32);
+
+data.command_buffers = device.allocate_command_buffers(&amp;allocate_info)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>level</code> 파라미터는 할당된 command buffer가 primary/secondary command buffers인지 지정합니다.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferLevel.html#associatedconstant.PRIMARY"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferLevel.html#associatedconstant.PRIMARY"><code class="hljs">vk::CommandBufferLevel::PRIMARY</code></a></a> – 실행을 위해 queue로 전송될 수 있지만, 다른 command buffers로부터 호출될 수 없습니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferLevel.html#associatedconstant.SECONDARY"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferLevel.html#associatedconstant.SECONDARY"><code class="hljs">vk::CommandBufferLevel::SECONDARY</code></a></a> – 직접적으로 전송될 수 없지만, primary command buffers로부터 호출될 수 있습니다.</li>
+</ul>
+<p>여기서는 secondary command buffer 기능을 사용하지 않을것이지만, primary command buffers에서의 공통 연산을 재사용하는데 도움이 되는것을 상상할 수 있습니다.</p>
+<h2 id="starting-command-buffer-recording"><a class="header" href="#starting-command-buffer-recording">Starting command buffer recording</a></h2>
+<p>작은 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferBeginInfo.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferBeginInfo.html"><code class="hljs">vk::CommandBufferBeginInfo</code></a></a> 구조체를 매개변수로 사용하여 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.begin_command_buffer"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.begin_command_buffer"><code class="hljs">begin_command_buffer</code></a></a>를 호출함으로써 command buffer기록을 시작합니다. 구조체는 특정 command buffer의 사용에 대한 몇가지 정보를 지정합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for (i, command_buffer) in data.command_buffers.iter().enumerate() {
+    let inheritance = vk::CommandBufferInheritanceInfo::builder();
+
+    let info = vk::CommandBufferBeginInfo::builder()
+        .flags(vk::CommandBufferUsageFlags::empty()) // Optional.
+        .inheritance_info(&amp;inheritance);             // Optional.
+
+    device.begin_command_buffer(*command_buffer, &amp;info)?;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>flags</code> 파라미터는 어떻게 command buffer를 사용할 지 지정합니다. 다음과 같은 값들이 가능합니다.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.ONE_TIME_SUBMIT"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.ONE_TIME_SUBMIT"><code class="hljs">vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT</code></a></a> – command buffer가 실행되자마자 저장됩니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.RENDER_PASS_CONTINUE"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.RENDER_PASS_CONTINUE"><code class="hljs">vk::CommandBufferUsageFlags::RENDER_PASS_CONTINUE</code></a></a> – single render pass에 완전피 포함되는 secondary command buffer입니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.SIMULTANEOUS_USE"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.CommandBufferUsageFlags.html#associatedconstant.SIMULTANEOUS_USE"><code class="hljs">vk::CommandBufferUsageFlags::SIMULTANEOUS_USE</code></a></a> – command buffer가 pending execution중에도 재제출이 가능합니다.</li>
+</ul>
+<p>당장은 어떤 플래그도 적용되지 않습니다.</p>
+<h2 id="starting-a-render-pass"><a class="header" href="#starting-a-render-pass">Starting a render pass</a></h2>
+<p>render pass를 시작하기 전에, 몇가지 파리미터를 빌드해야합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let render_area = vk::Rect2D::builder()
+    .offset(vk::Offset2D::default())
+    .extent(data.swapchain_extent);
+<span class="boring">}
+</span></code></pre></pre>
+<p>여기에 render area의 크기를 정의합니다. render area는 render pass의 실행동안 어디에서 shader 로드 및 저장이 발생할지 정의합니다. 이 region의 바깥 픽셀은 undefined value를 갖게될겁니다. render area는 최적의 퍼포먼스를 위해 attachment들의 크기와 맞아야합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let color_clear_value = vk::ClearValue {
+    color: vk::ClearColorValue {
+        float32: [0.0, 0.0, 0.0, 1.0],
+    },
+};
+<span class="boring">}
+</span></code></pre></pre>
+<p>다음으로 render pass의 시작에서 framebuffer를 clear하기 위해 사용될 clear value를 정의해야합니다(왜냐하면 render pass를 생성할 때 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.AttachmentLoadOp.html#associatedconstant.CLEAR"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.AttachmentLoadOp.html#associatedconstant.CLEAR"><code class="hljs">vk::AttachmentLoadOp::CLEAR</code></a></a>를 사용했기 때문). <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/union.ClearValue.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/union.ClearValue.html"><code class="hljs">vk::ClearValue</code></a></a>은 color attachments를 위하거나 depth/stencil attachments를 위해 사용되는 clear values인 union입니다. 여기서 <code>color</code> 필드를 100% opacity의 검정색을 정의하는 4개 <code>f32</code>을 사용하여 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/union.ClearColorValue.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/union.ClearColorValue.html"><code class="hljs">vk::ClearColorValue</code></a></a> union으로 설정합니다.</p>
+<p>drawing은 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_begin_render_pass"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.cmd_begin_render_pass"><code class="hljs">cmd_begin_render_pass</code></a></a>를 사용하야 render pass를 시작함으로써 시작합니다. render pass는 <a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.RenderPassBeginInfo.html"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.RenderPassBeginInfo.html"><code class="hljs">vk::RenderPassBeginInfo</code></a></a> 구조체 안에서 몇가지 파라미터를 사용하여 구성됩니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let clear_values = &amp;[color_clear_value];
+let info = vk::RenderPassBeginInfo::builder()
+    .render_pass(data.render_pass)
+    .framebuffer(data.framebuffers[i])
+    .render_area(render_area)
+    .clear_values(clear_values);
+<span class="boring">}
+</span></code></pre></pre>
+<p>첫 번쨰 파라미터는 render pass 자체이고 attachment가 바인딩됩니다. 각 swapchain image에 대해 framebuffer를 생성했고 framebuffer는 swapchain image를 color attachment로 지정합니다. 그리고 이전에 생성한 render area과 clear value를 제공합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>device.cmd_begin_render_pass(
+    *command_buffer, &amp;info, vk::SubpassContents::INLINE);
+<span class="boring">}
+</span></code></pre></pre>
+<p>이제 render pass를 시작할 수 있습니다. commands를 기록하는 모든 함수들은 <code>cmd_prefix</code>로 알 수 있습니다. 그 함수들은 <code>()</code>를 리턴하므로 recording를 끝내기까지 error handling이 필요하지 않습니다.</p>
+<p>모든 command를 위한 첫 번째 파리미터는 command를 기록할 command buffer입니다. 두 번째 차라미터는 이전에 제공한 render pass의 디테일을 지정합니다. 마지막 파라미터는 drawing command가 render pass에서 어떻게 제공될 지 컨트롤합니다. 이 파라미터는 두 값중 한개를 가질 수 있습니다.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubpassContents.html#associatedconstant.INLINE"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SubpassContents.html#associatedconstant.INLINE"><code class="hljs">vk::SubpassContents::INLINE</code></a></a> – render pass commands가 primary command buffer에 그 자체로 임베드됩니다. 그리고 secondary command buffer는 실행되지 않습니다.</li>
+<li><a href="https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SubpassContents.html#associatedconstant.SECONDARY_COMMAND_BUFFERS"><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SubpassContents.html#associatedconstant.SECONDARY_COMMAND_BUFFERS"><code class="hljs">vk::SubpassContents::SECONDARY_COMMAND_BUFFERS</code></a></a> – render pass commands가 secondary command buffers에서 실행됩니다.</li>
+</ul>
+<p>secondary command buffers를 사용하지 않을것이므로, 첫번째 옵션으로 갑니다.</p>
+<h2 id="basic-drawing-commands"><a class="header" href="#basic-drawing-commands">Basic drawing commands</a></h2>
+<p>이제 graphics pipeline을 바인딩합니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>device.cmd_bind_pipeline(
+    *command_buffer, vk::PipelineBindPoint::GRAPHICS, data.pipeline);
+<span class="boring">}
+</span></code></pre></pre>
+<p>두 번쨰 파라미터는 pipeline 오브젝트가 graphics/compute pipeline인지를 지정합니다. 이제 Vulkan에 graphics pipeline에서 어떤 command가 실행될지와 fragment shader에서 어떤 attachment가 사용될지를 알려주었으므로, 남은것은 삼각형을 그리라고 알려주는것입니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>device.cmd_draw(*command_buffer, 3, 1, 0, 0);
+<span class="boring">}
+</span></code></pre></pre>
+<p>실제 drawing function은 약간 anticlimactic이지만, 미리 지정한 모든 정보들 덕분에 꽤 간단합니다. drawing function은 command buffer외에 다음과 같은 파라미터가 따라옵니다.</p>
+<ul>
+<li><code>vertex_count</code> – vertex buffer를 갖지 않더라도 기술적으로는 여전히 그리기위한 3개의 vertex들을 갖습니다.</li>
+<li><code>instance_count</code> – instanced rendering을 위해 사용됩니다. 이것을 하지 않으면 <code>1</code>을 씁니다.</li>
+<li><code>first_vertex</code> – vertex buffer로의 offset으로 사용됩니다. <code>gl_VertexIndex</code>의 가장 낮은값을 정의합니다.</li>
+<li><code>first_instance</code> – instanced rendering을 위한 offset으로 사용됩니다. <code>gl_InstanceVertex</code>의 가장 낮은 값을 정의합니다.</li>
+</ul>
+<h2 id="finishing-up"><a class="header" href="#finishing-up">Finishing up</a></h2>
+<p>이제 render pass를 끝낼 수 있습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>device.cmd_end_render_pass(*command_buffer);
+<span class="boring">}
+</span></code></pre></pre>
+<p>그리고 command buffer를 기록하는 것을 끝냈습니다.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>device.end_command_buffer(*command_buffer)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p>다음 챕터에서는 main loop를 위한 코드를 작성할겁니다. 이 코드는 swapchain으로부터 이미지를 얻고, 적절한 command buffer를 실행할겁니다 그리고 완료된 이미지를 swapchain에 반환할겁니다.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../drawing/framebuffers.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../drawing/rendering_and_presentation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../drawing/framebuffers.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../drawing/rendering_and_presentation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

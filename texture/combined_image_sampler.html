@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Combined image sampler - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html" class="active"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="combined-image-sampler"><a class="header" href="#combined-image-sampler">Combined image sampler</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/25_texture_mapping.rs">main.rs</a> | <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/shaders/25/shader.vert">shader.vert</a> | <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/shaders/25/shader.frag">shader.frag</a></p>
+<p>We looked at descriptors for the first time in the uniform buffers part of the tutorial. In this chapter we will look at a new type of descriptor: <em>combined image sampler</em>. This descriptor makes it possible for shaders to access an image resource through a sampler object like the one we created in the previous chapter.</p>
+<p>We'll start by modifying the descriptor set layout, descriptor pool and descriptor set to include such a combined image sampler descriptor. After that, we're going to add texture coordinates to <code>Vertex</code> and modify the fragment shader to read colors from the texture instead of just interpolating the vertex colors.</p>
+<h2 id="updating-the-descriptors"><a class="header" href="#updating-the-descriptors">Updating the descriptors</a></h2>
+<p>Browse to the <code>create_descriptor_set_layout</code> function and add a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorSetLayoutBinding.html"><code class="hljs">vk::DescriptorSetLayoutBinding</code></a> for a combined image sampler descriptor. We'll simply put it in the binding after the uniform buffer:</p>
+<pre><code class="language-rust noplaypen">let sampler_binding = vk::DescriptorSetLayoutBinding::builder()
+    .binding(1)
+    .descriptor_type(vk::DescriptorType::COMBINED_IMAGE_SAMPLER)
+    .descriptor_count(1)
+    .stage_flags(vk::ShaderStageFlags::FRAGMENT);
+
+let bindings = &amp;[ubo_binding, sampler_binding];
+let info = vk::DescriptorSetLayoutCreateInfo::builder()
+    .bindings(bindings);
+</code></pre>
+<p>Make sure to set the <code>stage_flags</code> to indicate that we intend to use the combined image sampler descriptor in the fragment shader. That's where the color of the fragment is going to be determined. It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a <a href="https://en.wikipedia.org/wiki/Heightmap">heightmap</a>.</p>
+<p>We must also create a larger descriptor pool to make room for the allocation of the combined image sampler by adding another <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorPoolSize.html"><code class="hljs">vk::DescriptorPoolSize</code></a> of type <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorType.html#associatedconstant.COMBINED_IMAGE_SAMPLER"><code class="hljs">vk::DescriptorType::COMBINED_IMAGE_SAMPLER</code></a> to the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorPoolCreateInfo.html"><code class="hljs">vk::DescriptorPoolCreateInfo</code></a>. Go to the <code>create_descriptor_pool</code> function and modify it to include a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorPoolSize.html"><code class="hljs">vk::DescriptorPoolSize</code></a> for this descriptor:</p>
+<pre><code class="language-rust noplaypen">let sampler_size = vk::DescriptorPoolSize::builder()
+    .type_(vk::DescriptorType::COMBINED_IMAGE_SAMPLER)
+    .descriptor_count(data.swapchain_images.len() as u32);
+
+let pool_sizes = &amp;[ubo_size, sampler_size];
+let info = vk::DescriptorPoolCreateInfo::builder()
+    .pool_sizes(pool_sizes)
+    .max_sets(data.swapchain_images.len() as u32);
+</code></pre>
+<p>Inadequate descriptor pools are a good example of a problem that the validation layers will not catch: As of Vulkan 1.1, <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.allocate_descriptor_sets"><code class="hljs">allocate_descriptor_sets</code></a> may fail with the error code <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ErrorCode.html#associatedconstant.OUT_OF_POOL_MEMORY"><code class="hljs">vk::ErrorCode::OUT_OF_POOL_MEMORY</code></a> if the pool is not sufficiently large, but the driver may also try to solve the problem internally. This means that sometimes (depending on hardware, pool size and allocation size) the driver will let us get away with an allocation that exceeds the limits of our descriptor pool. Other times, <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.allocate_descriptor_sets"><code class="hljs">allocate_descriptor_sets</code></a> will fail and return <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ErrorCode.html#associatedconstant.OUT_OF_POOL_MEMORY"><code class="hljs">vk::ErrorCode::OUT_OF_POOL_MEMORY</code></a>. This can be particularly frustrating if the allocation succeeds on some machines, but fails on others.</p>
+<p>Since Vulkan shifts the responsiblity for the allocation to the driver, it is no longer a strict requirement to only allocate as many descriptors of a certain type (<a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorType.html#associatedconstant.COMBINED_IMAGE_SAMPLER"><code class="hljs">vk::DescriptorType::COMBINED_IMAGE_SAMPLER</code></a>, etc.) as specified by the corresponding <code>descriptor_count</code> members for the creation of the descriptor pool. However, it remains best practise to do so, and in the future, <code>VK_LAYER_KHRONOS_validation</code> will warn about this type of problem if you enable <a href="https://vulkan.lunarg.com/doc/view/1.1.126.0/windows/best_practices.html">Best Practice Validation</a>.</p>
+<p>The final step is to bind the actual image and sampler resources to the descriptors in the descriptor set. Go to the <code>create_descriptor_sets</code> function. The resources for a combined image sampler structure must be specified in a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorImageInfo.html"><code class="hljs">vk::DescriptorImageInfo</code></a> struct, just like the buffer resource for a uniform buffer descriptor is specified in a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.DescriptorBufferInfo.html"><code class="hljs">vk::DescriptorBufferInfo</code></a> struct. This is where the objects from the previous chapter come together.</p>
+<pre><code class="language-rust noplaypen">let info = vk::DescriptorImageInfo::builder()
+    .image_layout(vk::ImageLayout::SHADER_READ_ONLY_OPTIMAL)
+    .image_view(data.texture_image_view)
+    .sampler(data.texture_sampler);
+
+let image_info = &amp;[info];
+let sampler_write = vk::WriteDescriptorSet::builder()
+    .dst_set(data.descriptor_sets[i])
+    .dst_binding(1)
+    .dst_array_element(0)
+    .descriptor_type(vk::DescriptorType::COMBINED_IMAGE_SAMPLER)
+    .image_info(image_info);
+
+device.update_descriptor_sets(
+    &amp;[ubo_write, sampler_write],
+    &amp;[] as &amp;[vk::CopyDescriptorSet],
+);
+</code></pre>
+<p>The descriptors must be updated with this image info, just like the buffer. This time we're using the <code>image_info</code> array instead of <code>buffer_info</code>. The descriptors are now ready to be used by the shaders!</p>
+<h2 id="texture-coordinates"><a class="header" href="#texture-coordinates">Texture coordinates</a></h2>
+<p>There is one important ingredient for texture mapping that is still missing, and that's the actual coordinates for each vertex. The coordinates determine how the image is actually mapped to the geometry.</p>
+<pre><code class="language-rust noplaypen">#[repr(C)]
+#[derive(Copy, Clone, Debug)]
+struct Vertex {
+    pos: Vec2,
+    color: Vec3,
+    tex_coord: Vec2,
+}
+
+impl Vertex {
+    const fn new(pos: Vec2, color: Vec3, tex_coord: Vec2) -&gt; Self {
+        Self { pos, color, tex_coord }
+    }
+
+    fn binding_description() -&gt; vk::VertexInputBindingDescription {
+        vk::VertexInputBindingDescription::builder()
+            .binding(0)
+            .stride(size_of::&lt;Vertex&gt;() as u32)
+            .input_rate(vk::VertexInputRate::VERTEX)
+            .build()
+    }
+
+    fn attribute_descriptions() -&gt; [vk::VertexInputAttributeDescription; 3] {
+        let pos = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(0)
+            .format(vk::Format::R32G32_SFLOAT)
+            .offset(0)
+            .build();
+        let color = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(1)
+            .format(vk::Format::R32G32B32_SFLOAT)
+            .offset(size_of::&lt;Vec2&gt;() as u32)
+            .build();
+        let tex_coord = vk::VertexInputAttributeDescription::builder()
+            .binding(0)
+            .location(2)
+            .format(vk::Format::R32G32_SFLOAT)
+            .offset((size_of::&lt;Vec2&gt;() + size_of::&lt;Vec3&gt;()) as u32)
+            .build();
+        [pos, color, tex_coord]
+    }
+}
+</code></pre>
+<p>Modify the <code>Vertex</code> struct to include a <code>Vec2</code> for texture coordinates. Make sure to also add a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.VertexInputAttributeDescription.html"><code class="hljs">vk::VertexInputAttributeDescription</code></a> so that we can use access texture coordinates as input in the vertex shader. That is necessary to be able to pass them to the fragment shader for interpolation across the surface of the square.</p>
+<pre><code class="language-rust noplaypen">static VERTICES: [Vertex; 4] = [
+    Vertex::new(vec2(-0.5, -0.5), vec3(1.0, 0.0, 0.0), vec2(1.0, 0.0)),
+    Vertex::new(vec2(0.5, -0.5), vec3(0.0, 1.0, 0.0), vec2(0.0, 0.0)),
+    Vertex::new(vec2(0.5, 0.5), vec3(0.0, 0.0, 1.0), vec2(0.0, 1.0)),
+    Vertex::new(vec2(-0.5, 0.5), vec3(1.0, 1.0, 1.0), vec2(1.0, 1.0)),
+];
+</code></pre>
+<p>In this tutorial, I will simply fill the square with the texture by using coordinates from <code>0, 0</code> in the top-left corner to <code>1, 1</code> in the bottom-right corner. Feel free to experiment with different coordinates. Try using coordinates below <code>0</code> or above <code>1</code> to see the addressing modes in action!</p>
+<h2 id="shaders"><a class="header" href="#shaders">Shaders</a></h2>
+<p>The final step is modifying the shaders to sample colors from the texture. We first need to modify the vertex shader to pass through the texture coordinates to the fragment shader:</p>
+<pre><code class="language-glsl">layout(location = 0) in vec2 inPosition;
+layout(location = 1) in vec3 inColor;
+layout(location = 2) in vec2 inTexCoord;
+
+layout(location = 0) out vec3 fragColor;
+layout(location = 1) out vec2 fragTexCoord;
+
+void main() {
+    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 0.0, 1.0);
+    fragColor = inColor;
+    fragTexCoord = inTexCoord;
+}
+</code></pre>
+<p>Just like the per vertex colors, the <code>fragTexCoord</code> values will be smoothly interpolated across the area of the square by the rasterizer. We can visualize this by having the fragment shader output the texture coordinates as colors:</p>
+<pre><code class="language-glsl">#version 450
+
+layout(location = 0) in vec3 fragColor;
+layout(location = 1) in vec2 fragTexCoord;
+
+layout(location = 0) out vec4 outColor;
+
+void main() {
+    outColor = vec4(fragTexCoord, 0.0, 1.0);
+}
+</code></pre>
+<p>You should see something like the image below. Don't forget to recompile the shaders!</p>
+<p><img src="../images/texcoord_visualization.png" alt="" /></p>
+<p>The green channel represents the horizontal coordinates and the red channel the vertical coordinates. The black and yellow corners confirm that the texture coordinates are correctly interpolated from <code>0, 0</code> to <code>1, 1</code> across the square. Visualizing data using colors is the shader programming equivalent of <code>printf</code> debugging, for lack of a better option!</p>
+<p>A combined image sampler descriptor is represented in GLSL by a sampler uniform. Add a reference to it in the fragment shader:</p>
+<pre><code class="language-glsl">layout(binding = 1) uniform sampler2D texSampler;
+</code></pre>
+<p>There are equivalent <code>sampler1D</code> and <code>sampler3D</code> types for other types of images. Make sure to use the correct binding here.</p>
+<pre><code class="language-glsl">void main() {
+    outColor = texture(texSampler, fragTexCoord);
+}
+</code></pre>
+<p>Textures are sampled using the built-in <code>texture</code> function. It takes a <code>sampler</code> and coordinate as arguments. The sampler automatically takes care of the filtering and transformations in the background. You should now see the texture on the square when you run the application:</p>
+<p><img src="../images/texture_on_square.png" alt="" /></p>
+<p>Try experimenting with the addressing modes by scaling the texture coordinates to values higher than <code>1</code>. For example, the following fragment shader produces the result in the image below when using <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.REPEAT"><code class="hljs">vk::SamplerAddressMode::REPEAT</code></a>:</p>
+<pre><code class="language-glsl">void main() {
+    outColor = texture(texSampler, fragTexCoord * 2.0);
+}
+</code></pre>
+<p><img src="../images/texture_on_square_repeated.png" alt="" /></p>
+<p>You can also manipulate the texture colors using the vertex colors:</p>
+<pre><code class="language-glsl">void main() {
+    outColor = vec4(fragColor * texture(texSampler, fragTexCoord).rgb, 1.0);
+}
+</code></pre>
+<p>I've separated the RGB and alpha channels here to not scale the alpha channel.</p>
+<p><img src="../images/texture_on_square_colorized.png" alt="" /></p>
+<p>You now know how to access images in shaders! This is a very powerful technique when combined with images that are also written to in framebuffers. You can use these images as inputs to implement cool effects like post-processing and camera displays within the 3D world.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../texture/image_view_and_sampler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../model/depth_buffering.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../texture/image_view_and_sampler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../model/depth_buffering.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

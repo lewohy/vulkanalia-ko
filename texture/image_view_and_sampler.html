@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Image view and sampler - Vulkan Tutorial (Rust)</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Vulkan tutorial for Rust.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">2.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../development_environment.html"><strong aria-hidden="true">3.</strong> Development environment</a></li><li class="chapter-item expanded "><a href="../faq.html"><strong aria-hidden="true">4.</strong> FAQ</a></li><li class="chapter-item expanded affix "><li class="part-title">Setup</li><li class="chapter-item expanded "><a href="../setup/base_code.html"><strong aria-hidden="true">5.</strong> Base code</a></li><li class="chapter-item expanded "><a href="../setup/instance.html"><strong aria-hidden="true">6.</strong> Instance</a></li><li class="chapter-item expanded "><a href="../setup/validation_layers.html"><strong aria-hidden="true">7.</strong> Validation layers</a></li><li class="chapter-item expanded "><a href="../setup/physical_devices_and_queue_families.html"><strong aria-hidden="true">8.</strong> Physical devices and queue families</a></li><li class="chapter-item expanded "><a href="../setup/logical_device_and_queues.html"><strong aria-hidden="true">9.</strong> Logical device and queues</a></li><li class="chapter-item expanded affix "><li class="part-title">Presentation</li><li class="chapter-item expanded "><a href="../presentation/window_surface.html"><strong aria-hidden="true">10.</strong> Window surface</a></li><li class="chapter-item expanded "><a href="../presentation/swapchain.html"><strong aria-hidden="true">11.</strong> Swapchain</a></li><li class="chapter-item expanded "><a href="../presentation/image_views.html"><strong aria-hidden="true">12.</strong> Image views</a></li><li class="chapter-item expanded affix "><li class="part-title">Pipeline</li><li class="chapter-item expanded "><a href="../pipeline/introduction.html"><strong aria-hidden="true">13.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../pipeline/shader_modules.html"><strong aria-hidden="true">14.</strong> Shader modules</a></li><li class="chapter-item expanded "><a href="../pipeline/fixed_functions.html"><strong aria-hidden="true">15.</strong> Fixed functions</a></li><li class="chapter-item expanded "><a href="../pipeline/render_passes.html"><strong aria-hidden="true">16.</strong> Render passes</a></li><li class="chapter-item expanded "><a href="../pipeline/conclusion.html"><strong aria-hidden="true">17.</strong> Conclusion</a></li><li class="chapter-item expanded affix "><li class="part-title">Drawing</li><li class="chapter-item expanded "><a href="../drawing/framebuffers.html"><strong aria-hidden="true">18.</strong> Framebuffers</a></li><li class="chapter-item expanded "><a href="../drawing/command_buffers.html"><strong aria-hidden="true">19.</strong> Command buffers</a></li><li class="chapter-item expanded "><a href="../drawing/rendering_and_presentation.html"><strong aria-hidden="true">20.</strong> Rendering and presentation</a></li><li class="chapter-item expanded affix "><li class="part-title">Swapchain</li><li class="chapter-item expanded "><a href="../swapchain/recreation.html"><strong aria-hidden="true">21.</strong> Recreation</a></li><li class="chapter-item expanded affix "><li class="part-title">Vertex buffers</li><li class="chapter-item expanded "><a href="../vertex/vertex_input_description.html"><strong aria-hidden="true">22.</strong> Vertex input description</a></li><li class="chapter-item expanded "><a href="../vertex/vertex_buffer_creation.html"><strong aria-hidden="true">23.</strong> Vertex buffer creation</a></li><li class="chapter-item expanded "><a href="../vertex/staging_buffer.html"><strong aria-hidden="true">24.</strong> Staging buffer</a></li><li class="chapter-item expanded "><a href="../vertex/index_buffer.html"><strong aria-hidden="true">25.</strong> Index buffer</a></li><li class="chapter-item expanded affix "><li class="part-title">Uniform buffers</li><li class="chapter-item expanded "><a href="../uniform/descriptor_set_layout_and_buffer.html"><strong aria-hidden="true">26.</strong> Descriptor set layout and buffer</a></li><li class="chapter-item expanded "><a href="../uniform/descriptor_pool_and_sets.html"><strong aria-hidden="true">27.</strong> Descriptor pool and sets</a></li><li class="chapter-item expanded affix "><li class="part-title">Texture mapping</li><li class="chapter-item expanded "><a href="../texture/images.html"><strong aria-hidden="true">28.</strong> Images</a></li><li class="chapter-item expanded "><a href="../texture/image_view_and_sampler.html" class="active"><strong aria-hidden="true">29.</strong> Image view and sampler</a></li><li class="chapter-item expanded "><a href="../texture/combined_image_sampler.html"><strong aria-hidden="true">30.</strong> Combined image sampler</a></li><li class="chapter-item expanded affix "><li class="part-title">Model</li><li class="chapter-item expanded "><a href="../model/depth_buffering.html"><strong aria-hidden="true">31.</strong> Depth buffering</a></li><li class="chapter-item expanded "><a href="../model/loading_models.html"><strong aria-hidden="true">32.</strong> Loading models</a></li><li class="chapter-item expanded affix "><li class="part-title">Rendering quality</li><li class="chapter-item expanded "><a href="../quality/generating_mipmaps.html"><strong aria-hidden="true">33.</strong> Generating mipmaps</a></li><li class="chapter-item expanded "><a href="../quality/multisampling.html"><strong aria-hidden="true">34.</strong> Multisampling</a></li><li class="chapter-item expanded affix "><li class="part-title">Dynamic scenes</li><li class="chapter-item expanded "><a href="../dynamic/push_constants.html"><strong aria-hidden="true">35.</strong> Push constants</a></li><li class="chapter-item expanded "><a href="../dynamic/recycling_command_buffers.html"><strong aria-hidden="true">36.</strong> Recycling command buffers</a></li><li class="chapter-item expanded "><a href="../dynamic/secondary_command_buffers.html"><strong aria-hidden="true">37.</strong> Secondary command buffers</a></li><li class="chapter-item expanded affix "><li class="part-title">Conclusion</li><li class="chapter-item expanded "><a href="../conclusion.html"><strong aria-hidden="true">38.</strong> Conclusion</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Vulkan Tutorial (Rust)</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/lewohy/vulkanalia-ko" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="image-view-and-sampler"><a class="header" href="#image-view-and-sampler">Image view and sampler</a></h1>
+<p><strong>Code:</strong> <a href="https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/24_sampler.rs">main.rs</a></p>
+<p>In this chapter we're going to create two more resources that are needed for the graphics pipeline to sample an image. The first resource is one that we've already seen before while working with the swapchain images, but the second one is new - it relates to how the shader will read texels from the image.</p>
+<h2 id="texture-image-view"><a class="header" href="#texture-image-view">Texture image view</a></h2>
+<p>We've seen before, with the swapchain images and the framebuffer, that images are accessed through image views rather than directly. We will also need to create such an image view for the texture image.</p>
+<p>Add an <code>AppData</code> field to hold a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ImageView.html"><code class="hljs">vk::ImageView</code></a> for the texture image and create a new function <code>create_texture_image_view</code> where we'll create it:</p>
+<pre><code class="language-rust noplaypen">impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_texture_image(&amp;instance, &amp;device, &amp;mut data)?;
+        create_texture_image_view(&amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+struct AppData {
+    // ...
+    texture_image: vk::Image,
+    texture_image_memory: vk::DeviceMemory,
+    texture_image_view: vk::ImageView,
+    // ...
+}
+
+unsafe fn create_texture_image_view(device: &amp;Device, data: &amp;mut AppData) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+</code></pre>
+<p>The code for this function can be based directly on <code>create_swapchain_image_views</code>. The only two changes you have to make are the <code>format</code> and the <code>image</code>:</p>
+<pre><code class="language-rust noplaypen">let subresource_range = vk::ImageSubresourceRange::builder()
+    .aspect_mask(vk::ImageAspectFlags::COLOR)
+    .base_mip_level(0)
+    .level_count(1)
+    .base_array_layer(0)
+    .layer_count(1);
+
+let info = vk::ImageViewCreateInfo::builder()
+    .image(data.texture_image)
+    .view_type(vk::ImageViewType::_2D)
+    .format(vk::Format::R8G8B8A8_SRGB)
+    .subresource_range(subresource_range);
+</code></pre>
+<p>I've left out the explicit <code>components</code> initialization, because <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.ComponentSwizzle.html#associatedconstant.IDENTITY"><code class="hljs">vk::ComponentSwizzle::IDENTITY</code></a> is defined as <code>0</code> anyway. Finish creating the image view by calling <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_image_view"><code class="hljs">create_image_view</code></a>:</p>
+<pre><code class="language-rust noplaypen">data.texture_image_view = device.create_image_view(&amp;info, None)?;
+</code></pre>
+<p>Because so much of the logic is duplicated from <code>create_swapchain_image_views</code>, you may wish to abstract it into a new <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_image_view"><code class="hljs">create_image_view</code></a> function:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_image_view(
+    device: &amp;Device,
+    image: vk::Image,
+    format: vk::Format,
+) -&gt; Result&lt;vk::ImageView&gt; {
+    let subresource_range = vk::ImageSubresourceRange::builder()
+        .aspect_mask(vk::ImageAspectFlags::COLOR)
+        .base_mip_level(0)
+        .level_count(1)
+        .base_array_layer(0)
+        .layer_count(1);
+
+    let info = vk::ImageViewCreateInfo::builder()
+        .image(image)
+        .view_type(vk::ImageViewType::_2D)
+        .format(format)
+        .subresource_range(subresource_range);
+
+    Ok(device.create_image_view(&amp;info, None)?)
+}
+</code></pre>
+<p>The <code>create_texture_image_view</code> function can now be simplified to:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_texture_image_view(device: &amp;Device, data: &amp;mut AppData) -&gt; Result&lt;()&gt; {
+    data.texture_image_view = create_image_view(
+        device,
+        data.texture_image,
+        vk::Format::R8G8B8A8_SRGB,
+    )?;
+
+    Ok(())
+}
+</code></pre>
+<p>And <code>create_swapchain_image_views</code> can be simplified to:</p>
+<pre><code class="language-rust noplaypen">unsafe fn create_swapchain_image_views(device: &amp;Device, data: &amp;mut AppData) -&gt; Result&lt;()&gt; {
+    data.swapchain_image_views = data
+        .swapchain_images
+        .iter()
+        .map(|i| create_image_view(device, *i, data.swapchain_format))
+        .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()?;
+
+    Ok(())
+}
+</code></pre>
+<p>Make sure to destroy the image view at the end of the program, right before destroying the image itself:</p>
+<pre><code class="language-rust noplaypen">unsafe fn destroy(&amp;mut self) {
+    self.destroy_swapchain();
+    self.device.destroy_image_view(self.data.texture_image_view, None);
+    // ...
+}
+</code></pre>
+<h2 id="samplers"><a class="header" href="#samplers">Samplers</a></h2>
+<p>It is possible for shaders to read texels directly from images, but that is not very common when they are used as textures. Textures are usually accessed through samplers, which will apply filtering and transformations to compute the final color that is retrieved.</p>
+<p>These filters are helpful to deal with problems like oversampling. Consider a texture that is mapped to geometry with more fragments than texels. If you simply took the closest texel for the texture coordinate in each fragment, then you would get a result like the first image:</p>
+<p><img src="../images/texture_filtering.png" alt="" /></p>
+<p>If you combined the 4 closest texels through linear interpolation, then you would get a smoother result like the one on the right. Of course your application may have art style requirements that fit the left style more (think Minecraft), but the right is preferred in conventional graphics applications. A sampler object automatically applies this filtering for you when reading a color from the texture.</p>
+<p>Undersampling is the opposite problem, where you have more texels than fragments. This will lead to artifacts when sampling high frequency patterns like a checkerboard texture at a sharp angle:</p>
+<p><img src="../images/anisotropic_filtering.png" alt="" /></p>
+<p>As shown in the left image, the texture turns into a blurry mess in the distance. The solution to this is <a href="https://en.wikipedia.org/wiki/Anisotropic_filtering">anisotropic filtering</a>, which can also be applied automatically by a sampler.</p>
+<p>Aside from these filters, a sampler can also take care of transformations. It determines what happens when you try to read texels outside the image through its <em>addressing mode</em>. The image below displays some of the possibilities:</p>
+<p><img src="../images/texture_addressing.png" alt="" /></p>
+<p>We will now create a function <code>create_texture_sampler</code> to set up such a sampler object. We'll be using that sampler to read colors from the texture in the shader later on.</p>
+<pre><code class="language-rust noplaypen">impl App {
+    unsafe fn create(window: &amp;Window) -&gt; Result&lt;Self&gt; {
+        // ...
+        create_texture_image(&amp;instance, &amp;device, &amp;mut data)?;
+        create_texture_image_view(&amp;device, &amp;mut data)?;
+        create_texture_sampler(&amp;device, &amp;mut data)?;
+        // ...
+    }
+}
+
+unsafe fn create_texture_sampler(device: &amp;Device, data: &amp;mut AppData) -&gt; Result&lt;()&gt; {
+    Ok(())
+}
+</code></pre>
+<p>Samplers are configured through a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerCreateInfo.html"><code class="hljs">vk::SamplerCreateInfo</code></a> structure, which specifies all filters and transformations that it should apply.</p>
+<pre><code class="language-rust noplaypen">let info = vk::SamplerCreateInfo::builder()
+    .mag_filter(vk::Filter::LINEAR)
+    .min_filter(vk::Filter::LINEAR)
+    // continued...
+</code></pre>
+<p>The <code>mag_filter</code> and <code>min_filter</code> fields specify how to interpolate texels that are magnified or minified. Magnification concerns the oversampling problem describes above, and minification concerns undersampling. The choices are <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Filter.html#associatedconstant.NEAREST"><code class="hljs">vk::Filter::NEAREST</code></a> and <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Filter.html#associatedconstant.LINEAR"><code class="hljs">vk::Filter::LINEAR</code></a>, corresponding to the modes demonstrated in the images above.</p>
+<pre><code class="language-rust noplaypen">    .address_mode_u(vk::SamplerAddressMode::REPEAT)
+    .address_mode_v(vk::SamplerAddressMode::REPEAT)
+    .address_mode_w(vk::SamplerAddressMode::REPEAT)
+</code></pre>
+<p>The addressing mode can be specified per axis using the <code>address_mode</code> fields. The available values are listed below. Most of these are demonstrated in the image above. Note that the axes are called U, V and W instead of X, Y and Z. This is a convention for texture space coordinates.</p>
+<ul>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.REPEAT"><code class="hljs">vk::SamplerAddressMode::REPEAT</code></a> – Repeat the texture when going beyond the image dimensions.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.MIRRORED_REPEAT"><code class="hljs">vk::SamplerAddressMode::MIRRORED_REPEAT</code></a> – Like repeat, but inverts the coordinates to mirror the image when going beyond the dimensions.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.CLAMP_TO_EDGE"><code class="hljs">vk::SamplerAddressMode::CLAMP_TO_EDGE</code></a> – Take the color of the edge closest to the coordinate beyond the image dimensions.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.MIRROR_CLAMP_TO_EDGE"><code class="hljs">vk::SamplerAddressMode::MIRROR_CLAMP_TO_EDGE</code></a> – Like clamp to edge, but instead uses the edge opposite to the closest edge.</li>
+<li><a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.SamplerAddressMode.html#associatedconstant.CLAMP_TO_BORDER"><code class="hljs">vk::SamplerAddressMode::CLAMP_TO_BORDER</code></a> – Return a solid color when sampling beyond the dimensions of the image.</li>
+</ul>
+<p>It doesn't really matter which addressing mode we use here, because we're not going to sample outside of the image in this tutorial. However, the repeat mode is probably the most common mode, because it can be used to tile textures like floors and walls.</p>
+<pre><code class="language-rust noplaypen">    .anisotropy_enable(true)
+    .max_anisotropy(16.0)
+</code></pre>
+<p>These two fields specify if anisotropic filtering should be used. There is no reason not to use this unless performance is a concern. The <code>max_anisotropy</code> field limits the amount of texel samples that can be used to calculate the final color. A lower value results in better performance, but lower quality results. There is no graphics hardware available today that will use more than 16 samples, because the difference is negligible beyond that point.</p>
+<pre><code class="language-rust noplaypen">    .border_color(vk::BorderColor::INT_OPAQUE_BLACK)
+</code></pre>
+<p>The <code>border_color</code> field specifies which color is returned when sampling beyond the image with clamp to border addressing mode. It is possible to return black, white or transparent in either float or int formats. You cannot specify an arbitrary color.</p>
+<pre><code class="language-rust noplaypen">    .unnormalized_coordinates(false)
+</code></pre>
+<p>The <code>unnormalized_coordinates</code> field specifies which coordinate system you want to use to address texels in an image. If this field is <code>true</code>, then you can simply use coordinates within the <code>[0, width)</code> and <code>[0, height)</code> range. If it is <code>false</code>, then the texels are addressed using the <code>[0, 1)</code> range on all axes. Real-world applications almost always use normalized coordinates, because then it's possible to use textures of varying resolutions with the exact same coordinates.</p>
+<pre><code class="language-rust noplaypen">    .compare_enable(false)
+    .compare_op(vk::CompareOp::ALWAYS)
+</code></pre>
+<p>If a comparison function is enabled, then texels will first be compared to a value, and the result of that comparison is used in filtering operations. This is mainly used for <a href="https://developer.nvidia.com/gpugems/GPUGems/gpugems_ch11.html">percentage-closer filtering</a> on shadow maps. We'll look at this in a future chapter.</p>
+<pre><code class="language-rust noplaypen">    .mipmap_mode(vk::SamplerMipmapMode::LINEAR)
+    .mip_lod_bias(0.0)
+    .min_lod(0.0)
+    .max_lod(0.0);
+</code></pre>
+<p>All of these fields apply to mipmapping. We will look at mipmapping in a <a href="/Generating_Mipmaps">later chapter</a>, but basically it's another type of filter that can be applied.</p>
+<p>The functioning of the sampler is now fully defined. Add an <code>AppData</code> field to hold the handle of the sampler object:</p>
+<pre><code class="language-rust noplaypen">struct AppData {
+    // ...
+    texture_image_view: vk::ImageView,
+    texture_sampler: vk::Sampler,
+    // ...
+}
+</code></pre>
+<p>Then create the sampler with <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.DeviceV1_0.html#method.create_sampler"><code class="hljs">create_sampler</code></a>:</p>
+<pre><code class="language-rust noplaypen">data.texture_sampler = device.create_sampler(&amp;info, None)?;
+</code></pre>
+<p>Note the sampler does not reference a <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.Image.html"><code class="hljs">vk::Image</code></a> anywhere. The sampler is a distinct object that provides an interface to extract colors from a texture. It can be applied to any image you want, whether it is 1D, 2D or 3D. This is different from many older APIs, which combined texture images and filtering into a single state.</p>
+<p>Destroy the sampler at the end of the program when we'll no longer be accessing the image:</p>
+<pre><code class="language-rust noplaypen">unsafe fn destroy(&amp;mut self) {
+    self.destroy_swapchain();
+    self.device.destroy_sampler(self.data.texture_sampler, None);
+    // ...
+}
+</code></pre>
+<h2 id="anisotropy-device-feature"><a class="header" href="#anisotropy-device-feature">Anisotropy device feature</a></h2>
+<p>If you run your program right now, you'll see a validation layer message like this:</p>
+<p><img src="../images/validation_layer_anisotropy.png" alt="" /></p>
+<p>That's because anisotropic filtering is actually an optional device feature. We need to update the <code>create_logical_device</code> function to request it:</p>
+<pre><code class="language-rust noplaypen">let features = vk::PhysicalDeviceFeatures::builder()
+    .sampler_anisotropy(true);
+</code></pre>
+<p>And even though it is very unlikely that a modern graphics card will not support it, we should update <code>check_physical_device</code> to check if it is available:</p>
+<pre><code class="language-rust noplaypen">unsafe fn check_physical_device(
+    instance: &amp;Instance,
+    data: &amp;AppData,
+    physical_device: vk::PhysicalDevice,
+) -&gt; Result&lt;()&gt; {
+    // ...
+
+    let features = instance.get_physical_device_features(physical_device);
+    if features.sampler_anisotropy != vk::TRUE {
+        return Err(anyhow!(SuitabilityError(&quot;No sampler anisotropy.&quot;)));
+    }
+
+    Ok(())
+}
+</code></pre>
+<p>The <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/trait.InstanceV1_0.html#method.get_physical_device_features"><code class="hljs">get_physical_device_features</code></a> repurposes the <a href="https://docs.rs/vulkanalia/0.28.0/vulkanalia/vk/struct.PhysicalDeviceFeatures.html"><code class="hljs">vk::PhysicalDeviceFeatures</code></a> struct to indicate which features are supported rather than requested by setting the boolean values.</p>
+<p>Instead of enforcing the availability of anisotropic filtering, it's also possible to simply not use it by conditionally setting:</p>
+<pre><code class="language-rust noplaypen">    .anisotropy_enable(false)
+    .max_anisotropy(1.0)
+</code></pre>
+<p>In the next chapter we will expose the image and sampler objects to the shaders to draw the texture onto the square.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../texture/images.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../texture/combined_image_sampler.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../texture/images.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../texture/combined_image_sampler.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
