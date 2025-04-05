@@ -198,7 +198,7 @@ command wrapper가 여전히 `unsafe`임을 주목하세요. 왜냐하면 `vulka
 
 예를 들어, [`enumerate_instance_extension_properties`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.EntryV1_0.html#method.enumerate_instance_extension_properties)는 [`vk::EntryV1_0`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.EntryV1_0.html) trait안에 있습니다. 왜냐하면 이것은 Vulkan 1.0의 일부인 non-extension Vulkan command이고 Vulkan instance또는 device에 의존하지 않기 때문입니다. Vulkan 1.2에서 추가되었고 Vulkan device에 의존하는 [`cmd_draw_indirect_count`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_2.html#method.cmd_draw_indirect_count)같은 Vulkan command는 [`vk::DeviceV1_2`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.DeviceV1_2.html) trait안에 있습니다.
 
-이러한 version과 extension traits은 loaded commands와 요구된 Vulkan instance또는 device (if any) 모두를 포함하는 types을 위해 정의되었습니다. 이러한 types은 사랑스럼게 수작업으로 만들어졌고 `vulkanalia`의 `vk` module안에 생성된 Vulkan bindings의 일부가 아닙니다. 이 타입들은 이후 챕터에서 사용될거고 [`Entry`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Entry.html), [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html) 그리고 [`Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Device.html) 구조체들입니다.
+이러한 version과 extension traits은 loaded commands와 요구된 Vulkan instance또는 device (if any) 모두를 포함하는 types을 위해 정의되었습니다. 이러한 types은 사랑스럼게 수작업으로 만들어졌고 `vulkanalia`의 `vk` module안에 생성된 Vulkan bindings의 일부가 아닙니다. 이 타입들은 이후 챕터에서 사용될거고 `Entry`, `Instance` 그리고 `Device` 구조체들입니다.
 
 앞으로, 이 튜토리얼은 이 섹션에서처럼 (e.g. [`create_instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.EntryV1_0.html#method.create_instance)) command wrappers를 이름으로 직접 참조하면서 진행할겁니다. command wrapper가 정의된 trait같은 더 많은 정보를 위해 command wrapper에 대한 `vulkanalia` documentation를 방문할 수 있습니다.
 

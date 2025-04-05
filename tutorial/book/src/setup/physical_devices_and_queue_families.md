@@ -2,7 +2,7 @@
 
 **Code:** [main.rs](https://github.com/KyleMayes/vulkanalia/tree/master/tutorial/src/03_physical_device_selection.rs)
 
-[`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)를 통해 Vulkan library를 초기화한 후에, 원하는 기능을 지원하는 시스템에서 그래픽카드를 찾아서 선택해야합니다. 사실은 몇개의 그래픽카드든 선택하고 동시에 사용할수도 있습니다. 그러나 이번 튜토리얼에서는 우리의 요구에 맞는 첫번째 그래픽카드를 사용하는 것을 고수할겁니다.
+`Instance`를 통해 Vulkan library를 초기화한 후에, 원하는 기능을 지원하는 시스템에서 그래픽카드를 찾아서 선택해야합니다. 사실은 몇개의 그래픽카드든 선택하고 동시에 사용할수도 있습니다. 그러나 이번 튜토리얼에서는 우리의 요구에 맞는 첫번째 그래픽카드를 사용하는 것을 고수할겁니다.
 
 이 작업과 physical device와 관련 정보를 `AppData` instance에 작성하는 `pick_physical_device`함수를 추가할겁니다. 이 함수와 여기 함수에서 호출하는 함수들은 커스텀 error type(`SuitabilityError`)을 사용해서 physical device가 애플리케이션의 요구사항을 만족하지 안흐면 signal을 보내도록 합니다. 이 error type은 `thiserror` 크레이트를 사용해서 error type에 대한 필수적인 보일러플레이트 코드를 구현합니다.
 
@@ -26,7 +26,7 @@ unsafe fn pick_physical_device(instance: &Instance, data: &mut AppData) -> Resul
 }
 ```
 
-선택된 그래픽카드는 [`vk::PhysicalDevice`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PhysicalDevice.html)핸들에 저장됩니다. 이 핸들은 `AppData`구조체의 새로운 필드로써 추가됩니다. 이 객체는 [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)가 파괴되면 암시적으로 파괴됩니다. 그러므로 `App::destroy`메소드에서는 아무것도 안해도 됩니다.
+선택된 그래픽카드는 [`vk::PhysicalDevice`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.PhysicalDevice.html)핸들에 저장됩니다. 이 핸들은 `AppData`구조체의 새로운 필드로써 추가됩니다. 이 객체는 `Instance`가 파괴되면 암시적으로 파괴됩니다. 그러므로 `App::destroy`메소드에서는 아무것도 안해도 됩니다.
 
 ## Device suitability
 

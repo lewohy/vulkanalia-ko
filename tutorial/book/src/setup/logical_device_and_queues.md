@@ -70,7 +70,7 @@ let layers = if VALIDATION_ENABLED {
 
 ## Specifying the extensions to enable
 
-[`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)챕터에서 설명했듯이, 특정 Vulkan extension은 Vulkan specification을 완전히 준수하지 않는 Vulkan 구현을 사용하는 애플리케이션을 위해 활성화되어야 합니다. 그 챕터에서는, 비-준수 구현과의 호환성을 위해 instance extension을 활성화했습니다. 여기서는, 같은 목적으로 필요한 device extension을 활성화할겁니다.
+`Instance` 챕터에서 설명했듯이, 특정 Vulkan extension은 Vulkan specification을 완전히 준수하지 않는 Vulkan 구현을 사용하는 애플리케이션을 위해 활성화되어야 합니다. 그 챕터에서는, 비-준수 구현과의 호환성을 위해 instance extension을 활성화했습니다. 여기서는, 같은 목적으로 필요한 device extension을 활성화할겁니다.
 
 ```rust
 let mut extensions = vec![];

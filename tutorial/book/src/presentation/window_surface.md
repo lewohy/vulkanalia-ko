@@ -4,7 +4,7 @@
 
 Vulkan은 platform agnostic API이기 때문에, 스스로 window system과 직접적으로 interface할 수 없습니다. Vulkan과 화면에 결과를 보여줄 window system사이의 연결을 생성하기 위해, WSI(Window System Integration) extension을 사용해야합니다. 이번 챕터에서 그 첫번째인 [`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html)에 대해 논의할겁니다. 이 extension은 [`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html) 오브젝트를 노출시킵니다. 이 오브젝트는 렌더링된 이미지를 surface로 표시하기 위해 surface의 추상 타입을 나타냅니다. 프로그램의 surface는 이미 열어뒀던 `winit`에 의한 window를 기반으로 동작합니다.
 
-[`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html) extension는 instance level의 extension입니다. 그리고 [`vk_window::get_required_instance_extensions`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.get_required_instance_extensions.html)에 의해 반환된 리스트에 포함되어있기 때문에, 실제로 이미 활성화했습니다. 그 리스트는 몇몇 다른 WSI extension을 포함하고 다음 몇 챕터 후에 사용할겁니다.
+[`VK_KHR_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_surface.html) extension는 instance level의 extension입니다. 그리고 `vk_window::get_required_instance_extensions`에 의해 반환된 리스트에 포함되어있기 때문에, 실제로 이미 활성화했습니다. 그 리스트는 몇몇 다른 WSI extension을 포함하고 다음 몇 챕터 후에 사용할겁니다.
 
 window surface는 physical device 선택에 실제로 영향을 줄 수 있기 때문에, instance의 생성 바로 직후에 생성되어야합니다. 이 과정을 미뤘던 이유는 window surface가 render target과 presentation의 큰 주제의 일부인데, 그것들에 대한 설명은 basic setup을 어렵게 했을겁니다. 만약 off-screen rendering이 필요하다면, Vulkan에서 window surface는 전반적으로 optional인 component이라는것에도 유의합니다. Vulkan은 보이지않는 window를 생성하는것 같은 hack(OpenGL에서는 필수적)없이 그런것을 가능하게 해줍니다.
 
@@ -25,9 +25,9 @@ struct AppData {
 }
 ```
 
-[`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html) 오브젝트와 이 오브젝트의 사용이 플랫폼 불가지론적일지라도, 이 오브젝트의 생성은 window system detail에 의존하기때문에 불가지론적이지 않습니다. 예를들어, Windows에서 이 오브젝트의 생성은 `HWND`와 `HMODULE`를 필요로합니다. 그러므로 extension에 platform-specific addition이 있는데, Windows에서는 [`VK_KHR_win32_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_win32_surface.html)라고 불립니다. 그리고 이것은 [`vk_window::get_required_instance_extensions`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.get_required_instance_extensions.html)의 리스트에 자동으로 포함되어 있습니다.
+[`vk::SurfaceKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.SurfaceKHR.html) 오브젝트와 이 오브젝트의 사용이 플랫폼 불가지론적일지라도, 이 오브젝트의 생성은 window system detail에 의존하기때문에 불가지론적이지 않습니다. 예를들어, Windows에서 이 오브젝트의 생성은 `HWND`와 `HMODULE`를 필요로합니다. 그러므로 extension에 platform-specific addition이 있는데, Windows에서는 [`VK_KHR_win32_surface`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/VK_KHR_win32_surface.html)라고 불립니다. 그리고 이것은 `vk_window::get_required_instance_extensions`의 리스트에 자동으로 포함되어 있습니다.
 
-어떻게 platform specific extension이 Windows에서 surface를 생성하기위해 사용되는지 보여드릴겁니다. 그러나 이 튜토리얼에서 실제로 사용하지는 않을겁니다. `vulkanalia`는 [`vk_window::create_surface`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.create_surface.html)를 갖고있는데, 이것은 우리를 위한 플랫폼과의 차이를 핸들링합니다. 여전히, 이것에 의존하기 전에, 이것이 scene의 뒤에서 뭘하는지 보는것이 좋습니다.
+어떻게 platform specific extension이 Windows에서 surface를 생성하기위해 사용되는지 보여드릴겁니다. 그러나 이 튜토리얼에서 실제로 사용하지는 않을겁니다. `vulkanalia`는 `vk_window::create_surface`를 갖고있는데, 이것은 우리를 위한 플랫폼과의 차이를 핸들링합니다. 여전히, 이것에 의존하기 전에, 이것이 scene의 뒤에서 뭘하는지 보는것이 좋습니다.
 
 window surface는 Vulkan 오브젝트이므로, [`vk::Win32SurfaceCreateInfoKHR`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Win32SurfaceCreateInfoKHR.html) 구조체가 딸려옵니다. 이 구조체도 채워줘야합니다. 두 가지 중요한 파라미터를 갖습니다: `hisntance`과 `hwnd`입니다. 이것들은 process와 window를 핸들링합니다.
 
@@ -51,7 +51,7 @@ let surface = instance.create_win32_surface_khr(&info, None).unwrap();
 
 이 과정은 Linux같은 [`create_xcb_surface_khr`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.KhrXcbSurfaceExtension.html#method.create_xcb_surface_khr)가 XCB connection과 window를 X11에서 creation detail로 취급하는 다른 플랫폼에서도 비슷합니다.
 
-[`vk_window::create_surface`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/window/fn.create_surface.html) 함수는 각 플랫폼을 위한 다른 구현을 통해 정확한 operation을 수행합니다. 이제 이것을 우리의 프로그램과 통합할겁니다. `App::create`에서 physical device를 선택하기 바로 직전에 함수 호출을 추가합니다.
+`vk_window::create_surface` 함수는 각 플랫폼을 위한 다른 구현을 통해 정확한 operation을 수행합니다. 이제 이것을 우리의 프로그램과 통합할겁니다. `App::create`에서 physical device를 선택하기 바로 직전에 함수 호출을 추가합니다.
 
 ```rust
 unsafe fn create(window: &Window) -> Result<Self> {

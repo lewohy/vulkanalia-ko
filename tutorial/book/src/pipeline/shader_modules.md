@@ -199,7 +199,7 @@ unsafe fn create_shader_module(
 
 shader module을 생성하는것은 간단합니다. bytecode의 length와 bytecode slice그 자체를 지정해주기만 하면 됩니다. 이 정보는 [`vk::ShaderModuleCreateInfo`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.ShaderModuleCreateInfo.html) 구조체에 지정합니다. 한 가지 문제는 bytecode의 크기가 bytes로 지정된다는 것이지만, 이 구조체에서 기대하는 bytecode slice는 `&[u8]`대신 `&[u32]`입니다. 그러므로 먼저 `&[u8]`을 `&[u32]`로 변환해야합니다.
 
-`vulkanalia`는 [`Bytecode`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/bytecode/struct.Bytecode.html)라고 불리는 helper struct가 있습니다. 이 구조체는 shader bytecode를 `u32` 배열을 위해 올바른 alignment가 보장된 새로운 버퍼로 복사하는데 사용할겁니다. 이 helper struct를 위한 import를 추가합니다.
+`vulkanalia`는 `Bytecode`라고 불리는 helper struct가 있습니다. 이 구조체는 shader bytecode를 `u32` 배열을 위해 올바른 alignment가 보장된 새로운 버퍼로 복사하는데 사용할겁니다. 이 helper struct를 위한 import를 추가합니다.
 
 ```rust
 use vulkanalia::bytecode::Bytecode;

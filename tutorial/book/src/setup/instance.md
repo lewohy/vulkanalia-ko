@@ -81,7 +81,7 @@ unsafe fn create(window: &Window) -> Result<Self> {
 
 ## Cleaning up
 
-[`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)는 프로그램이 종료되자마자 파괴되어야 합니다. 인스턴스는 `App::destory`에서 [`destory_instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance)를 사용하여 파괴할 수 있습니다.
+`Instance`는 프로그램이 종료되자마자 파괴되어야 합니다. 인스턴스는 `App::destory`에서 [`destory_instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance)를 사용하여 파괴할 수 있습니다.
 
 ```rust
 unsafe fn destroy(&mut self) {
@@ -153,13 +153,13 @@ let info = vk::InstanceCreateInfo::builder()
 
 또한 이 코드는 `KHR_GET_PHYSICAL_DEVICE_PROPERTIES2_EXTENSION`을 같은 조건에서 활성화합니다. 이 확장은 `KHR_PORTABILITY_SUBSET_EXTENSION` device 확장을 활성화하기 위해 필요합니다(logical device를 set up하는 이후 튜토리얼에서 추가됩니다).
 
-## [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html) vs  [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)
+## `Instance` vs  [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)
 
 `create_instance`함수를 호출할 때, 반환되는것은 Vulkan 커맨드인 [`vkCreateInstance`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/vkCreateInstance.html)가 리턴하는 raw Vulkan 인스턴스([`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html))가 아닙니다. 대신 얻게되는 것은 `vulkanalia`에서 정의한 custom type입니다. 이 타입은 raw Vulkan 인스턴스와 특정 인스턴스에 로드된 커맨드들의 조합입니다.
 
-우리가 사용한것이 [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)이며 (`vulkanalia` 프렐루드에서 임포트됨) raw Vulkan 인스턴스인 [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)와 혼동해서는 안됩니다. 이후 챕터에서는 [`Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Device.html)타입 또한 사용할것입니다. 이 타입은 [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)처럼, raw Vulkan 장치([`vk::Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html))와 특정 장치를 위해 로드된 커맨드 짝지어집니다. 운좋게도, 이 튜토리얼에서는 [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)나 [`vk::Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html)를 직접적으로 사용하지는 않습니다. 이것들을 혼동할까봐 걱정하지 않아도 됩니다.
+우리가 사용한것이 `Instance`이며 (`vulkanalia` 프렐루드에서 임포트됨) raw Vulkan 인스턴스인 [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)와 혼동해서는 안됩니다. 이후 챕터에서는 `Device` 타입 또한 사용할것입니다. 이 타입은 `Instance`처럼, raw Vulkan 장치([`vk::Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html))와 특정 장치를 위해 로드된 커맨드 짝지어집니다. 운좋게도, 이 튜토리얼에서는 [`vk::Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Instance.html)나 [`vk::Device`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/struct.Device.html)를 직접적으로 사용하지는 않습니다. 이것들을 혼동할까봐 걱정하지 않아도 됩니다.
 
-하나의 [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)는 Vulkan 인스턴스 그리고 연관된 커맨드들을 포함하기 때문에, [`Instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/struct.Instance.html)를 위해 구현된 커맨드 wrapper는 Vulkan커맨드에서 필요한 경우에  Vulkan 인스턴스를 제공할 수 있습니다.
+하나의 `Instance`는 Vulkan 인스턴스 그리고 연관된 커맨드들을 포함하기 때문에, `Instance`를 위해 구현된 커맨드 wrapper는 Vulkan커맨드에서 필요한 경우에  Vulkan 인스턴스를 제공할 수 있습니다.
 
 [`vkDestroyInstance`](https://www.khronos.org/registry/vulkan/specs/1.4-extensions/man/html/vkDestroyInstance.html)커맨드의 문서를 보면, 두개의 파라미터를 취하는 것을 볼 수 있습니다. 하나는 파괴할 인스턴스이고, 하나는 optional custom allocator callback입니다. 그러나 [`destroy_instance`](https://docs.rs/vulkanalia/0.26.0/vulkanalia/vk/trait.InstanceV1_0.html#method.destroy_instance)문서를 보면, 오직 한개의 optional custom allocator callback를 받는 것을 볼 수 있습니다. 왜냐하면 위에서 설명했듯이 raw Vulkan 핸들을 첫번째 파라미터로 제공해줄 수 있기 때문입니다.
 
